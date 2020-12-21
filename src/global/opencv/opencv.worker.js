@@ -93,9 +93,10 @@ function detectRectangleAroundDocument(
 ) {
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(inputImage, 0, 0, width, height);
+  console.log("left", left);
+  ctx.drawImage(inputImage, left, 0, inputImage.width, inputImage.height);
   const imageData = ctx.getImageData(
-    left,
+    0,
     0,
     width,
     height
@@ -110,19 +111,26 @@ function detectRectangleAroundDocument(
     detectEdges(src, dst);
     makePixelsFatter(dst);
     let biggestCountour = detectBiggestContour(dst);
-    let rect = detectRotatedRectAroundContour(biggestCountour);
-    let vertices = cv.RotatedRect.points(rect);
+    // sometimes there was no contour detected
+    // TODO: check why, this is a workaround
+    let rectForMessage = null;
+    if (!!biggestCountour) {
+      let rect = detectRotatedRectAroundContour(biggestCountour);
+      let vertices = cv.RotatedRect.points(rect);
 
-    const corners = [];
-    for (let i = 0; i < 4; i++) {
-      const firstPoint = vertices[i];
-      corners.push(firstPoint);
+      const corners = [];
+      for (let i = 0; i < 4; i++) {
+        const firstPoint = vertices[i];
+        corners.push(firstPoint);
 
-      cv.line(original, firstPoint, vertices[(i + 1) % 4], [88, 81, 255, 255], 2, cv.LINE_AA, 0);
+        cv.line(original, firstPoint, vertices[(i + 1) % 4], [88, 81, 255, 255], 2, cv.LINE_AA, 0);
+      }
+
+      rectForMessage = { corners, size: rect.size };
     }
 
     const processedImage = imageDataFromMat(original);
-    postMessage({ msg, img: processedImage, rect: { corners, size: rect.size } }, null,null);
+    postMessage({ msg, img: processedImage, rect: rectForMessage }, null,null);
 
     // this is important, otherwise we run into errors after a while ... the whole worker crashes
     dst.delete();
@@ -254,13 +262,6 @@ onmessage = function (e) {
         ratio
       );
       break;
-    }
-    case 'set-canvas': {
-      const {
-        payload: {
-          canvas: offscreenCanvas
-        }
-      } = e.data;
     }
     default:
       break
