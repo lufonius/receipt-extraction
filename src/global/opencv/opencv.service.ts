@@ -40,16 +40,24 @@ export class OpenCvService {
     return await this.dispatch({ msg: 'load' });
   }
 
+  setCanvas(canvas: OffscreenCanvas) {
+    const msg = {
+      msg: "set-canvas",
+      payload: { inputImage: canvas },
+    };
 
+    this.worker.postMessage(msg, [canvas]);
+  }
 
   async edgeDetect(
-    imageData: Uint8ClampedArray,
+    imageData: ImageBitmap,
     width: number,
-    height: number
+    height: number,
+    left: number
   ): Promise<{ imgData?: Uint8ClampedArray, rect: RotatedRect }> {
     const msg = {
       msg: "detect-rectangle-around-document",
-      payload: { inputImage: imageData, width, height }
+      payload: { inputImage: imageData, width, height, left },
     };
     this.worker.postMessage(msg);
     return new Promise((resolve) => {

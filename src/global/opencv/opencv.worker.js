@@ -1,3 +1,5 @@
+
+
 function waitForOpencv(callbackFn, waitTimeMs = 30000, stepTimeMs = 100) {
   if (cv.Mat) callbackFn(true)
 
@@ -86,16 +88,27 @@ function detectRectangleAroundDocument(
   msg,
   inputImage,
   width,
-  height
+  height,
+  left
 ) {
+  const canvas = new OffscreenCanvas(width, height);
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(inputImage, 0, 0, width, height);
+  const imageData = ctx.getImageData(
+    left,
+    0,
+    width,
+    height
+  ).data;
+
     const src = new cv.Mat(height, width, cv.CV_8UC4);
     const original = new cv.Mat(height, width, cv.CV_8UC4);
     const dst = new cv.Mat(height, width, cv.CV_8UC1);
-    src.data.set(inputImage);
-    original.data.set(inputImage);
+    src.data.set(imageData);
+    original.data.set(imageData);
 
     detectEdges(src, dst);
-    // makePixelsFatter(dst);
+    makePixelsFatter(dst);
     let biggestCountour = detectBiggestContour(dst);
     let rect = detectRotatedRectAroundContour(biggestCountour);
     let vertices = cv.RotatedRect.points(rect);
@@ -109,7 +122,7 @@ function detectRectangleAroundDocument(
     }
 
     const processedImage = imageDataFromMat(original);
-    postMessage({ msg, img: processedImage, rect: { corners, size: rect.size } });
+    postMessage({ msg, img: processedImage, rect: { corners, size: rect.size } }, null,null);
 
     // this is important, otherwise we run into errors after a while ... the whole worker crashes
     dst.delete();
@@ -192,7 +205,7 @@ function cropAndWarpByPoints(
 
   const processedImage = imageDataFromMat(dst);
 
-  postMessage({ msg, img: processedImage });
+  postMessage({ msg, img: processedImage }, null);
 
   // cropSourceImage.delete();
   // dst.delete();
@@ -201,20 +214,22 @@ function cropAndWarpByPoints(
 onmessage = function (e) {
   switch (e.data.msg) {
     case 'load': {
+      // @ts-ignore
       self.importScripts('./opencv.js')
       waitForOpencv(function (success) {
-        if (success) postMessage({ msg: e.data.msg })
+        if (success) postMessage({ msg: e.data.msg }, null)
         else throw new Error('Error on loading OpenCV')
       })
       break
     }
     case 'detect-rectangle-around-document': {
-      const { msg, payload: { inputImage, width, height } } = e.data;
+      const { msg, payload: { inputImage, width, height, left } } = e.data;
       detectRectangleAroundDocument(
         msg,
         inputImage,
         width,
-        height
+        height,
+        left
       );
       break;
     }
@@ -239,6 +254,13 @@ onmessage = function (e) {
         ratio
       );
       break;
+    }
+    case 'set-canvas': {
+      const {
+        payload: {
+          canvas: offscreenCanvas
+        }
+      } = e.data;
     }
     default:
       break

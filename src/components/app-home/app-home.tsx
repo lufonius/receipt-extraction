@@ -30,6 +30,7 @@ export class AppHome {
   rotatedRect: RotatedRect;
   ratio: number = 0;
 
+  maxResolutionStream: MediaStream;
 
   videoElement: HTMLVideoElement;
 
@@ -60,6 +61,7 @@ export class AppHome {
 
     this.fakeCanvas = new OffscreenCanvas(this.scaledWidth, this.scaledHeight);
     this.fakeContext2D = this.fakeCanvas.getContext("2d");
+    this.openCvService.setCanvas(new OffscreenCanvas(this.scaledWidth, this.scaledHeight));
 
     // position the canvas in the middle
     this.left = -(this.scaledWidth - this.screenWidth) / 2;
@@ -71,18 +73,16 @@ export class AppHome {
     const FPS = 30;
     let begin = Date.now();
 
-    this.fakeContext2D.drawImage(this.videoElement, 0, 0, this.scaledWidth, this.scaledHeight);
-    const imageDataOfCurrentVideoImage: Uint8ClampedArray = this.fakeContext2D.getImageData(
-      this.left * -1,
-      0,
-      this.screenWidth,
-      this.screenHeight
-    ).data;
+    const stream = this.videoElement.srcObject as MediaStream;
+    const track = stream.getVideoTracks()[0];
+    const capture = new ImageCapture(track);
+    const bitmap = await capture.grabFrame();
 
     const newImageData = await this.openCvService.edgeDetect(
-      imageDataOfCurrentVideoImage,
+      bitmap,
       this.screenWidth,
-      this.screenHeight
+      this.screenHeight,
+      this.left * -1
     );
 
     if(!!newImageData) {
@@ -115,6 +115,16 @@ export class AppHome {
           height: { ideal: 100000 }
         },
       });
+
+      this.maxResolutionStream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode: 'environment',
+          width: { ideal: 100000 },
+          height: { ideal: 100000 }
+        },
+      });
+
       // it might be possible that the camera does not support that resolution
       const { width, height } = stream.getVideoTracks()[0].getSettings();
       this.maxCameraWidth = width;
