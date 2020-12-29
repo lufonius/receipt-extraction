@@ -16,6 +16,7 @@ export class AppHome {
 
   photoInput: HTMLInputElement;
   outCanvas: HTMLCanvasElement;
+  img: HTMLImageElement;
 
   @Inject(OpenCvService) private openCvService: OpenCvService;
 
@@ -37,11 +38,14 @@ export class AppHome {
 
     const detectedRectangle = await this.openCvService.edgeDetect(scaledBitmap, scaledBitmap.width, scaledBitmap.height, 0);
     const cropped = await this.openCvService.cropAndWarpByPoints(originalImageData.data, detectedRectangle.rect, originalBitmap.width, originalBitmap.height, scaleRatio);
+
+    const ctx = this.outCanvas.getContext("2d");
     this.outCanvas.width = cropped.imgData.width;
     this.outCanvas.height = cropped.imgData.height;
-    const ctx = this.outCanvas.getContext("2d");
 
     ctx.putImageData(cropped.imgData, 0, 0, 0, 0, cropped.imgData.width, cropped.imgData.height);
+
+    this.img.src = this.outCanvas.toDataURL();
 
     this.downloadURI(this.outCanvas.toDataURL(), "cropped");
   }
@@ -78,7 +82,8 @@ export class AppHome {
       <div>
         <div class="button button--bottom-fixed button--transparent" onClick={() => this.photoInput.click()}>Take photo</div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.detectEdgesAndDraw()} ref={(el) => this.photoInput = el} />
-        <canvas ref={(el) => this.outCanvas = el} />
+        <canvas style={({ display: "none" })} ref={(el) => this.outCanvas = el} />
+        <img class="outimage" ref={(el) => this.img = el}/>
       </div>
     );
   }

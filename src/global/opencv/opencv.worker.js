@@ -210,7 +210,7 @@ function cropAndWarpByPoints(
   cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
 
   if (dst.cols > dst.rows) {
-    cv.rotate(src, dst, cv.ROTATE_90_CLOCKWISE)
+    cv.rotate(dst, dst, cv.ROTATE_90_CLOCKWISE)
   }
 
   postMessage({ msg, img: imageDataFromMat(dst) }, null);
