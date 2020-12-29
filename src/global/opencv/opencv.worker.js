@@ -202,14 +202,13 @@ function cropAndWarpByPoints(
     bl.x, bl.y
   ];
 
-  // console.log(calculatedWidth, width);
-  // console.log(calculatedHeight, height);
-  // console.log(cropSourcePoints, cropSourcePoints.flat());
-
   const dst = new cv.Mat();
   let dsize = new cv.Size(calculatedWidth, calculatedHeight);
   const M = cv.getPerspectiveTransform(cv.matFromArray(4, 1, cv.CV_32FC2, cropSourcePointsFlat), cv.matFromArray(4, 1, cv.CV_32FC2, cropDestinationPoints));
   cv.warpPerspective(cropSourceImage, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+
+  cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
+  cv.threshold(dst, dst, 130, 250, cv.THRESH_BINARY);
 
   const processedImage = imageDataFromMat(dst);
 
