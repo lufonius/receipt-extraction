@@ -25,28 +25,18 @@ export class AppHome {
 
 
   async detectEdgesAndDraw() {
-    const photo = this.photoInput.files[0];
-    const bitmap = await createImageBitmap(photo);
+    const originalBlob = this.photoInput.files[0];
+    const originalBitmap = await createImageBitmap(originalBlob);
+
+    const originalImageData = this.imageDataFromBitmap(originalBitmap);
 
     const scaledWidth = 600;
-    const scaleRatio = bitmap.width / scaledWidth;
-    const scaledHeight = bitmap.height / scaleRatio;
-
-    const originalCanvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-    const originalCanvasCtx = originalCanvas.getContext("2d");
-    originalCanvasCtx.drawImage(bitmap, 0, 0);
-
-    const original = originalCanvasCtx.getImageData(0, 0, bitmap.width, bitmap.height);
-
-    const fakeCanvas = new OffscreenCanvas(scaledWidth, scaledHeight);
-    const fakeContext2D = fakeCanvas.getContext("2d");
-    fakeContext2D.drawImage(bitmap, 0, 0, scaledWidth, scaledHeight);
-    const imageData: ImageData = fakeContext2D.getImageData(0, 0, scaledWidth, scaledHeight);
-    const scaledBitmap = await createImageBitmap(imageData);
-
+    const scaleRatio = originalBitmap.width / scaledWidth;
+    const scaledHeight = originalBitmap.height / scaleRatio;
+    const scaledBitmap = await this.scaleBitmap(scaledWidth, scaledHeight, originalBitmap);
 
     const detectedRectangle = await this.openCvService.edgeDetect(scaledBitmap, scaledBitmap.width, scaledBitmap.height, 0);
-    const cropped = await this.openCvService.cropAndWarpByPoints(original.data, detectedRectangle.rect, bitmap.width, bitmap.height, scaleRatio);
+    const cropped = await this.openCvService.cropAndWarpByPoints(originalImageData.data, detectedRectangle.rect, originalBitmap.width, originalBitmap.height, scaleRatio);
     this.outCanvas.width = cropped.imgData.width;
     this.outCanvas.height = cropped.imgData.height;
     const ctx = this.outCanvas.getContext("2d");
@@ -56,14 +46,23 @@ export class AppHome {
     this.downloadURI(this.outCanvas.toDataURL(), "cropped");
   }
 
- /* addReceipt() {
-    this.entityStore.addReceipt({ id: this.receiptId, total: 5.67, date: new Date(), imgUrl: "" });
-    this.receiptId = "";
+  private imageDataFromBitmap(bitmap: ImageBitmap) {
+    const originalCanvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+    const originalCanvasCtx = originalCanvas.getContext("2d");
+    originalCanvasCtx.drawImage(bitmap, 0, 0);
+
+    const original = originalCanvasCtx.getImageData(0, 0, bitmap.width, bitmap.height);
+    return original;
   }
 
-  async takePhoto() {
-
-  }*/
+  private async scaleBitmap(scaledWidth: number, scaledHeight: number, bitmap: ImageBitmap) {
+    const fakeCanvas = new OffscreenCanvas(scaledWidth, scaledHeight);
+    const fakeContext2D = fakeCanvas.getContext("2d");
+    fakeContext2D.drawImage(bitmap, 0, 0, scaledWidth, scaledHeight);
+    const imageData: ImageData = fakeContext2D.getImageData(0, 0, scaledWidth, scaledHeight);
+    const scaledBitmap = await createImageBitmap(imageData);
+    return scaledBitmap;
+  }
 
   downloadURI(uri, name) {
     var link = document.createElement("a");

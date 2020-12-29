@@ -208,14 +208,13 @@ function cropAndWarpByPoints(
   cv.warpPerspective(cropSourceImage, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
 
   cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
-  cv.threshold(dst, dst, 130, 250, cv.THRESH_BINARY);
 
   const processedImage = imageDataFromMat(dst);
 
   postMessage({ msg, img: processedImage }, null);
 
-  // cropSourceImage.delete();
-  // dst.delete();
+  cropSourceImage.delete();
+  dst.delete();
 }
 
 onmessage = function (e) {
