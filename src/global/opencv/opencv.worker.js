@@ -202,10 +202,14 @@ function cropAndWarpByPoints(
     bl.x, bl.y
   ];
 
-  const dst = new cv.Mat();
+  let dst = new cv.Mat();
   let dsize = new cv.Size(calculatedWidth, calculatedHeight);
   const M = cv.getPerspectiveTransform(cv.matFromArray(4, 1, cv.CV_32FC2, cropSourcePointsFlat), cv.matFromArray(4, 1, cv.CV_32FC2, cropDestinationPoints));
   cv.warpPerspective(cropSourceImage, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+
+  if (dst.rows > src.cols) {
+    dst = rotate(dst, 90);
+  }
 
   cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
 
@@ -215,6 +219,19 @@ function cropAndWarpByPoints(
 
   cropSourceImage.delete();
   dst.delete();
+}
+
+function rotate(src, angle) {
+  let dst = new cv.Mat();
+  let dsize = new cv.Size(src.rows, src.cols);
+  let center = new cv.Point(src.cols / 2, src.rows / 2);
+  // You can try more different parameters
+  let M = cv.getRotationMatrix2D(center, angle, 1);
+  cv.warpAffine(src, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
+  const imageData = imageDataFromMat(dst);
+  src.delete(); dst.delete(); M.delete();
+
+  return imageData;
 }
 
 onmessage = function (e) {
