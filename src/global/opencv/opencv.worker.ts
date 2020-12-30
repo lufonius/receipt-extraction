@@ -1,28 +1,34 @@
+import type {Mat, OpenCv} from './opencv.d';
+declare var cv: OpenCv;
 
+function waitForOpencv(waitTimeMs = 30000, stepTimeMs = 100) {
+  return new Promise((resolve, reject) => {
+    let timeSpentMs = 0;
+    if (!!cv.Mat) resolve();
 
-function waitForOpencv(callbackFn, waitTimeMs = 30000, stepTimeMs = 100) {
-  if (cv.Mat) callbackFn(true)
-
-  let timeSpentMs = 0
-  const interval = setInterval(() => {
-    const limitReached = timeSpentMs > waitTimeMs
-    if (cv.Mat || limitReached) {
-      clearInterval(interval)
-      return callbackFn(!limitReached)
-    } else {
-      timeSpentMs += stepTimeMs
-    }
-  }, stepTimeMs)
+    setInterval(() => {
+      const limitReached = timeSpentMs > waitTimeMs
+      if (cv.Mat || limitReached) {
+        if (limitReached) {
+          reject("loading took too long");
+        } else {
+          resolve();
+        }
+      } else {
+        timeSpentMs += stepTimeMs
+      }
+    }, stepTimeMs);
+  });
 }
 
-function imageDataFromMat(mat) {
+function imageDataFromMat(mat: Mat): ImageData {
   // convert the mat type to cv.CV_8U
-  const img = new cv.Mat()
-  const depth = mat.type() % 8
+  const img = new cv.Mat();
+  const depth = mat.type() % 8;
   const scale =
-    depth <= cv.CV_8S ? 1.0 : depth <= cv.CV_32S ? 1.0 / 256.0 : 255.0
-  const shift = depth === cv.CV_8S || depth === cv.CV_16S ? 128.0 : 0.0
-  mat.convertTo(img, cv.CV_8U, scale, shift)
+    depth <= cv.CV_8S ? 1.0 : depth <= cv.CV_32S ? 1.0 / 256.0 : 255.0;
+  const shift = depth === cv.CV_8S || depth === cv.CV_16S ? 128.0 : 0.0;
+  mat.convertTo(img, cv.CV_8U, scale, shift);
 
   // convert the img type to cv.CV_8UC4
   switch (img.type()) {
@@ -39,16 +45,18 @@ function imageDataFromMat(mat) {
         'Bad number of channels (Source image must have 1, 3 or 4 channels)'
       )
   }
-  const clampedArray = new ImageData(
+  const imageData = new ImageData(
     new Uint8ClampedArray(img.data),
     img.cols,
     img.rows
-  )
-  img.delete()
-  return clampedArray
+  );
+
+  img.delete();
+
+  return imageData;
 }
 
-function detectEdges(src, dst) {
+function detectEdges(src: Mat, dst: Mat) {
   cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
   cv.GaussianBlur(dst, dst, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
   cv.Canny(dst, dst, 75, 200);
@@ -85,16 +93,30 @@ function detectRotatedRectAroundContour(contour) {
   return cv.minAreaRect(contour);
 }
 
-function detectRectangleAroundDocument(
-  msg,
-  inputImage,
-  width,
-  height,
-  left
-) {
+export function detectRectangleAroundDocument(
+  inputImage: ImageBitmap,
+  width: number,
+  height: number,
+  left: number
+): Promise<{ imageWithRectangle: ImageData, rect: { corners:  { x: number, y: number }[]} }> {
+  return new Promise((resolve) => {
+    resolve(_detectRectangleAroundDocument(
+      inputImage,
+      width,
+      height,
+      left
+    ));
+  });
+}
+
+function _detectRectangleAroundDocument(
+  inputImage: ImageBitmap,
+  width: number,
+  height: number,
+  left: number
+): { imageWithRectangle: ImageData, rect: { corners:  { x: number, y: number }[]} } {
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext("2d");
-  console.log("left", left);
   ctx.drawImage(inputImage, left, 0, inputImage.width, inputImage.height);
   const imageData = ctx.getImageData(
     0,
@@ -121,8 +143,6 @@ function detectRectangleAroundDocument(
       let approx = new cv.Mat();
       cv.approxPolyDP(biggestContour, approx, .05 * perimeter, true);
 
-      console.log(approx);
-
       if (approx.rows === 4) {
         rectForMessage = {
           corners: [
@@ -132,10 +152,9 @@ function detectRectangleAroundDocument(
             {x: approx.data32S[6], y: approx.data32S[7]}
           ]
         };
-
-        console.log(rectForMessage);
       } else {
         let rect = detectRotatedRectAroundContour(biggestContour);
+        // TODO: check if this is needed
         let vertices = cv.RotatedRect.points(rect);
 
         const corners = [];
@@ -146,21 +165,18 @@ function detectRectangleAroundDocument(
           cv.line(original, firstPoint, vertices[(i + 1) % 4], [88, 81, 255, 255], 2, cv.LINE_AA, 0);
         }
 
-        rectForMessage = { corners, size: rect.size };
-        console.log("rect", rectForMessage);
+        rectForMessage = { corners };
       }
-
-
     }
 
-    const processedImage = imageDataFromMat(original);
-    postMessage({ msg, img: processedImage, rect: rectForMessage }, null,null);
+    const imageWithRectangle = imageDataFromMat(original);
 
     // this is important, otherwise we run into errors after a while ... the whole worker crashes
     dst.delete();
     src.delete();
     original.delete();
 
+    return { imageWithRectangle, rect: rectForMessage };
 }
 
 function max(points, calcPrev, calcCurrent) {
@@ -175,17 +191,33 @@ function min(points, calcPrev, calcCurrent) {
   });
 }
 
-
 // points have an x and y value from 0 to 1
 // indicating the relative position
-function cropAndWarpByPoints(
-  msg,
-  inputImage,
-  rect,
-  width,
-  height,
-  ratio
-) {
+export function cropAndWarpByPoints(
+  inputImage: Uint8ClampedArray,
+  rect: { corners: { x: number, y: number }[] },
+  width: number,
+  height: number,
+  ratio: number
+): Promise<ImageData> {
+  return new Promise((resolve) => {
+    resolve(_cropAndWarpByPoints(
+      inputImage,
+      rect,
+      width,
+      height,
+      ratio
+    ));
+  });
+}
+
+function _cropAndWarpByPoints(
+  inputImage: Uint8ClampedArray,
+  rect: { corners: { x: number, y: number }[] },
+  width: number,
+  height: number,
+  ratio: number
+): ImageData {
   const cropSourceImage = new cv.Mat(height, width, cv.CV_8UC4);
   cropSourceImage.data.set(inputImage);
 
@@ -200,7 +232,6 @@ function cropAndWarpByPoints(
     x: point.x * ratio,
     y: point.y * ratio
   }));
-  console.log(ratio, cropSourcePoints);
 
   const [tl, tr, br, bl] = cropSourcePoints;
 
@@ -237,57 +268,16 @@ function cropAndWarpByPoints(
     cv.rotate(dst, dst, cv.ROTATE_90_CLOCKWISE)
   }
 
-  postMessage({ msg, img: imageDataFromMat(dst) }, null);
+  const imageData = imageDataFromMat(dst);
 
   cropSourceImage.delete();
   dst.delete();
+
+  return imageData;
 }
 
-onmessage = function (e) {
-  switch (e.data.msg) {
-    case 'load': {
-      // @ts-ignore
-      self.importScripts('./opencv.js')
-      waitForOpencv(function (success) {
-        if (success) postMessage({ msg: e.data.msg }, null)
-        else throw new Error('Error on loading OpenCV')
-      })
-      break
-    }
-    case 'detect-rectangle-around-document': {
-      const { msg, payload: { inputImage, width, height, left } } = e.data;
-      detectRectangleAroundDocument(
-        msg,
-        inputImage,
-        width,
-        height,
-        left
-      );
-      break;
-    }
-    case 'crop-and-warp-by-points': {
-      const {
-        msg,
-        payload: {
-          inputImage,
-          rect,
-          width,
-          height,
-          ratio
-        }
-      } = e.data;
-
-      cropAndWarpByPoints(
-        msg,
-        inputImage,
-        rect,
-        width,
-        height,
-        ratio
-      );
-      break;
-    }
-    default:
-      break
-  }
+export async function load() {
+  // @ts-ignore
+  self.importScripts('../lib/opencv.js');
+  await waitForOpencv();
 }

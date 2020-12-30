@@ -20,10 +20,6 @@ export const config: Config = {
           dest: 'lib/reflect.js'
         },
         {
-          src: '../src/global/opencv/opencv.worker.js',
-          dest: 'lib/opencv.worker.js'
-        },
-        {
           src: '../src/global/opencv/opencv.js',
           dest: 'lib/opencv.js'
         }

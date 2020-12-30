@@ -24,7 +24,6 @@ export class AppHome {
     this.openCvService.load();
   }
 
-
   async detectEdgesAndDraw() {
     const originalBlob = this.photoInput.files[0];
     const originalBitmap = await createImageBitmap(originalBlob);
@@ -36,14 +35,14 @@ export class AppHome {
     const scaledHeight = originalBitmap.height / scaleRatio;
     const scaledBitmap = await this.scaleBitmap(scaledWidth, scaledHeight, originalBitmap);
 
-    const detectedRectangle = await this.openCvService.edgeDetect(scaledBitmap, scaledBitmap.width, scaledBitmap.height, 0);
+    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(scaledBitmap, scaledBitmap.width, scaledBitmap.height, 0);
     const cropped = await this.openCvService.cropAndWarpByPoints(originalImageData.data, detectedRectangle.rect, originalBitmap.width, originalBitmap.height, scaleRatio);
 
     const ctx = this.outCanvas.getContext("2d");
-    this.outCanvas.width = cropped.imgData.width;
-    this.outCanvas.height = cropped.imgData.height;
+    this.outCanvas.width = detectedRectangle.imageWithRectangle.width;
+    this.outCanvas.height = detectedRectangle.imageWithRectangle.height;
 
-    ctx.putImageData(cropped.imgData, 0, 0, 0, 0, cropped.imgData.width, cropped.imgData.height);
+    ctx.putImageData(detectedRectangle.imageWithRectangle, 0, 0, 0, 0, detectedRectangle.imageWithRectangle.width, detectedRectangle.imageWithRectangle.height);
 
     this.img.src = this.outCanvas.toDataURL();
 
