@@ -12,6 +12,8 @@ export namespace Components {
     interface AppProfile {
         "match": MatchResults;
     }
+    interface AppQr {
+    }
     interface AppRoot {
     }
 }
@@ -28,6 +30,12 @@ declare global {
         prototype: HTMLAppProfileElement;
         new (): HTMLAppProfileElement;
     };
+    interface HTMLAppQrElement extends Components.AppQr, HTMLStencilElement {
+    }
+    var HTMLAppQrElement: {
+        prototype: HTMLAppQrElement;
+        new (): HTMLAppQrElement;
+    };
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
     }
     var HTMLAppRootElement: {
@@ -37,6 +45,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "app-home": HTMLAppHomeElement;
         "app-profile": HTMLAppProfileElement;
+        "app-qr": HTMLAppQrElement;
         "app-root": HTMLAppRootElement;
     }
 }
@@ -46,11 +55,14 @@ declare namespace LocalJSX {
     interface AppProfile {
         "match"?: MatchResults;
     }
+    interface AppQr {
+    }
     interface AppRoot {
     }
     interface IntrinsicElements {
         "app-home": AppHome;
         "app-profile": AppProfile;
+        "app-qr": AppQr;
         "app-root": AppRoot;
     }
 }
@@ -60,6 +72,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
+            "app-qr": LocalJSX.AppQr & JSXBase.HTMLAttributes<HTMLAppQrElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
         }
     }
