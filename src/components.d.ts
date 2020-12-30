@@ -7,6 +7,8 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { MatchResults } from "@stencil/router";
 export namespace Components {
+    interface AppCrop {
+    }
     interface AppHome {
     }
     interface AppProfile {
@@ -18,6 +20,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLAppCropElement extends Components.AppCrop, HTMLStencilElement {
+    }
+    var HTMLAppCropElement: {
+        prototype: HTMLAppCropElement;
+        new (): HTMLAppCropElement;
+    };
     interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
     }
     var HTMLAppHomeElement: {
@@ -43,6 +51,7 @@ declare global {
         new (): HTMLAppRootElement;
     };
     interface HTMLElementTagNameMap {
+        "app-crop": HTMLAppCropElement;
         "app-home": HTMLAppHomeElement;
         "app-profile": HTMLAppProfileElement;
         "app-qr": HTMLAppQrElement;
@@ -50,6 +59,8 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface AppCrop {
+    }
     interface AppHome {
     }
     interface AppProfile {
@@ -60,6 +71,7 @@ declare namespace LocalJSX {
     interface AppRoot {
     }
     interface IntrinsicElements {
+        "app-crop": AppCrop;
         "app-home": AppHome;
         "app-profile": AppProfile;
         "app-qr": AppQr;
@@ -70,6 +82,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-qr": LocalJSX.AppQr & JSXBase.HTMLAttributes<HTMLAppQrElement>;
