@@ -79,11 +79,13 @@ export class AppHome {
 
   render() {
     return (
-      <div>
-        <div class="button button--bottom-fixed button--transparent" onClick={() => this.photoInput.click()}>Take photo</div>
+      <div class="background">
+        <div class="button button--bottom-fixed" onClick={() => this.photoInput.click()}>Take photo</div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.detectEdgesAndDraw()} ref={(el) => this.photoInput = el} />
         <canvas style={({ display: "none" })} ref={(el) => this.outCanvas = el} />
-        <img class="outimage" ref={(el) => this.img = el}/>
+        <div class="outimage outimage--center">
+          <img class="outimage__image" ref={(el) => this.img = el}/>
+        </div>
       </div>
     );
   }

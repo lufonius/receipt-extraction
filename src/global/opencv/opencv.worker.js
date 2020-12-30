@@ -52,6 +52,7 @@ function detectEdges(src, dst) {
   cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
   cv.GaussianBlur(dst, dst, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
   cv.Canny(dst, dst, 75, 200);
+  cv.Laplacian(dst, dst, cv.CV_8U, 1, 1, 0, cv.BORDER_DEFAULT);
   cv.threshold(dst, dst, 120, 200, cv.THRESH_BINARY);
 }
 
@@ -110,23 +111,46 @@ function detectRectangleAroundDocument(
 
     detectEdges(src, dst);
     makePixelsFatter(dst);
-    let biggestCountour = detectBiggestContour(dst);
+    let biggestContour = detectBiggestContour(dst);
     // sometimes there was no contour detected
     // TODO: check why, this is a workaround
     let rectForMessage = null;
-    if (!!biggestCountour) {
-      let rect = detectRotatedRectAroundContour(biggestCountour);
-      let vertices = cv.RotatedRect.points(rect);
+    if (!!biggestContour) {
 
-      const corners = [];
-      for (let i = 0; i < 4; i++) {
-        const firstPoint = vertices[i];
-        corners.push(firstPoint);
+      const perimeter = cv.arcLength(biggestContour, true);
+      let approx = new cv.Mat();
+      cv.approxPolyDP(biggestContour, approx, .05 * perimeter, true);
 
-        cv.line(original, firstPoint, vertices[(i + 1) % 4], [88, 81, 255, 255], 2, cv.LINE_AA, 0);
+      console.log(approx);
+
+      if (approx.rows === 4) {
+        rectForMessage = {
+          corners: [
+            {x: approx.data32S[0], y: approx.data32S[1]},
+            {x: approx.data32S[2], y: approx.data32S[3]},
+            {x: approx.data32S[4], y: approx.data32S[5]},
+            {x: approx.data32S[6], y: approx.data32S[7]}
+          ]
+        };
+
+        console.log(rectForMessage);
+      } else {
+        let rect = detectRotatedRectAroundContour(biggestContour);
+        let vertices = cv.RotatedRect.points(rect);
+
+        const corners = [];
+        for (let i = 0; i < 4; i++) {
+          const firstPoint = vertices[i];
+          corners.push(firstPoint);
+
+          cv.line(original, firstPoint, vertices[(i + 1) % 4], [88, 81, 255, 255], 2, cv.LINE_AA, 0);
+        }
+
+        rectForMessage = { corners, size: rect.size };
+        console.log("rect", rectForMessage);
       }
 
-      rectForMessage = { corners, size: rect.size };
+
     }
 
     const processedImage = imageDataFromMat(original);
