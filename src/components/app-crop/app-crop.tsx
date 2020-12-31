@@ -27,21 +27,25 @@ export class AppCrop {
     const originalBlob = this.photoInput.files[0];
     const originalBitmap = await createImageBitmap(originalBlob);
 
-    const originalImageData = this.imageDataFromBitmap(originalBitmap);
+    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(originalBitmap, originalBitmap.width, originalBitmap.height, 0);
 
-    const scaledWidth = 600;
-    const scaleRatio = originalBitmap.width / scaledWidth;
-    const scaledHeight = originalBitmap.height / scaleRatio;
-    const scaledBitmap = await this.scaleBitmap(scaledWidth, scaledHeight, originalBitmap);
-
-    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(scaledBitmap, scaledBitmap.width, scaledBitmap.height, 0);
-    const cropped = await this.openCvService.cropAndWarpByPoints(originalImageData.data, detectedRectangle.rect, originalBitmap.width, originalBitmap.height, scaleRatio);
+    console.log(detectedRectangle);
 
     const ctx = this.outCanvas.getContext("2d");
-    this.outCanvas.width = detectedRectangle.imageWithRectangle.width;
-    this.outCanvas.height = detectedRectangle.imageWithRectangle.height;
 
-    ctx.putImageData(detectedRectangle.imageWithRectangle, 0, 0, 0, 0, detectedRectangle.imageWithRectangle.width, detectedRectangle.imageWithRectangle.height);
+    const originalImageData = this.imageDataFromBitmap(originalBitmap);
+    this.outCanvas.width = originalImageData.width;
+    this.outCanvas.height = originalImageData.height;
+
+    ctx.putImageData(
+      originalImageData,
+      0,
+      0,
+      0,
+      0,
+      originalImageData.width,
+      originalImageData.height
+    );
 
     this.img.src = this.outCanvas.toDataURL();
 
@@ -55,15 +59,6 @@ export class AppCrop {
 
     const original = originalCanvasCtx.getImageData(0, 0, bitmap.width, bitmap.height);
     return original;
-  }
-
-  private async scaleBitmap(scaledWidth: number, scaledHeight: number, bitmap: ImageBitmap) {
-    const fakeCanvas = new OffscreenCanvas(scaledWidth, scaledHeight);
-    const fakeContext2D = fakeCanvas.getContext("2d");
-    fakeContext2D.drawImage(bitmap, 0, 0, scaledWidth, scaledHeight);
-    const imageData: ImageData = fakeContext2D.getImageData(0, 0, scaledWidth, scaledHeight);
-    const scaledBitmap = await createImageBitmap(imageData);
-    return scaledBitmap;
   }
 
   downloadURI(uri, name) {

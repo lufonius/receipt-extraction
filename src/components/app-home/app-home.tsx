@@ -13,7 +13,10 @@ import {OpenCvService} from "../../global/opencv/opencv.service";
 export class AppHome {
   render() {
     return (
-      <div></div>
+      <div>
+        <stencil-route-link url="/">Home</stencil-route-link>
+        <stencil-route-link url="/crop">Crop image</stencil-route-link>
+      </div>
     );
   }
 }

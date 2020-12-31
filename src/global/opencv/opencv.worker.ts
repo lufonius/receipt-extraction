@@ -93,31 +93,23 @@ function detectRotatedRectAroundContour(contour) {
   return cv.minAreaRect(contour);
 }
 
-export function detectRectangleAroundDocument(
+export async function detectRectangleAroundDocument(
   inputImage: ImageBitmap,
   width: number,
   height: number,
   left: number
 ): Promise<{ imageWithRectangle: ImageData, rect: { corners:  { x: number, y: number }[]} }> {
-  return new Promise((resolve) => {
-    resolve(_detectRectangleAroundDocument(
-      inputImage,
-      width,
-      height,
-      left
-    ));
-  });
-}
-
-function _detectRectangleAroundDocument(
-  inputImage: ImageBitmap,
-  width: number,
-  height: number,
-  left: number
-): { imageWithRectangle: ImageData, rect: { corners:  { x: number, y: number }[]} } {
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(inputImage, left, 0, inputImage.width, inputImage.height);
+
+  // scaling the image down gets rid of details
+  // we use this to detect the most relevant edges
+  const scaledWidth = 600;
+  const scaleRatio = inputImage.width / scaledWidth;
+  const scaledHeight = inputImage.height / scaleRatio;
+  const scaledBitmap = await scaleBitmap(scaledWidth, scaledHeight, inputImage);
+
+  ctx.drawImage(scaledBitmap, left, 0, scaledBitmap.width, scaledBitmap.height);
   const imageData = ctx.getImageData(
     0,
     0,
@@ -135,7 +127,7 @@ function _detectRectangleAroundDocument(
     makePixelsFatter(dst);
     let biggestContour = detectBiggestContour(dst);
     // sometimes there was no contour detected
-    // TODO: check why, this is a workaround
+    // TODO: check why this is a workaround
     let rectForMessage = null;
     if (!!biggestContour) {
 
@@ -154,19 +146,14 @@ function _detectRectangleAroundDocument(
         };
       } else {
         let rect = detectRotatedRectAroundContour(biggestContour);
-        // TODO: check if this is needed
         let vertices = cv.RotatedRect.points(rect);
-
-        const corners = [];
-        for (let i = 0; i < 4; i++) {
-          const firstPoint = vertices[i];
-          corners.push(firstPoint);
-
-          cv.line(original, firstPoint, vertices[(i + 1) % 4], [88, 81, 255, 255], 2, cv.LINE_AA, 0);
-        }
-
-        rectForMessage = { corners };
+        rectForMessage = { corners: vertices };
       }
+
+      rectForMessage.corners =
+        rectForMessage
+          .corners
+          .map((point) => ({ x: point.x * scaleRatio, y: point.y * scaleRatio }));
     }
 
     const imageWithRectangle = imageDataFromMat(original);
@@ -177,6 +164,15 @@ function _detectRectangleAroundDocument(
     original.delete();
 
     return { imageWithRectangle, rect: rectForMessage };
+}
+
+async function scaleBitmap(scaledWidth: number, scaledHeight: number, bitmap: ImageBitmap) {
+  const fakeCanvas = new OffscreenCanvas(scaledWidth, scaledHeight);
+  const fakeContext2D = fakeCanvas.getContext("2d");
+  fakeContext2D.drawImage(bitmap, 0, 0, scaledWidth, scaledHeight);
+  const imageData: ImageData = fakeContext2D.getImageData(0, 0, scaledWidth, scaledHeight);
+  const scaledBitmap = await createImageBitmap(imageData);
+  return scaledBitmap;
 }
 
 function max(points, calcPrev, calcCurrent) {
