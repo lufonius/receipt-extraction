@@ -63,6 +63,7 @@ export declare class OpenCv {
   LINE_AA: MatType;
   ROTATE_90_CLOCKWISE: MatType;
   INTER_LINEAR: MatType;
+  INTER_AREA: MatType;
 
   Mat: Mat;
   MatVector: MatVector;
@@ -97,6 +98,8 @@ export declare class OpenCv {
   approxPolyDP(curve, approxCurve, epsilon, closed);
 
   cvtColor(src: Mat, dst: Mat, mode);
+
+  resize(src: Mat, dst: Mat, dsize: Size, fx: number, fy: number, interpolation: MatType);
 
   getPerspectiveTransform(src: Mat, dst: Mat);
 

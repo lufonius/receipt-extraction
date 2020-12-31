@@ -2,7 +2,8 @@ import { Injectable } from "../di/injectable";
 import {
   load as _load,
   detectRectangleAroundDocument as _detectRectangleAroundDocument,
-  cropAndWarpByPoints as _cropAndWarpByPoints
+  cropAndWarpByPoints as _cropAndWarpByPoints,
+  rotate90DegClockwise as _rotate90DegClockwise
 } from './opencv.worker';
 
 export interface RotatedRect { corners: Array<{ x: number, y: number }> };
@@ -14,12 +15,12 @@ export class OpenCvService {
   }
 
   async detectRectangleAroundDocument(
-    imageBitmap: ImageBitmap,
+    image: ImageData,
     width: number,
     height: number,
     left: number
   ): Promise<{ imageWithRectangle: ImageData, rect: RotatedRect }> {
-    return _detectRectangleAroundDocument(imageBitmap, width, height, left);
+    return _detectRectangleAroundDocument(image, width, height, left);
   }
 
   async cropAndWarpByPoints(
@@ -30,5 +31,11 @@ export class OpenCvService {
     ratio: number
   ): Promise<ImageData> {
     return _cropAndWarpByPoints(inputImage, rect, width, height, ratio);
+  }
+
+  async rotate90DegClockwise(
+    inputImage: ImageData
+  ): Promise<ImageData> {
+    return _rotate90DegClockwise(inputImage);
   }
 }

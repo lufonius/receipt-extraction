@@ -60,7 +60,7 @@ function detectEdges(src: Mat, dst: Mat) {
   cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
   cv.GaussianBlur(dst, dst, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
   cv.Canny(dst, dst, 75, 200);
-  cv.Laplacian(dst, dst, cv.CV_8U, 1, 1, 0, cv.BORDER_DEFAULT);
+  //cv.Laplacian(dst, dst, cv.CV_8U, 1, 1, 0, cv.BORDER_DEFAULT);
   cv.threshold(dst, dst, 120, 200, cv.THRESH_BINARY);
 }
 
@@ -94,85 +94,65 @@ function detectRotatedRectAroundContour(contour) {
 }
 
 export async function detectRectangleAroundDocument(
-  inputImage: ImageBitmap,
+  inputImage: ImageData,
   width: number,
   height: number,
   left: number
 ): Promise<{ imageWithRectangle: ImageData, rect: { corners:  { x: number, y: number }[]} }> {
-  const canvas = new OffscreenCanvas(width, height);
-  const ctx = canvas.getContext("2d");
+  const original = createMatFromImageData(inputImage);
 
   // scaling the image down gets rid of details
   // we use this to detect the most relevant edges
+  // another benefit is that it makes the processing much faster!
+  // the width of 600 is just artifical and was determined by experimenting
   const scaledWidth = 600;
   const scaleRatio = inputImage.width / scaledWidth;
   const scaledHeight = inputImage.height / scaleRatio;
-  const scaledBitmap = await scaleBitmap(scaledWidth, scaledHeight, inputImage);
+  const dst = new cv.Mat();
+  const src = createMatFromImageData(inputImage);
+  cv.resize(src, dst, new cv.Size(scaledWidth, scaledHeight), 0, 0, cv.INTER_AREA);
 
-  ctx.drawImage(scaledBitmap, left, 0, scaledBitmap.width, scaledBitmap.height);
-  const imageData = ctx.getImageData(
-    0,
-    0,
-    width,
-    height
-  ).data;
+  detectEdges(dst, dst);
+  makePixelsFatter(dst);
+  let biggestContour = detectBiggestContour(dst);
+  // sometimes there was no contour detected
+  // TODO: check why this is a workaround
+  let rectForMessage = null;
+  if (!!biggestContour) {
 
-    const src = new cv.Mat(height, width, cv.CV_8UC4);
-    const original = new cv.Mat(height, width, cv.CV_8UC4);
-    const dst = new cv.Mat(height, width, cv.CV_8UC1);
-    src.data.set(imageData);
-    original.data.set(imageData);
+    const perimeter = cv.arcLength(biggestContour, true);
+    let approx = new cv.Mat();
+    cv.approxPolyDP(biggestContour, approx, .05 * perimeter, true);
 
-    detectEdges(src, dst);
-    makePixelsFatter(dst);
-    let biggestContour = detectBiggestContour(dst);
-    // sometimes there was no contour detected
-    // TODO: check why this is a workaround
-    let rectForMessage = null;
-    if (!!biggestContour) {
-
-      const perimeter = cv.arcLength(biggestContour, true);
-      let approx = new cv.Mat();
-      cv.approxPolyDP(biggestContour, approx, .05 * perimeter, true);
-
-      if (approx.rows === 4) {
-        rectForMessage = {
-          corners: [
-            {x: approx.data32S[0], y: approx.data32S[1]},
-            {x: approx.data32S[2], y: approx.data32S[3]},
-            {x: approx.data32S[4], y: approx.data32S[5]},
-            {x: approx.data32S[6], y: approx.data32S[7]}
-          ]
-        };
-      } else {
-        let rect = detectRotatedRectAroundContour(biggestContour);
-        let vertices = cv.RotatedRect.points(rect);
-        rectForMessage = { corners: vertices };
-      }
-
-      rectForMessage.corners =
-        rectForMessage
-          .corners
-          .map((point) => ({ x: point.x * scaleRatio, y: point.y * scaleRatio }));
+    if (approx.rows === 4) {
+      rectForMessage = {
+        corners: [
+          {x: approx.data32S[0], y: approx.data32S[1]},
+          {x: approx.data32S[2], y: approx.data32S[3]},
+          {x: approx.data32S[4], y: approx.data32S[5]},
+          {x: approx.data32S[6], y: approx.data32S[7]}
+        ]
+      };
+    } else {
+      let rect = detectRotatedRectAroundContour(biggestContour);
+      let vertices = cv.RotatedRect.points(rect);
+      rectForMessage = { corners: vertices };
     }
 
-    const imageWithRectangle = imageDataFromMat(original);
+    rectForMessage.corners =
+      rectForMessage
+        .corners
+        .map((point) => ({ x: point.x * scaleRatio, y: point.y * scaleRatio }));
+  }
 
-    // this is important, otherwise we run into errors after a while ... the whole worker crashes
-    dst.delete();
-    src.delete();
-    original.delete();
+  const imageWithRectangle = imageDataFromMat(original);
 
-    return { imageWithRectangle, rect: rectForMessage };
-}
+  // this is important, otherwise we run into errors after a while ... the whole worker crashes
+  dst.delete();
+  src.delete();
+  original.delete();
 
-async function scaleBitmap(scaledWidth: number, scaledHeight: number, bitmap: ImageBitmap) {
-  const fakeCanvas = new OffscreenCanvas(scaledWidth, scaledHeight);
-  const fakeContext2D = fakeCanvas.getContext("2d");
-  fakeContext2D.drawImage(bitmap, 0, 0, scaledWidth, scaledHeight);
-  const imageData: ImageData = fakeContext2D.getImageData(0, 0, scaledWidth, scaledHeight);
-  const scaledBitmap = await createImageBitmap(imageData);
-  return scaledBitmap;
+  return { imageWithRectangle, rect: rectForMessage };
 }
 
 function max(points, calcPrev, calcCurrent) {
@@ -270,6 +250,28 @@ function _cropAndWarpByPoints(
   dst.delete();
 
   return imageData;
+}
+
+export async function rotate90DegClockwise(image: ImageData): Promise<ImageData> {
+  return new Promise((resolve) => {
+    const src = createMatFromImageData(image);
+    const dst = new cv.Mat();
+
+    cv.rotate(src, dst, cv.ROTATE_90_CLOCKWISE);
+
+    const rotatedImage = imageDataFromMat(dst);
+    dst.delete();
+    src.delete();
+
+    resolve(rotatedImage);
+  });
+}
+
+function createMatFromImageData(src: ImageData): Mat {
+  const dst = new cv.Mat(src.height, src.width, cv.CV_8UC4);
+  dst.data.set(src.data);
+
+  return dst;
 }
 
 export async function load() {
