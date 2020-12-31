@@ -13,6 +13,7 @@
   letter-spacing: 0.04em;
   transition: all 0.15s ease;
   cursor: pointer;
+  flex-grow: 1;
 }
 
 button:hover {
@@ -29,6 +30,10 @@ button:hover {
 
 .canvas {
   width: 100%;
+}
+
+.controls {
+  display: flex;
 }
 
 .background {

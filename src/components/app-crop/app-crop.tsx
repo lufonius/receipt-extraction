@@ -3,6 +3,7 @@ import {EntityStore} from "../../entity-store.service";
 import {Inject} from "../../global/di/inject";
 import {OpenCvService} from "../../global/opencv/opencv.service";
 import Konva from 'konva';
+import {DragableRectangle} from "./dragable-rectangle";
 
 enum Orientation {
   Landscape,
@@ -29,6 +30,9 @@ export class AppCrop {
 
   stage: Konva.Stage;
   image: Konva.Image;
+  rectangle: DragableRectangle;
+
+  imageData: ImageData;
 
   imageMarginXY: { x: number, y: number };
   imageScaleRatio: number;
@@ -42,8 +46,8 @@ export class AppCrop {
   }
 
   setupCanvas() {
-    this.canvasWidth = screen.width;
-    this.canvasHeight = screen.height - this.controlsHeight;
+    this.canvasWidth = innerWidth;
+    this.canvasHeight = innerHeight - this.controlsHeight;
     this.canvasOrientation = this.determineOrientation(this.canvasWidth, this.canvasHeight);
     this.canvasAspectRatio = this.calculateAspectRatio(this.canvasWidth, this.canvasHeight);
 
@@ -76,37 +80,37 @@ export class AppCrop {
     this.stage.draw();
     const imageBlob = this.photoInput.files[0];
     const imageBitmap = await createImageBitmap(imageBlob);
-    let imageData = this.convertBitmapToImageData(imageBitmap);
+    this.imageData = this.convertBitmapToImageData(imageBitmap);
 
-    let imageOrientation = this.determineOrientation(imageData.width, imageData.height);
+    let imageOrientation = this.determineOrientation(this.imageData.width, this.imageData.height);
 
     if (imageOrientation !== this.canvasOrientation) {
-      imageData = await this.openCvService.rotate90DegClockwise(imageData);
+      this.imageData = await this.openCvService.rotate90DegClockwise(this.imageData);
     }
 
-    let imageAspectRatio = this.calculateAspectRatio(imageData.width, imageData.height);
+    let imageAspectRatio = this.calculateAspectRatio(this.imageData.width, this.imageData.height);
 
     // we need this step to ensure that the image is shown in full size without overlap
     if (imageAspectRatio < this.canvasAspectRatio) {
       // we set the scale ratio so that the width will be exactly as big as the width of the canvas.
       // (we want the width to be 100%)
-      this.imageScaleRatio = this.canvasWidth / imageData.width;
-      const scaledHeight = imageData.height * this.imageScaleRatio;
+      this.imageScaleRatio = this.canvasWidth / this.imageData.width;
+      const scaledHeight = this.imageData.height * this.imageScaleRatio;
       this.imageMarginXY = { x: 0, y: (this.canvasHeight - scaledHeight) / 2 };
     } else {
       // we set the scale ratio so that the height will be exactly as big as the height of the canvas.
       // (we want the height to be 100%)
-      this.imageScaleRatio = this.canvasHeight / imageData.height;
-      const scaledWidth = imageData.width * this.imageScaleRatio;
+      this.imageScaleRatio = this.canvasHeight / this.imageData.height;
+      const scaledWidth = this.imageData.width * this.imageScaleRatio;
       this.imageMarginXY = { x: (this.canvasWidth - scaledWidth) / 2, y: 0 };
     }
 
     // scale here so that image is always shown full size
-    const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+    const canvas = new OffscreenCanvas(this.imageData.width, this.imageData.height);
     const ctx = canvas.getContext("2d");
-    ctx.putImageData(imageData, 0, 0, 0, 0, imageData.width, imageData.height);
+    ctx.putImageData(this.imageData, 0, 0, 0, 0, this.imageData.width, this.imageData.height);
 
-    const smallCanvas = new OffscreenCanvas(imageData.width * this.imageScaleRatio, imageData.height * this.imageScaleRatio);
+    const smallCanvas = new OffscreenCanvas(this.imageData.width * this.imageScaleRatio, this.imageData.height * this.imageScaleRatio);
     const smallCtx = smallCanvas.getContext("2d");
     smallCtx.scale(this.imageScaleRatio, this.imageScaleRatio);
     smallCtx.drawImage(canvas, 0, 0);
@@ -120,30 +124,44 @@ export class AppCrop {
     const imageLayer = new Konva.Layer();
     imageLayer.add(this.image);
 
-    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(imageData, imageData.width, imageData.height, 0);
+    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(this.imageData, this.imageData.width, this.imageData.height, 0);
 
     // we have to adjust the rectangle to the drawing on the canvas.
 
-    const canvasCorners = detectedRectangle.rect.corners.map((corner) => ({
+    const points = detectedRectangle.rect.corners.map((corner) => ({
       x: (corner.x * this.imageScaleRatio) + this.imageMarginXY.x,
       y: (corner.y * this.imageScaleRatio) + this.imageMarginXY.y
     }));
 
-    const cornerLayer = new Konva.Layer();
-    for (const { x, y } of canvasCorners) {
-      const cornerEllipse = new Konva.Ellipse({
-        radiusX: 5,
-        radiusY: 5,
-        x,
-        y,
-        fill: "red"
-      })
-      cornerLayer.add(cornerEllipse);
-    }
-
     this.stage.add(imageLayer);
-    this.stage.add(cornerLayer);
+    this.rectangle = new DragableRectangle(this.stage, points);
+
     this.stage.draw();
+  }
+
+  private outCanvas: HTMLCanvasElement;
+  async crop() {
+    const rectangle = this.rectangle.getRectangle().map((point) => {
+      return {
+        x: (point.x - this.imageMarginXY.x) / this.imageScaleRatio,
+        y: (point.y - this.imageMarginXY.y) / this.imageScaleRatio
+      };
+    });
+
+    const cropped = await this.openCvService.cropAndWarpByPoints(this.imageData.data, { corners: rectangle }, this.imageData.width, this.imageData.height, 1);
+    this.outCanvas.width = cropped.width;
+    this.outCanvas.height = cropped.height;
+    this.outCanvas.getContext("2d").putImageData(cropped, 0, 0);
+    this.downloadURI(this.outCanvas.toDataURL(), "cropped");
+  }
+
+  downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   private convertBitmapToImageData(bitmap: ImageBitmap): ImageData {
@@ -159,11 +177,15 @@ export class AppCrop {
       <div class="background">
         <div
           class="canvas"
-          style={({ height: `${screen.height - this.controlsHeight}px` })}
+          style={({ height: `${innerHeight - this.controlsHeight}px` })}
           ref={(el) => this.canvas = el}
         ></div>
-        <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.photoInput.click()}>Take photo</div>
+        <div class="controls">
+          <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.photoInput.click()}>Take photo</div>
+          <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.crop()}>Crop</div>
+        </div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.detectEdgesAndDraw()} ref={(el) => this.photoInput = el} />
+        <canvas style={({ display: "none" })}  ref={(el) => this.outCanvas = el}></canvas>
       </div>
     );
   }
