@@ -1,9 +1,10 @@
-import {Component, h} from '@stencil/core';
+import {Component, h, State} from '@stencil/core';
 import {EntityStore} from "../../entity-store.service";
 import {Inject} from "../../global/di/inject";
 import {OpenCvService} from "../../global/opencv/opencv.service";
 import Konva from 'konva';
 import {DragableRectangle} from "./dragable-rectangle";
+import flyd from 'flyd';
 
 enum Orientation {
   Landscape,
@@ -22,6 +23,7 @@ export class AppCrop {
 
   photoInput: HTMLInputElement;
   controlsHeight: number = 50;
+  magnifiedCanvas: HTMLDivElement;
   canvas: HTMLDivElement;
   canvasWidth: number;
   canvasHeight: number;
@@ -29,6 +31,7 @@ export class AppCrop {
   canvasAspectRatio: number;
 
   stage: Konva.Stage;
+  magnifiedStage: Konva.Stage;
   image: Konva.Image;
   rectangle: DragableRectangle;
 
@@ -37,12 +40,23 @@ export class AppCrop {
   imageMarginXY: { x: number, y: number };
   imageScaleRatio: number;
 
+  @State() controlsShown: boolean = true;
+
   componentWillLoad() {
     this.openCvService.load();
   }
 
   componentDidLoad() {
     this.setupCanvas();
+    this.setupMagnifiedCanvas();
+  }
+
+  setupMagnifiedCanvas() {
+    this.magnifiedStage = new Konva.Stage({
+      container: this.magnifiedCanvas,
+      width: innerWidth,
+      height: this.controlsHeight
+    });
   }
 
   setupCanvas() {
@@ -118,7 +132,8 @@ export class AppCrop {
     this.image = new Konva.Image({
       image: smallCanvas,
       x: this.imageMarginXY.x,
-      y: this.imageMarginXY.y
+      y: this.imageMarginXY.y,
+      id: "image"
     });
 
     const imageLayer = new Konva.Layer();
@@ -134,7 +149,12 @@ export class AppCrop {
     }));
 
     this.stage.add(imageLayer);
-    this.rectangle = new DragableRectangle(this.stage, points);
+    this.rectangle = new DragableRectangle(this.stage, this.magnifiedStage, points);
+
+    flyd.on(() => {
+      this.controlsShown = false;
+    }, this.rectangle.dragStart);
+    flyd.on(() => this.controlsShown = true, this.rectangle.dragEnd);
 
     this.stage.draw();
   }
@@ -179,8 +199,16 @@ export class AppCrop {
           class="canvas"
           style={({ height: `${innerHeight - this.controlsHeight}px` })}
           ref={(el) => this.canvas = el}
-        ></div>
-        <div class="controls">
+        />
+        <div
+          class="magnified-canvas"
+          style={({ height: `${this.controlsHeight}px`, display: this.controlsShown ? "none" : "block" })}
+          ref={(el) => this.magnifiedCanvas = el}
+        />
+        <div
+          style={({ display: !this.controlsShown ? "none" : "flex" })}
+          class="controls"
+        >
           <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.photoInput.click()}>Take photo</div>
           <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.crop()}>Crop</div>
         </div>
