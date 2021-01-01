@@ -25,6 +25,7 @@ export class AppCrop {
   controlsHeight: number = 50;
   magnifiedCanvas: HTMLDivElement;
   canvas: HTMLDivElement;
+  canvasMarginX: number = 10;
   canvasWidth: number;
   canvasHeight: number;
   canvasOrientation: Orientation;
@@ -60,7 +61,7 @@ export class AppCrop {
   }
 
   setupCanvas() {
-    this.canvasWidth = innerWidth;
+    this.canvasWidth = innerWidth - this.canvasMarginX * 2;
     this.canvasHeight = innerHeight - this.controlsHeight;
     this.canvasOrientation = this.determineOrientation(this.canvasWidth, this.canvasHeight);
     this.canvasAspectRatio = this.calculateAspectRatio(this.canvasWidth, this.canvasHeight);
@@ -197,7 +198,7 @@ export class AppCrop {
       <div class="background">
         <div
           class="canvas"
-          style={({ height: `${innerHeight - this.controlsHeight}px` })}
+          style={({ height: `${innerHeight - this.controlsHeight}px`, "margin-left": `${this.canvasMarginX}px`, })}
           ref={(el) => this.canvas = el}
         />
         <div
@@ -213,7 +214,7 @@ export class AppCrop {
           <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.crop()}>Crop</div>
         </div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.detectEdgesAndDraw()} ref={(el) => this.photoInput = el} />
-        <canvas style={({ display: "none" })}  ref={(el) => this.outCanvas = el}></canvas>
+        <canvas style={({ display: "none" })}  ref={(el) => this.outCanvas = el} />
       </div>
     );
   }
