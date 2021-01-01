@@ -1,24 +1,28 @@
 .button {
-  background: #5851ff;
+  background: var(--background-light);
   text-align: center;
-  color: white;
+  color: var(--foreground);
   border: none;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-size: var(--body-font-size);
+  text-transform: lowercase;
   padding: 16px 20px;
   border-radius: 2px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
   outline: 0;
   letter-spacing: 0.04em;
   transition: all 0.15s ease;
   cursor: pointer;
   flex-grow: 1;
-}
+  font-family: var(--heading-font-family);
+  font-weight: var(--font-weight-regular);
 
-button:hover {
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
-  transform: translateY(1px);
+  &--shadow {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  &--primary {
+    background: var(--primary);
+    font-weight: var(--font-weight-bold);
+  }
 }
 
 #output {

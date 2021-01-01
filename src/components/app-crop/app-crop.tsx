@@ -150,7 +150,9 @@ export class AppCrop {
     }));
 
     this.stage.add(imageLayer);
-    this.rectangle = new DragableRectangle(this.stage, this.magnifiedStage, points);
+    const primaryColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--primary');
+    this.rectangle = new DragableRectangle(this.stage, this.magnifiedStage, points, primaryColor);
 
     flyd.on(() => {
       this.controlsShown = false;
@@ -210,8 +212,20 @@ export class AppCrop {
           style={({ display: !this.controlsShown ? "none" : "flex" })}
           class="controls"
         >
-          <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.photoInput.click()}>Take photo</div>
-          <div style={({ height: `${this.controlsHeight}px` })} class="button" onClick={() => this.crop()}>Crop</div>
+          <div
+            style={({ height: `${this.controlsHeight}px` })}
+            class="button button--primary"
+            onClick={() => this.photoInput.click()}
+          >
+            Take photo
+          </div>
+          <div
+            style={({ height: `${this.controlsHeight}px` })}
+            class="button button--primary"
+            onClick={() => this.crop()}
+          >
+            Crop
+          </div>
         </div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.detectEdgesAndDraw()} ref={(el) => this.photoInput = el} />
         <canvas style={({ display: "none" })}  ref={(el) => this.outCanvas = el} />

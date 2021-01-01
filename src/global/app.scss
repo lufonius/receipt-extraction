@@ -13,3 +13,26 @@ body {
   padding: 0px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
+
+html {
+  font-size: 10px;
+}
+
+:root {
+  --heading-font-family: 'Montserrat', sans-serif;
+
+  --body-font-family: Arial, sans-serif;
+  --body-font-size: 1.6rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+
+  --primary: rgba(37, 101, 250, 255);
+
+  --background: rgba(40, 40, 40, 255);
+  --background-light: lighten(var(--background), 20);
+
+  --foreground: rgba(240, 240, 240, 255);
+}

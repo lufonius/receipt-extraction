@@ -21,19 +21,20 @@ export class DragableRectangle {
   constructor(
     private stage: Konva.Stage,
     private magnifiedStage: Konva.Stage,
-    private corners: { x: number, y: number }[]
+    private corners: { x: number, y: number }[],
+    private color: string
   ) {
     this.vertices = corners.map(({ x, y }) => {
-      return new Vertice(x, y);
+      return new Vertice(x, y, color);
     });
 
     const [vertice0, vertice1, vertice2, vertice3] = this.vertices;
 
     this.edges = [
-      new Edge(vertice0, vertice1),
-      new Edge(vertice1, vertice2),
-      new Edge(vertice2, vertice3),
-      new Edge(vertice3, vertice0)
+      new Edge(vertice0, vertice1, color),
+      new Edge(vertice1, vertice2, color),
+      new Edge(vertice2, vertice3, color),
+      new Edge(vertice3, vertice0, color)
     ];
 
     this.lineLayer.add(...this.edges.map(e => e.line));
@@ -114,14 +115,15 @@ class Edge {
 
   constructor(
     public vertice1: Vertice,
-    public vertice2: Vertice
+    public vertice2: Vertice,
+    private color: string
   ) {
     vertice1.edges.push(this);
     vertice2.edges.push(this);
 
     this.line = new Konva.Line({
       points: [vertice1.initialX, vertice1.initialY, vertice2.initialX, vertice2.initialY],
-      stroke: "#5851ff",
+      stroke: color,
       strokeWidth: 2,
       name: `${counter++}`
     });
@@ -146,12 +148,13 @@ class Vertice {
 
   constructor(
     public initialX: number,
-    public initialY: number
+    public initialY: number,
+    private color: string
   ) {
     this.ellipse = new Konva.Ellipse({
       x: initialX,
       y: initialY,
-      stroke: "#5851ff",
+      stroke: color,
       strokeWidth: 2,
       radiusX: 10,
       radiusY: 10,
