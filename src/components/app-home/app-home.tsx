@@ -14,8 +14,9 @@ export class AppHome {
   render() {
     return (
       <div>
-        <stencil-route-link url="/">Home</stencil-route-link>
-        <stencil-route-link url="/crop">Crop image</stencil-route-link>
+        <stencil-route-link url="/">Home</stencil-route-link><br />
+        <stencil-route-link url="/crop">Crop image</stencil-route-link><br />
+        <stencil-route-link url="/qr">Qr</stencil-route-link><br />
       </div>
     );
   }

@@ -6,22 +6,29 @@
   "scripts": {
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
+    "start:prod": "stencil build --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "start:proxy": "node dev-http-https-redirect.proxy.js"
   },
   "devDependencies": {
     "@stencil/core": "^2.0.0",
     "@stencil/router": "^1.0.1",
     "@stencil/sass": "^1.4.1",
     "@types/w3c-image-capture": "^1.0.2",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "http-proxy": "^1.18.1",
+    "workbox-build": "^4.3.1"
   },
   "license": "MIT",
   "dependencies": {
     "flyd": "^0.2.8",
     "immer": "^8.0.0",
     "konva": "^7.2.2",
-    "reflect-metadata": "^0.1.13"
+    "qr-scanner": "^1.2.0",
+    "qrcode": "^1.4.4",
+    "reflect-metadata": "^0.1.13",
+    "uuidv4": "^6.2.6"
   }
 }

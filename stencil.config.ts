@@ -12,7 +12,7 @@ export const config: Config = {
     {
       type: 'www',
       // comment the following line to disable service workers in production
-      serviceWorker: null,
+      serviceWorker: {},
       baseUrl: 'https://myapp.local/',
       copy: [
         {
@@ -20,8 +20,24 @@ export const config: Config = {
           dest: 'lib/reflect.js'
         },
         {
+          src: '../node_modules/qrcode/build/qrcode.min.js',
+          dest: 'lib/qrcode.min.js'
+        },
+        {
+          src: '../node_modules/qr-scanner/qr-scanner.umd.min.js',
+          dest: 'lib/qr-scanner.umd.min.js'
+        },
+        {
+          src: '../node_modules/qr-scanner/qr-scanner-worker.min.js',
+          dest: 'lib/qr-scanner-worker.min.js'
+        },
+        {
           src: '../src/global/opencv/opencv.js',
           dest: 'lib/opencv.js'
+        },
+        {
+          src: '../src/global/service-worker.js',
+          dest: 'service-worker.js'
         }
       ]
     },
@@ -31,7 +47,8 @@ export const config: Config = {
     https: {
       cert: readFileSync('cert.pem', 'utf8'),
       key: readFileSync('key.pem', 'utf8')
-    }
+    },
+    gzip: true
   },
   plugins: [
     sass()

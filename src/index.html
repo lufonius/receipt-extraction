@@ -5,7 +5,7 @@
   <title>Stencil Starter App</title>
   <meta name="Description" content="Welcome to the Stencil App Starter. You can use this starter to build entire apps all with web components using Stencil!">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#16161d">
+  <meta name="theme-color" content="#005dcc">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="x-ua-compatible" content="IE=Edge">
 
@@ -13,7 +13,7 @@
   <script nomodule src="/build/app.js"></script>
   <link href="/build/app.css" rel="stylesheet">
 
-  <link rel="apple-touch-icon" href="/assets/icon/icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/icon180.png">
   <link rel="icon" type="image/x-icon" href="/assets/icon/favicon.ico">
   <link rel="manifest" href="/manifest.json">
 
@@ -21,10 +21,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script src="lib/reflect.js"></script>
+  <script src="lib/qrcode.min.js"></script>
+  <script src="lib/qr-scanner.umd.min.js"></script>
 </head>
 <body>
-
   <app-root></app-root>
 
+  <noscript>
+    <p>
+      Sorry, JavaScript must be enabled to use this app
+    </p>
+  </noscript>
 </body>
 </html>

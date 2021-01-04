@@ -7,4 +7,9 @@ export default async () => {
    * is wrapped in the function() that is exported.
    */
   window.container = new Container();
+  QrScanner["WORKER_PATH"] = 'lib/qr-scanner-worker.min.js';
+
+  window.addEventListener("beforeinstallprompt", (event: any) => {
+    window.beforeInstallEvent = event;
+  });
 };
