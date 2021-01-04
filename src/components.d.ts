@@ -16,6 +16,8 @@ export namespace Components {
     }
     interface AppQr {
     }
+    interface AppReceiptExtraction {
+    }
     interface AppRoot {
     }
 }
@@ -44,6 +46,12 @@ declare global {
         prototype: HTMLAppQrElement;
         new (): HTMLAppQrElement;
     };
+    interface HTMLAppReceiptExtractionElement extends Components.AppReceiptExtraction, HTMLStencilElement {
+    }
+    var HTMLAppReceiptExtractionElement: {
+        prototype: HTMLAppReceiptExtractionElement;
+        new (): HTMLAppReceiptExtractionElement;
+    };
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
     }
     var HTMLAppRootElement: {
@@ -55,6 +63,7 @@ declare global {
         "app-home": HTMLAppHomeElement;
         "app-profile": HTMLAppProfileElement;
         "app-qr": HTMLAppQrElement;
+        "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-root": HTMLAppRootElement;
     }
 }
@@ -68,6 +77,8 @@ declare namespace LocalJSX {
     }
     interface AppQr {
     }
+    interface AppReceiptExtraction {
+    }
     interface AppRoot {
     }
     interface IntrinsicElements {
@@ -75,6 +86,7 @@ declare namespace LocalJSX {
         "app-home": AppHome;
         "app-profile": AppProfile;
         "app-qr": AppQr;
+        "app-receipt-extraction": AppReceiptExtraction;
         "app-root": AppRoot;
     }
 }
@@ -86,6 +98,7 @@ declare module "@stencil/core" {
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-qr": LocalJSX.AppQr & JSXBase.HTMLAttributes<HTMLAppQrElement>;
+            "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
         }
     }

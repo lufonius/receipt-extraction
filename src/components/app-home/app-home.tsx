@@ -17,6 +17,7 @@ export class AppHome {
         <stencil-route-link url="/">Home</stencil-route-link><br />
         <stencil-route-link url="/crop">Crop image</stencil-route-link><br />
         <stencil-route-link url="/qr">Qr</stencil-route-link><br />
+        <stencil-route-link url="/receipt-extraction">Receipt extraction</stencil-route-link><br />
       </div>
     );
   }
