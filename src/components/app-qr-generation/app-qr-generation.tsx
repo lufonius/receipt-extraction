@@ -40,7 +40,7 @@ export class AppQrGeneration {
             <app-logo />
           </header>
           <main class="center" slot="bottom">
-            <p>scan the qr code to upload files photos from your mobile device.</p>
+            <p class="center-text">scan the qr code to upload files photos from your mobile device.</p>
             <img ref={(el) => this.image = el} />
           </main>
         </app-layout-vertical-split>
