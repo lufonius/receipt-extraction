@@ -1,8 +1,8 @@
 import {Component, h} from '@stencil/core';
-import {GlobalStore} from "../../global/global-store.service";
-import {Inject} from "../../global/di/inject";
+import {GlobalStore} from "../../../global/global-store.service";
+import {Inject} from "../../../global/di/inject";
 import flyd from 'flyd';
-import {OpenCvService} from "../../global/opencv/opencv.service";
+import {OpenCvService} from "../../../global/opencv/opencv.service";
 
 
 @Component({

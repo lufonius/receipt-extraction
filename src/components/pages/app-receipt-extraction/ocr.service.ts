@@ -1,4 +1,4 @@
-import {Injectable} from "../../global/di/injectable";
+import {Injectable} from "../../../global/di/injectable";
 import { v4 as uuid } from 'uuid';
 
 @Injectable

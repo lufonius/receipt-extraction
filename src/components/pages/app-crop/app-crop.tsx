@@ -1,11 +1,11 @@
 import {Component, h, State} from '@stencil/core';
-import {GlobalStore} from "../../global/global-store.service";
-import {Inject} from "../../global/di/inject";
-import {OpenCvService} from "../../global/opencv/opencv.service";
+import {GlobalStore} from "../../../global/global-store.service";
+import {Inject} from "../../../global/di/inject";
+import {OpenCvService} from "../../../global/opencv/opencv.service";
 import Konva from 'konva';
 import {DragableRectangle} from "./dragable-rectangle";
 import flyd from 'flyd';
-import {CssVarsService} from "../../global/css-vars.service";
+import {CssVarsService} from "../../../global/css-vars.service";
 
 enum Orientation {
   Landscape,

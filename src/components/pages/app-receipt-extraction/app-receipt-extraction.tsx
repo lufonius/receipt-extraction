@@ -1,5 +1,5 @@
 import { Component, Host, h } from '@stencil/core';
-import {Inject} from "../../global/di/inject";
+import {Inject} from "../../../global/di/inject";
 import {AnalyzeResult, OcrService} from "./ocr.service";
 import Konva from "konva";
 

@@ -1,7 +1,7 @@
 import {Component, Host, h, State} from '@stencil/core';
 import { v4 as uuid } from 'uuid';
-import {Inject} from "../../global/di/inject";
-import {CssVarsService} from "../../global/css-vars.service";
+import {Inject} from "../../../global/di/inject";
+import {CssVarsService} from "../../../global/css-vars.service";
 
 @Component({
   tag: 'app-qr-generation',
