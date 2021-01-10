@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+#canvas {
+  position: absolute;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.qr-scanner-display {
+  border: 0.3rem solid var(--primary);
+  width: 100%;
+}

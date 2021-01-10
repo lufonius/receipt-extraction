@@ -20,6 +20,8 @@ export namespace Components {
     }
     interface AppQrGeneration {
     }
+    interface AppQrScan {
+    }
     interface AppReceiptExtraction {
     }
     interface AppRoot {
@@ -62,6 +64,12 @@ declare global {
         prototype: HTMLAppQrGenerationElement;
         new (): HTMLAppQrGenerationElement;
     };
+    interface HTMLAppQrScanElement extends Components.AppQrScan, HTMLStencilElement {
+    }
+    var HTMLAppQrScanElement: {
+        prototype: HTMLAppQrScanElement;
+        new (): HTMLAppQrScanElement;
+    };
     interface HTMLAppReceiptExtractionElement extends Components.AppReceiptExtraction, HTMLStencilElement {
     }
     var HTMLAppReceiptExtractionElement: {
@@ -81,6 +89,7 @@ declare global {
         "app-logo": HTMLAppLogoElement;
         "app-profile": HTMLAppProfileElement;
         "app-qr-generation": HTMLAppQrGenerationElement;
+        "app-qr-scan": HTMLAppQrScanElement;
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-root": HTMLAppRootElement;
     }
@@ -99,6 +108,8 @@ declare namespace LocalJSX {
     }
     interface AppQrGeneration {
     }
+    interface AppQrScan {
+    }
     interface AppReceiptExtraction {
     }
     interface AppRoot {
@@ -110,6 +121,7 @@ declare namespace LocalJSX {
         "app-logo": AppLogo;
         "app-profile": AppProfile;
         "app-qr-generation": AppQrGeneration;
+        "app-qr-scan": AppQrScan;
         "app-receipt-extraction": AppReceiptExtraction;
         "app-root": AppRoot;
     }
@@ -124,6 +136,7 @@ declare module "@stencil/core" {
             "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-qr-generation": LocalJSX.AppQrGeneration & JSXBase.HTMLAttributes<HTMLAppQrGenerationElement>;
+            "app-qr-scan": LocalJSX.AppQrScan & JSXBase.HTMLAttributes<HTMLAppQrScanElement>;
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
         }
