@@ -11,10 +11,14 @@ export namespace Components {
     }
     interface AppHome {
     }
+    interface AppLayoutVerticalSplit {
+    }
+    interface AppLogo {
+    }
     interface AppProfile {
         "match": MatchResults;
     }
-    interface AppQr {
+    interface AppQrGeneration {
     }
     interface AppReceiptExtraction {
     }
@@ -34,17 +38,29 @@ declare global {
         prototype: HTMLAppHomeElement;
         new (): HTMLAppHomeElement;
     };
+    interface HTMLAppLayoutVerticalSplitElement extends Components.AppLayoutVerticalSplit, HTMLStencilElement {
+    }
+    var HTMLAppLayoutVerticalSplitElement: {
+        prototype: HTMLAppLayoutVerticalSplitElement;
+        new (): HTMLAppLayoutVerticalSplitElement;
+    };
+    interface HTMLAppLogoElement extends Components.AppLogo, HTMLStencilElement {
+    }
+    var HTMLAppLogoElement: {
+        prototype: HTMLAppLogoElement;
+        new (): HTMLAppLogoElement;
+    };
     interface HTMLAppProfileElement extends Components.AppProfile, HTMLStencilElement {
     }
     var HTMLAppProfileElement: {
         prototype: HTMLAppProfileElement;
         new (): HTMLAppProfileElement;
     };
-    interface HTMLAppQrElement extends Components.AppQr, HTMLStencilElement {
+    interface HTMLAppQrGenerationElement extends Components.AppQrGeneration, HTMLStencilElement {
     }
-    var HTMLAppQrElement: {
-        prototype: HTMLAppQrElement;
-        new (): HTMLAppQrElement;
+    var HTMLAppQrGenerationElement: {
+        prototype: HTMLAppQrGenerationElement;
+        new (): HTMLAppQrGenerationElement;
     };
     interface HTMLAppReceiptExtractionElement extends Components.AppReceiptExtraction, HTMLStencilElement {
     }
@@ -61,8 +77,10 @@ declare global {
     interface HTMLElementTagNameMap {
         "app-crop": HTMLAppCropElement;
         "app-home": HTMLAppHomeElement;
+        "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
+        "app-logo": HTMLAppLogoElement;
         "app-profile": HTMLAppProfileElement;
-        "app-qr": HTMLAppQrElement;
+        "app-qr-generation": HTMLAppQrGenerationElement;
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-root": HTMLAppRootElement;
     }
@@ -72,10 +90,14 @@ declare namespace LocalJSX {
     }
     interface AppHome {
     }
+    interface AppLayoutVerticalSplit {
+    }
+    interface AppLogo {
+    }
     interface AppProfile {
         "match"?: MatchResults;
     }
-    interface AppQr {
+    interface AppQrGeneration {
     }
     interface AppReceiptExtraction {
     }
@@ -84,8 +106,10 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "app-crop": AppCrop;
         "app-home": AppHome;
+        "app-layout-vertical-split": AppLayoutVerticalSplit;
+        "app-logo": AppLogo;
         "app-profile": AppProfile;
-        "app-qr": AppQr;
+        "app-qr-generation": AppQrGeneration;
         "app-receipt-extraction": AppReceiptExtraction;
         "app-root": AppRoot;
     }
@@ -96,8 +120,10 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
+            "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
+            "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
-            "app-qr": LocalJSX.AppQr & JSXBase.HTMLAttributes<HTMLAppQrElement>;
+            "app-qr-generation": LocalJSX.AppQrGeneration & JSXBase.HTMLAttributes<HTMLAppQrGenerationElement>;
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
         }

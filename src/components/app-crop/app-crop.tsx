@@ -5,6 +5,7 @@ import {OpenCvService} from "../../global/opencv/opencv.service";
 import Konva from 'konva';
 import {DragableRectangle} from "./dragable-rectangle";
 import flyd from 'flyd';
+import {CssVarsService} from "../../global/css-vars.service";
 
 enum Orientation {
   Landscape,
@@ -20,6 +21,7 @@ export class AppCrop {
 
   @Inject(GlobalStore) private entityStore: GlobalStore;
   @Inject(OpenCvService) private openCvService: OpenCvService;
+  @Inject(CssVarsService) private cssVarsStore: CssVarsService;
 
   photoInput: HTMLInputElement;
   controlsHeight: number = 50;
@@ -150,8 +152,7 @@ export class AppCrop {
     }));
 
     this.stage.add(imageLayer);
-    const primaryColor = getComputedStyle(document.documentElement)
-      .getPropertyValue('--primary');
+    const primaryColor = this.cssVarsStore.primaryColor;
     this.rectangle = new DragableRectangle(this.stage, this.magnifiedStage, points, primaryColor);
 
     flyd.on(() => {

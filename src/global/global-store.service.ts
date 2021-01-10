@@ -4,7 +4,7 @@ import deepmerge from "deepmerge";
 import flyd from 'flyd';
 
 @Injectable
-export class GlobalStore extends Store<State> {
+export class GlobalStore extends Store<GlobalState> {
   constructor() {
     super({
       receipt: {},
@@ -88,7 +88,7 @@ export interface Line {
   text: string;
 }
 
-export interface State {
+export interface GlobalState {
   receipt: Dict<Receipt['id'], Receipt>;
   category: Dict<Category['id'], Category>;
   linkedUId: string;

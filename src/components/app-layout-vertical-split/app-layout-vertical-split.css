@@ -1,0 +1,23 @@
+header {
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30vh;
+  width: 100%;
+}
+
+.bottom {
+  display: flex;
+  justify-content: center;
+  height: 70vh;
+  width: 100%;
+}
