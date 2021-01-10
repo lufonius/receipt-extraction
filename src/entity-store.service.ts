@@ -7,23 +7,45 @@ export interface Receipt {
   date: Date;
   total: number;
   imgUrl: string;
+  taxes: Tax[];
+  items: ReceiptItem[];
+  textExtractionResult: TextExtractionResult;
 }
 
-export interface ReceiptRecord {
+export interface Tax {
   id: string;
-  subject: string;
-  recordTotal: number;
-  category: string;
+  percentage: number;
+  amount: number;
 }
 
 export interface Category {
   id: string;
+  avatarUrl: string;
   name: string;
+  subCategories: string[];
+}
+
+export interface ReceiptItem {
+  id: string;
+  category: Category;
+  label: string;
+  amount: number;
+}
+
+export interface TextExtractionResult {
+  angle: number;
+  lines: Array<Line>;
+}
+
+interface Point { x: number; y: number; }
+export interface Line {
+  id: string;
+  boundingBox: { tl: Point, tr: Point, bl: Point, br: Point };
+  text: string;
 }
 
 export interface Entities {
   receipt: Dict<Receipt['id'], Receipt>;
-  receiptRecord: Dict<ReceiptRecord['id'], ReceiptRecord>;
   category: Dict<Category['id'], Category>;
 }
 
@@ -32,7 +54,6 @@ export class EntityStore extends Store<Entities> {
   constructor() {
     super({
       receipt: {},
-      receiptRecord: {},
       category: {}
     });
   }
