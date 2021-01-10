@@ -1,5 +1,5 @@
 import {Component, h} from '@stencil/core';
-import {EntityStore} from "../../entity-store.service";
+import {GlobalStore} from "../../global/global-store.service";
 import {Inject} from "../../global/di/inject";
 import flyd from 'flyd';
 import {OpenCvService} from "../../global/opencv/opencv.service";

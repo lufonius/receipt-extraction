@@ -20,7 +20,7 @@ export abstract class Store<T> {
     return flyd.map(mapFn, this.state);
   }
 
-  modifyState(patch: Patch<T>): void {
+  patch(patch: Patch<T>): void {
     this.patches(patch);
   }
 }

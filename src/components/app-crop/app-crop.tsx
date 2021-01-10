@@ -1,5 +1,5 @@
 import {Component, h, State} from '@stencil/core';
-import {EntityStore} from "../../entity-store.service";
+import {GlobalStore} from "../../global/global-store.service";
 import {Inject} from "../../global/di/inject";
 import {OpenCvService} from "../../global/opencv/opencv.service";
 import Konva from 'konva';
@@ -18,7 +18,7 @@ enum Orientation {
 })
 export class AppCrop {
 
-  @Inject(EntityStore) private entityStore: EntityStore;
+  @Inject(GlobalStore) private entityStore: GlobalStore;
   @Inject(OpenCvService) private openCvService: OpenCvService;
 
   photoInput: HTMLInputElement;

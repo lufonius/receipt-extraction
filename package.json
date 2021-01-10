@@ -23,6 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "deepmerge": "^4.2.2",
     "flyd": "^0.2.8",
     "immer": "^8.0.0",
     "konva": "^7.2.2",
