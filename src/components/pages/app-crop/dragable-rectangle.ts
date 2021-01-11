@@ -108,6 +108,13 @@ export class DragableRectangle {
     return this.vertices
       .map((vertice) => ({ x: vertice.ellipse.x(), y: vertice.ellipse.y() }));
   }
+
+  clear() {
+    this.cornerLayer.removeChildren();
+    this.cornerLayer.batchDraw();
+    this.lineLayer.removeChildren();
+    this.lineLayer.batchDraw();
+  }
 }
 
 class Edge {
