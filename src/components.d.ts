@@ -5,11 +5,24 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { MaterialIcons } from "./global/material-icons-enum";
 import { MatchResults } from "@stencil/router";
 export namespace Components {
+    interface AppButton {
+        "primary": boolean;
+    }
+    interface AppButtonRound {
+        "firstLine": string;
+        "icon": MaterialIcons;
+        "secondLine": string;
+    }
+    interface AppComponents {
+    }
     interface AppCrop {
     }
     interface AppHome {
+    }
+    interface AppIcon {
     }
     interface AppLayoutVerticalSplit {
     }
@@ -28,6 +41,24 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLAppButtonElement extends Components.AppButton, HTMLStencilElement {
+    }
+    var HTMLAppButtonElement: {
+        prototype: HTMLAppButtonElement;
+        new (): HTMLAppButtonElement;
+    };
+    interface HTMLAppButtonRoundElement extends Components.AppButtonRound, HTMLStencilElement {
+    }
+    var HTMLAppButtonRoundElement: {
+        prototype: HTMLAppButtonRoundElement;
+        new (): HTMLAppButtonRoundElement;
+    };
+    interface HTMLAppComponentsElement extends Components.AppComponents, HTMLStencilElement {
+    }
+    var HTMLAppComponentsElement: {
+        prototype: HTMLAppComponentsElement;
+        new (): HTMLAppComponentsElement;
+    };
     interface HTMLAppCropElement extends Components.AppCrop, HTMLStencilElement {
     }
     var HTMLAppCropElement: {
@@ -39,6 +70,12 @@ declare global {
     var HTMLAppHomeElement: {
         prototype: HTMLAppHomeElement;
         new (): HTMLAppHomeElement;
+    };
+    interface HTMLAppIconElement extends Components.AppIcon, HTMLStencilElement {
+    }
+    var HTMLAppIconElement: {
+        prototype: HTMLAppIconElement;
+        new (): HTMLAppIconElement;
     };
     interface HTMLAppLayoutVerticalSplitElement extends Components.AppLayoutVerticalSplit, HTMLStencilElement {
     }
@@ -83,8 +120,12 @@ declare global {
         new (): HTMLAppRootElement;
     };
     interface HTMLElementTagNameMap {
+        "app-button": HTMLAppButtonElement;
+        "app-button-round": HTMLAppButtonRoundElement;
+        "app-components": HTMLAppComponentsElement;
         "app-crop": HTMLAppCropElement;
         "app-home": HTMLAppHomeElement;
+        "app-icon": HTMLAppIconElement;
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
         "app-logo": HTMLAppLogoElement;
         "app-profile": HTMLAppProfileElement;
@@ -95,9 +136,23 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface AppButton {
+        "onPress"?: (event: CustomEvent<MouseEvent>) => void;
+        "primary"?: boolean;
+    }
+    interface AppButtonRound {
+        "firstLine"?: string;
+        "icon"?: MaterialIcons;
+        "onPress"?: (event: CustomEvent<MouseEvent>) => void;
+        "secondLine"?: string;
+    }
+    interface AppComponents {
+    }
     interface AppCrop {
     }
     interface AppHome {
+    }
+    interface AppIcon {
     }
     interface AppLayoutVerticalSplit {
     }
@@ -115,8 +170,12 @@ declare namespace LocalJSX {
     interface AppRoot {
     }
     interface IntrinsicElements {
+        "app-button": AppButton;
+        "app-button-round": AppButtonRound;
+        "app-components": AppComponents;
         "app-crop": AppCrop;
         "app-home": AppHome;
+        "app-icon": AppIcon;
         "app-layout-vertical-split": AppLayoutVerticalSplit;
         "app-logo": AppLogo;
         "app-profile": AppProfile;
@@ -130,8 +189,12 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "app-button": LocalJSX.AppButton & JSXBase.HTMLAttributes<HTMLAppButtonElement>;
+            "app-button-round": LocalJSX.AppButtonRound & JSXBase.HTMLAttributes<HTMLAppButtonRoundElement>;
+            "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
+            "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
             "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;

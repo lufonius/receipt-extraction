@@ -9,6 +9,7 @@ import {CssVarsService} from "../../../global/css-vars.service";
 import {makeStagePinchZoomable} from "../../common/canvas/make-stage-pinch-zoomable";
 import {CropCanvasFactory} from "./crop-canvas-factory";
 import {CropCanvas} from "./crop-canvas";
+import {MaterialIcons} from "../../../global/material-icons-enum";
 
 enum Orientation {
   Landscape,
@@ -90,18 +91,27 @@ export class AppCrop {
           ref={(el) => this.magnifiedCanvas = el}
         />
 
-        <button style={({ display: !this.rotateShown ? "none": "flex" })} id="rotate" class="button button--primary" onClick={() => this.rotate90DegClockwise()}>rotate</button>
+        {this.rotateShown &&
+          <app-button-round
+            id="rotateButton"
+            onPress={() => this.rotate90DegClockwise()}
+            firstLine="rotate"
+            secondLine="image"
+            icon={MaterialIcons.ROTATE_90_DEGREES_CCW}
+          />}
 
         <div
           style={({ display: !this.controlsShown ? "none" : "flex", height: `${this.controlsHeight}px` })}
           class="controls"
         >
-          <button style={({ display: !this.takePhotoShown ? "none": "flex" })} class="button button--primary" onClick={() => this.photoInput.click()}>
+          {this.takePhotoShown && <app-button onPress={() => this.photoInput.click()} primary>
             { this.alreadyTookPhotograph ? "Retry" : "Take photo" }
-          </button>
+          </app-button> }
+
+
           <div class="grow"></div>
-          <button style={({ display: !this.cropShown ? "none": "flex" })} class="button button--primary" onClick={() => this.cropByDragableRectangle()}>Crop</button>
-          <button style={({ display: !this.uploadShown ? "none": "flex" })} class="button button--primary">Upload</button>
+          {this.cropShown && <app-button onPress={() => this.cropByDragableRectangle()} primary>Crop</app-button>}
+          {this.uploadShown && <app-button primary>Upload</app-button>}
         </div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.drawImageAndDetectedRectangle()} ref={(el) => this.photoInput = el} />
       </div>

@@ -30,6 +30,7 @@ html {
 
   --body-font-family: Arial, sans-serif;
   --body-font-size: 1.6rem;
+  --small-font-size: 1rem;
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
@@ -37,7 +38,6 @@ html {
   --font-weight-bold: 700;
 
   --primary: #000000;
-
   --background: #D8D8D8;
   --background-light: darken(var(--background), 20);
 
@@ -47,4 +47,11 @@ html {
   --spacing-m: 2rem;
   --spacing-l: 3rem;
   --spacing-xl: 4rem;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/materialicons/v70/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
 }

@@ -1,0 +1,15 @@
+.btn-round {
+  border-radius: 50%;
+  background-color: var(--background);
+  border: 3px solid var(--primary);
+  height: 6rem;
+  width: 6rem;
+  transition: all 0.05s ease;
+  font-size: var(--small-font-size);
+  outline: none;
+
+
+  &:active {
+    transform: scale(1.05);
+  }
+}

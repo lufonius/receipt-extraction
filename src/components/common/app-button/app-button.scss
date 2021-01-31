@@ -1,0 +1,41 @@
+:host {
+  all: initial;
+  display: block;
+}
+
+.button {
+  --padding-top-bottom: 0.5rem;
+  --padding-left-right: calc(var(--padding-top-bottom) * 2);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-light);
+  text-align: center;
+  color: var(--foreground);
+  border: none;
+  font-size: var(--body-font-size);
+  text-transform: uppercase;
+  transition: all 0.05s ease;
+  cursor: pointer;
+  font-family: var(--heading-font-family);
+  font-weight: var(--font-weight-regular);
+
+  padding: var(--padding-top-bottom) var(--padding-left-right);
+
+  outline: none;
+
+  &--shadow {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  &--primary {
+    background: var(--primary);
+    color: var(--background);
+    font-weight: var(--font-weight-bold);
+  }
+
+  &:active {
+    transform: scale(1.05);
+  }
+}
