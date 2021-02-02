@@ -16,8 +16,8 @@ export class GlobalStore extends Store<GlobalState> {
   // Actions
   setLinkedUId = (uid: string) => this.patch((state) => state.linkedUId = uid);
 
-  addReceipt = (receipt: Receipt) => this.patch(state => state.receipt[receipt.id] = receipt);
-  updateReceipt = (update: Partial<Receipt>, id: string) => this.patch(state => deepmerge(state.receipt[id], update));
+  addReceipt = (receipt: Transaction) => this.patch(state => state.receipt[receipt.id] = receipt);
+  updateReceipt = (update: Partial<Transaction>, id: string) => this.patch(state => deepmerge(state.receipt[id], update));
 
   addCategories = (categories: Category[]) => this.patch(state => state.category = toMap(categories));
 
@@ -46,49 +46,57 @@ export enum ReceiptExtractionStatus {
 }
 
 export interface Receipt {
-  id: string;
-  date: Date;
-  total: number;
-  imgUrl: string;
-  taxes: Tax[];
-  items: ReceiptItem[];
+  id: number;
   textExtractionResult: TextExtractionResult;
   status: ReceiptExtractionStatus;
+  imgUrl: string;
+  transactionId: number;
+}
+
+export interface Transaction {
+  id: string;
+  date: Date;
+}
+
+export interface TransactionItem {
+  id: string;
+  amount: number;
+  label: string;
+  categoryId: number;
+  transactionId: number;
 }
 
 export interface Tax {
   id: string;
   percentage: number;
   amount: number;
+  transactionId: number;
 }
 
 export interface Category {
-  id: string;
+  id: number;
   avatarUrl: string;
   name: string;
-  subCategories: string[];
-}
-
-export interface ReceiptItem {
-  id: string;
-  category: Category;
-  label: string;
-  amount: number;
+  parentCategoryId: number;
 }
 
 export interface TextExtractionResult {
   angle: number;
-  lines: Array<Line>;
+
 }
 
-interface Point { x: number; y: number; }
 export interface Line {
   id: string;
   boundingBox: { tl: Point, tr: Point, bl: Point, br: Point };
   text: string;
 }
 
+export interface Point { x: number; y: number; }
+
 export interface GlobalState {
+  transactionItem: Dict<TransactionItem['id'], TransactionItem>;
+  transaction: Dict<Transaction['id'], Transaction>;
+  tax: Dict<Tax['id'], Tax>;
   receipt: Dict<Receipt['id'], Receipt>;
   category: Dict<Category['id'], Category>;
   linkedUId: string;
