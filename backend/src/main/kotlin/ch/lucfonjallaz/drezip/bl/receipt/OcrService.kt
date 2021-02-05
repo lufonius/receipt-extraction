@@ -2,59 +2,48 @@ package ch.lucfonjallaz.drezip.bl.receipt
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
+import org.springframework.http.*
 import org.springframework.stereotype.Component
 
 @Component
-class OcrService(
+open class OcrService(
         @Value("\${app.ocr-key}") val ocrKey: String,
         @Value("\${app.ocr-url}") val ocrUrl: String,
         @Value("\${app.ocr-retry-count:50}") val ocrRetryCount: Int,
         @Value("\${app.ocr-retry-sleep-ms:500}") val ocrRetrySleepMs: Long,
-        val restTemplateBuilder: RestTemplateBuilder
+        val httpRequestService: HttpRequestService
 ) {
-    fun extractText(imageUrl: String): AzureReadResultDto {
+    fun extractText(imageUrl: String): AzureReadResultDto? {
         val operationLocationUrl = getOperationLocationUrl(imageUrl)
 
         for (i in 1..ocrRetryCount) {
             val result = getOperationResult(operationLocationUrl)
 
-            if (result.status == "succeeded") {
-                return result.analyzeResult?.readResults?.firstOrNull() ?: throw Exception("no text to extract found")
-            } else if (result.status == "failed") {
-                throw Exception("OCR call failed")
-            } else {
-                Thread.sleep(ocrRetrySleepMs)
+            when (result.status) {
+                "succeeded" -> return result.analyzeResult?.readResults?.firstOrNull() ?: throw Exception("no text to extract found")
+                "failed" -> return null
+                else -> Thread.sleep(ocrRetrySleepMs)
             }
         }
 
-        throw Exception("OCR call timed out")
+        return null
     }
 
     private fun getOperationLocationUrl(imageUrl: String): String {
-        val restTemplate = restTemplateBuilder.build()
         val headers = HttpHeaders()
         headers.add("Ocp-Apim-Subscription-Key", ocrKey)
         headers.add("Content-Type", "application/json")
 
-        val entity = HttpEntity(mapOf("url" to imageUrl), headers)
-
-        val response = restTemplate.exchange(ocrUrl, HttpMethod.POST, entity, Map::class.java)
+        val response = httpRequestService.post(ocrUrl, mapOf("url" to imageUrl), headers, Unit::class)
 
         return response.headers.getFirst("Operation-Location") ?: throw Exception("no operation location header present")
     }
 
     private fun getOperationResult(operationLocationUrl: String): AzureRequestResultsDto {
-        val restTemplate = restTemplateBuilder.build()
         val headers = HttpHeaders()
         headers.add("Ocp-Apim-Subscription-Key", ocrKey)
 
-        val entity = HttpEntity<HttpHeaders>(headers)
-
-        val response = restTemplate.exchange(operationLocationUrl, HttpMethod.GET, entity, AzureRequestResultsDto::class.java)
+        val response = httpRequestService.get(operationLocationUrl, headers, AzureRequestResultsDto::class)
 
         if (response.statusCode == HttpStatus.OK) {
             return response.body ?: throw Exception("response body was empty")

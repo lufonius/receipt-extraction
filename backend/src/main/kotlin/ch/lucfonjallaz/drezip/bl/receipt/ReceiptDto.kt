@@ -6,7 +6,7 @@ data class ReceiptDto(
     val id: Int,
     val status: ReceiptStatus,
     val imgUrl: String,
-    val angle: Float,
+    val angle: Float?,
     val lines: List<LineDto>
 ) {
     companion object {

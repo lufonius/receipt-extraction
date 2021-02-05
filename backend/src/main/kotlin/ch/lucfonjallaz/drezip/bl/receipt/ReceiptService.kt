@@ -2,44 +2,42 @@ package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
+import org.hibernate.Session
 import org.springframework.stereotype.Component
-import java.util.*
+import org.springframework.transaction.annotation.Transactional
+import javax.persistence.EntityManager
 
+// TODO: check if transaction rollback works
+// TODO: check if transaction rollbacks, image is being deleted as well
+// TODO: check if azure OCR returns a 500x, what is going to happen then? is an exception being thrown? or are only for 400er codes exceptions thrown?
+// TODO: ask - how to get rid of entityManager.refresh(...)?
 @Component
 class ReceiptService (
     val ocrService: OcrService,
     val fileStorageService: FileStorageService,
     val lineDboRepository: LineDboRepository,
-    val receiptDboRepository: ReceiptDboRepository
+    val receiptDboRepository: ReceiptDboRepository,
+    val uuidGenerator: UUIDGenerator,
+    val entityManager: EntityManager
 ) {
+    @Transactional
     fun initReceipt(image: ByteArray, fileExtension: String): ReceiptDbo {
-        val receiptDbo = uploadImageAndInitReceiptDbo(image, fileExtension)
-        val updatedReceiptDboAfterTextExtraction = extractTextAndUpdateReceiptDbo(receiptDbo)
+        val imageUrl = uploadImageWithRandomUUIDFileName(image, fileExtension)
 
-        return receiptDboRepository.getOne(updatedReceiptDboAfterTextExtraction.id)
+        val extractedText = ocrService.extractText(imageUrl)
+        if (extractedText != null) {
+            val receiptDbo = receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.TextExtracted, imgUrl = imageUrl, angle = extractedText.angle))
+            val lineDbos = extractedText.lines.map { mapToLineDbo(it.text, it.boundingBox, receiptDbo) }
+            lineDboRepository.saveAll(lineDbos)
+            entityManager.refresh(receiptDbo)
+            return receiptDbo
+        } else {
+            return receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = imageUrl, angle = null))
+        }
     }
 
-    private fun uploadImageAndInitReceiptDbo(image: ByteArray, fileExtension: String): ReceiptDbo {
-        val imageUrl = uploadImage(image, fileExtension)
-        val receiptDbo = ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = imageUrl, angle = null)
-        receiptDboRepository.save(receiptDbo)
-
-        return receiptDbo
-    }
-
-    private fun extractTextAndUpdateReceiptDbo(receiptDbo: ReceiptDbo): ReceiptDbo {
-        val extractedText = ocrService.extractText(receiptDbo.imgUrl)
-        val updatedReceiptDboAfterTextExtraction = receiptDbo.copy(angle = extractedText.angle, status = ReceiptStatus.TextExtracted)
-        receiptDboRepository.save(updatedReceiptDboAfterTextExtraction)
-
-        val lineDbos = extractedText.lines.map { mapToLineDbo(it.text, it.boundingBox, updatedReceiptDboAfterTextExtraction) }
-        lineDboRepository.saveAll(lineDbos)
-
-        return updatedReceiptDboAfterTextExtraction
-    }
-
-    private fun uploadImage(image: ByteArray, fileExtension: String): String {
-        val uuid = UUID.randomUUID()
+    private fun uploadImageWithRandomUUIDFileName(image: ByteArray, fileExtension: String): String {
+        val uuid = uuidGenerator.generateRandomUUID()
         return fileStorageService.uploadImage(image, "$uuid.$fileExtension")
     }
 

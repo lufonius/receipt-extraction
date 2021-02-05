@@ -12,7 +12,7 @@ class FileStorageService(
     fun uploadImage(image: ByteArray, filename: String): String {
         val storageAccount = BlobServiceClientBuilder()
                 .connectionString(azureBlobStorageConnectionString)
-                .buildClient();
+                .buildClient()
 
         val container = storageAccount.getBlobContainerClient(azureBlobStorageContainerName)
 

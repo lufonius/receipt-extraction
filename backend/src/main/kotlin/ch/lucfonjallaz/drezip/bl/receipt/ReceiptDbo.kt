@@ -21,6 +21,6 @@ data class ReceiptDbo(
         @Column(nullable = true)
         val angle: Float?,
 
-        @OneToMany(fetch = FetchType.LAZY, targetEntity = LineDbo::class, mappedBy = "receipt")
-        val lines: List<LineDbo> = listOf()
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "receipt")
+        var lines: List<LineDbo> = listOf()
 )
