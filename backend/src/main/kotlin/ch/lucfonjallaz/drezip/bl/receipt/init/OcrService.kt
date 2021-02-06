@@ -1,12 +1,12 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.bl.receipt.HttpRequestService
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.*
 import org.springframework.stereotype.Component
 
 @Component
-open class OcrService(
+class OcrService(
         @Value("\${app.ocr-key}") val ocrKey: String,
         @Value("\${app.ocr-url}") val ocrUrl: String,
         @Value("\${app.ocr-retry-count:50}") val ocrRetryCount: Int,

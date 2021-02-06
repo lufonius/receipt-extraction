@@ -25,3 +25,4 @@ interface CategoryRepository : JpaRepository<CategoryDbo, Int>
 // logging and monitoring
 // proxy design patter (try it out)
 // git learning tool (exercise: do a rebase, do a force push, do a merge and rollback)
+// exceptions

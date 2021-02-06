@@ -1,5 +1,6 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.bl.receipt.HttpRequestService
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension

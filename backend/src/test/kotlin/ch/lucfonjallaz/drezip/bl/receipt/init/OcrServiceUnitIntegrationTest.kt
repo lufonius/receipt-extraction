@@ -1,5 +1,6 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.bl.receipt.init.OcrService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

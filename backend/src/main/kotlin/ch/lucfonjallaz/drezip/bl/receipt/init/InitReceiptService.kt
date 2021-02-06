@@ -1,8 +1,8 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.bl.receipt.*
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
-import org.hibernate.Session
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
@@ -12,13 +12,13 @@ import javax.persistence.EntityManager
 // TODO: check if azure OCR returns a 500x, what is going to happen then? is an exception being thrown? or are only for 400er codes exceptions thrown?
 // TODO: ask - how to get rid of entityManager.refresh(...)?
 @Component
-class ReceiptService (
-    val ocrService: OcrService,
-    val fileStorageService: FileStorageService,
-    val lineDboRepository: LineDboRepository,
-    val receiptDboRepository: ReceiptDboRepository,
-    val uuidGenerator: UUIDGenerator,
-    val entityManager: EntityManager
+class InitReceiptService (
+        val ocrService: OcrService,
+        val fileStorageService: FileStorageService,
+        val lineDboRepository: LineDboRepository,
+        val receiptDboRepository: ReceiptDboRepository,
+        val uuidGenerator: UUIDGenerator,
+        val entityManager: EntityManager
 ) {
     @Transactional
     fun initReceipt(image: ByteArray, fileExtension: String): ReceiptDbo {

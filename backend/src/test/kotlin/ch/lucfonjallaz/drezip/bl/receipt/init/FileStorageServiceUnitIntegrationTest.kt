@@ -1,4 +1,4 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
 import ch.lucfonjallaz.drezip.BaseIntegrationTest
 import com.azure.storage.blob.BlobServiceClientBuilder

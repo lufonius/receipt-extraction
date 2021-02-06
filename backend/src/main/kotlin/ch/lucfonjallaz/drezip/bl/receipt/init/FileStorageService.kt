@@ -1,4 +1,4 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
 import com.azure.storage.blob.BlobServiceClientBuilder
 import org.springframework.beans.factory.annotation.Value

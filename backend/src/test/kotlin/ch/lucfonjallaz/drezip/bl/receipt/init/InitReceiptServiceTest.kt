@@ -1,5 +1,9 @@
-package ch.lucfonjallaz.drezip.bl.receipt
+package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDbo
+import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDboRepository
+import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus
+import ch.lucfonjallaz.drezip.bl.receipt.UUIDGenerator
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
 import io.mockk.every
@@ -15,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import javax.persistence.EntityManager
 
 @ExtendWith(MockKExtension::class)
-class ReceiptServiceTest {
+class InitReceiptServiceTest {
 
     @MockK
     private lateinit var fileStorageService: FileStorageService
@@ -36,7 +40,7 @@ class ReceiptServiceTest {
     private lateinit var entityManager: EntityManager
 
     @InjectMockKs
-    private lateinit var receiptService: ReceiptService
+    private lateinit var initReceiptService: InitReceiptService
 
     @Test
     fun `should create a receipt with status UPLOADED and imageUrl after the image has been uploaded`() {
@@ -51,7 +55,7 @@ class ReceiptServiceTest {
                 match { it.imgUrl == "https://gaggi.com/bongo.jpg" }
         )) }.returns(receiptDbo)
 
-        val receipt = receiptService.initReceipt(ByteArray(1), "jpg")
+        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg")
 
         assertThat(receipt.imgUrl).isEqualTo("https://gaggi.com/bongo.jpg")
         assertThat(receipt.status).isEqualTo(ReceiptStatus.Uploaded)
@@ -90,7 +94,7 @@ class ReceiptServiceTest {
         )))
         every { receiptDboRepository.getOne(9) }.returns(receiptDboWithLines)
 
-        val receipt = receiptService.initReceipt(ByteArray(1), "jpg")
+        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg")
 
         assertThat(receipt.imgUrl).isEqualTo("https://gaggi.com/bongo.jpg")
         assertThat(receipt.status).isEqualTo(ReceiptStatus.TextExtracted)
