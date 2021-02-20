@@ -37,15 +37,14 @@ internal class ReceiptControllerTest {
         val fileContents = ByteArray(0)
         val multipartFile = MockMultipartFile("test.jpg", "hello/world/test.jpg", "image/jpg", fileContents)
 
-        val receiptDbo = ReceiptDbo(
-                id = 9,
-                angle = 0.0F,
+        val receiptDbo = createTestReceiptDbo(
                 imgUrl = "helloworld.jpg",
-                lines = listOf(),
-                status = ReceiptStatus.Uploaded
+                status = ReceiptStatus.Uploaded,
+                angle = 0.0F,
+                id = 9
         )
 
-        val lineDbo = LineDbo(
+        val lineDbo = createTestLineDbo(
                 id = 10,
                 topLeftX = 0,
                 topLeftY = 1,
@@ -56,7 +55,7 @@ internal class ReceiptControllerTest {
                 bottomLeftX = 6,
                 bottomLeftY = 7,
                 text = "extracted text",
-                receipt = receiptDbo
+                receiptDbo = receiptDbo
         )
 
         val receiptDboWithLines = receiptDbo.copy(lines = listOf(lineDbo))

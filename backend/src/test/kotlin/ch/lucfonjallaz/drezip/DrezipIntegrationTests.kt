@@ -2,9 +2,7 @@ package ch.lucfonjallaz.drezip
 
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.category.CategoryDto
-import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDbo
-import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDto
-import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus
+import ch.lucfonjallaz.drezip.bl.receipt.*
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDto
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
@@ -185,44 +183,20 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 	}
 
 	private fun createAndSaveDummyCategoryDbo(): CategoryDbo {
-		val dbo = CategoryDbo(
-				avatarUrl = "dummyAvatarUrl",
-				color = "#000000",
-				name = "parent"
-		)
+		val dbo = createTestCategoryDbo(name = "parent")
 		entityManager.persist(dbo)
 
 		return dbo
 	}
 
 	private fun createAndSaveDummyLineDbo(receiptDbo: ReceiptDbo): LineDbo {
-		val lineDbo = LineDbo(
-				topLeftX = 0,
-				topLeftY = 1,
-				topRightX = 2,
-				topRightY = 3,
-				bottomRightX = 4,
-				bottomRightY = 5,
-				bottomLeftX = 6,
-				bottomLeftY = 7,
-				text = "extracted text",
-				receipt = receiptDbo
-		)
+		val lineDbo = createTestLineDbo(receiptDbo)
 		entityManager.persist(lineDbo)
-
 		return lineDbo
 	}
 
 	private fun createAndSaveDummyReceiptDbo(): ReceiptDbo {
-		val receiptDbo = ReceiptDbo(
-				status = ReceiptStatus.Open,
-				imgUrl = "hoi",
-				angle = null,
-				total = null,
-				totalLine = null,
-				date = null,
-				dateLine = null
-		)
+		val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.Open)
 		entityManager.persist(receiptDbo)
 
 		return receiptDbo

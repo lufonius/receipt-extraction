@@ -34,5 +34,9 @@ class ReceiptService(
         if (dbo.type == ReceiptItemType.Category && dbo.category == null) {
             throw Exception("If you specify a ReceiptItem Type of 'Category', you have to pass a category")
         }
+
+        if (dbo.amountLine.id == dbo.labelLine.id) {
+            throw Exception("amount and label cannot be the same box on the receipt. select different lines.")
+        }
     }
 }
