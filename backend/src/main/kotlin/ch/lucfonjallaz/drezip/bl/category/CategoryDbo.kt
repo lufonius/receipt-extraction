@@ -7,7 +7,7 @@ import javax.persistence.*
 data class CategoryDbo (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int,
+    val id: Int = 0,
 
     @Column(nullable = false, length = 250)
     val avatarUrl: String,
@@ -19,8 +19,8 @@ data class CategoryDbo (
     val name: String,
 
     @Column(nullable = true)
-    val parentCategoryId: Int,
+    val parentCategoryId: Int? = null,
 
     @OneToMany(targetEntity = CategoryDbo::class, mappedBy = "parentCategoryId")
-    val subCategories: List<CategoryDbo>
+    var subCategories: List<CategoryDbo>? = null
 )

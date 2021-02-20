@@ -1,9 +1,10 @@
 package ch.lucfonjallaz.drezip.bl.category
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.CrudRepository
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
-@RepositoryRestResource
+@RepositoryRestResource(exported = false)
 interface CategoryRepository : JpaRepository<CategoryDbo, Int>
 
 // how to make an apache lucene in memory search
@@ -26,3 +27,6 @@ interface CategoryRepository : JpaRepository<CategoryDbo, Int>
 // proxy design patter (try it out)
 // git learning tool (exercise: do a rebase, do a force push, do a merge and rollback)
 // exceptions
+// security (sticky session, cross site request forgery?)
+// what is cache invalidation?
+// keeping the UI in sync with the backend -> server side events?

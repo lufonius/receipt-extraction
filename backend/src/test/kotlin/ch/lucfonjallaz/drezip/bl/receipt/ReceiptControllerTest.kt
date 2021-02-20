@@ -1,6 +1,7 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.bl.receipt.init.InitReceiptService
+import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemMapper
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDto
 import ch.lucfonjallaz.drezip.bl.receipt.line.PointDto
@@ -9,6 +10,7 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.mock.web.MockMultipartFile
@@ -17,6 +19,15 @@ import org.springframework.mock.web.MockMultipartFile
 internal class ReceiptControllerTest {
     @MockK
     private lateinit var initReceiptService: InitReceiptService
+
+    @MockK
+    private lateinit var receiptService: ReceiptService
+
+    @MockK
+    private lateinit var receiptMapper: ReceiptMapper
+
+    @MockK
+    private lateinit var receiptItemMapper: ReceiptItemMapper
 
     @InjectMockKs
     private lateinit var receiptController: ReceiptController
@@ -52,8 +63,6 @@ internal class ReceiptControllerTest {
 
         every { initReceiptService.initReceipt(fileContents, "jpg") }.returns(receiptDboWithLines)
 
-        val result = receiptController.initReceipt(multipartFile)
-
         val expectedReceiptDto = ReceiptDto(
                 id = 9,
                 angle = 0.0F,
@@ -68,6 +77,10 @@ internal class ReceiptControllerTest {
                         text = "extracted text"
                 ))
         )
+
+        every { receiptMapper.dtoFromDbo(receiptDboWithLines) }.returns(expectedReceiptDto)
+
+        val result = receiptController.initReceipt(multipartFile)
 
         assertThat(result)
                 .usingRecursiveComparison()

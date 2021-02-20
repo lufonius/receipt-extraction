@@ -11,7 +11,9 @@ import javax.persistence.EntityManager
 // TODO: check if transaction rollbacks, image is being deleted as well
 // TODO: check if azure OCR returns a 500x, what is going to happen then? is an exception being thrown? or are only for 400er codes exceptions thrown?
 // TODO: ask - how to get rid of entityManager.refresh(...)?
+// TODO: make cascadeType.persist on receiptdbo, then we do not need the lineRepository and the entityManager :)
 @Component
+@Transactional
 class InitReceiptService (
         val ocrService: OcrService,
         val fileStorageService: FileStorageService,
@@ -20,7 +22,7 @@ class InitReceiptService (
         val uuidGenerator: UUIDGenerator,
         val entityManager: EntityManager
 ) {
-    @Transactional
+
     fun initReceipt(image: ByteArray, fileExtension: String): ReceiptDbo {
         val imageUrl = uploadImageWithRandomUUIDFileName(image, fileExtension)
 
@@ -32,7 +34,7 @@ class InitReceiptService (
             entityManager.refresh(receiptDbo)
             return receiptDbo
         } else {
-            return receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = imageUrl, angle = null))
+            return receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = imageUrl))
         }
     }
 

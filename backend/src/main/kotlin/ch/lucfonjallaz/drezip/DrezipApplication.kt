@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Import
 
 @SpringBootApplication
 @Import(SwaggerConfiguration::class)
-class DrezipApplication
+class Application
 
 fun main(args: Array<String>) {
-	runApplication<DrezipApplication>(*args)
+	runApplication<Application>(*args)
 }
