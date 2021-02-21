@@ -74,7 +74,7 @@ class InitReceiptServiceTest {
         every { uuidGenerator.generateRandomUUID() }.returns("bongo")
         val receiptDbo = ReceiptDbo(
                 id = 9,
-                status = ReceiptStatus.TextExtracted,
+                status = ReceiptStatus.Open,
                 imgUrl = "https://gaggi.com/bongo.jpg",
                 angle = 90.0F
         )
@@ -97,11 +97,11 @@ class InitReceiptServiceTest {
         val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg")
 
         assertThat(receipt.imgUrl).isEqualTo("https://gaggi.com/bongo.jpg")
-        assertThat(receipt.status).isEqualTo(ReceiptStatus.TextExtracted)
+        assertThat(receipt.status).isEqualTo(ReceiptStatus.Open)
         //assertThat()
 
         verify { receiptDboRepository.save(and(
-                match { it.status == ReceiptStatus.TextExtracted },
+                match { it.status == ReceiptStatus.Open },
                 match { it.imgUrl == "https://gaggi.com/bongo.jpg" }
         )) }
 

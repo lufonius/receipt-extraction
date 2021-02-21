@@ -97,13 +97,14 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 	@Test
 	fun `happyflow - endpoint initReceipt should init a receipt and add some receipt items for a category`() {
-		val receiptDto = uploadAndInitReceipt()
+		var receiptDto = uploadAndInitReceipt()
 		val firstLineId = receiptDto.lines?.get(0)?.id ?: throw Exception("line at index 0 not found")
-		val secondLineId = receiptDto.lines?.get(1)?.id ?: throw Exception("line at index 0 not found")
+		val secondLineId = receiptDto.lines?.get(1)?.id ?: throw Exception("line at index 1 not found")
 
-
+		receiptDto = startReceiptExtraction(receiptDto.id)
 		setTotalAndDateOfReceipt(receiptDto, firstLineId, secondLineId)
 		addReceiptItemWithCategory(firstLineId, secondLineId, receiptDto.id)
+		endReceiptExtraction(receiptDto.id)
 	}
 
 	private fun uploadAndInitReceipt(): ReceiptDto {
@@ -121,11 +122,25 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		val receiptDto = receiptDtoResponse.body ?: throw Exception("no receipt returned of the init endpoint")
 
-		assertThat(receiptDto.status).isEqualTo(ReceiptStatus.TextExtracted)
+		assertThat(receiptDto.status).isEqualTo(ReceiptStatus.Open)
 		assertThat(receiptDto.angle).isNotNull
 		assertThat(receiptDto.imgUrl).isNotNull
 
 		return receiptDto
+	}
+
+	private fun startReceiptExtraction(receiptId: Int): ReceiptDto {
+		val restTemplate = TestRestTemplate()
+
+		val request = RequestEntity<ReceiptDto>(HttpMethod.POST, URI("$apiBaseUrl/api/receipt/start/${receiptId}"))
+		val updatedReceiptDtoResponse = restTemplate.exchange(request, ReceiptDto::class.java)
+
+		val updatedReceiptDto = updatedReceiptDtoResponse.body ?: throw Exception("Expected a non-null response body")
+
+		assertThat(updatedReceiptDto.id).isEqualTo(receiptId)
+		assertThat(updatedReceiptDto.status).isEqualTo(ReceiptStatus.InProgress)
+
+		return updatedReceiptDto
 	}
 
 	private fun setTotalAndDateOfReceipt(receiptDto: ReceiptDto, totalLineId: Int, dateLineId: Int) {
@@ -182,13 +197,24 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				.isEqualTo(receiptItemToBeSaved)
 	}
 
+	private fun endReceiptExtraction(receiptId: Int) {
+		val restTemplate = TestRestTemplate()
+
+		val request = RequestEntity<ReceiptDto>(HttpMethod.POST, URI("$apiBaseUrl/api/receipt/end/${receiptId}"))
+		val updatedReceiptDtoResponse = restTemplate.exchange(request, ReceiptDto::class.java)
+
+		val updatedReceiptDto = updatedReceiptDtoResponse.body ?: throw Exception("Expected a non-null response body")
+
+		assertThat(updatedReceiptDto.id).isEqualTo(receiptId)
+		assertThat(updatedReceiptDto.status).isEqualTo(ReceiptStatus.Done)
+	}
+
 	private fun createAndSaveDummyCategoryDbo(): CategoryDbo {
 		val dbo = createTestCategoryDbo(name = "parent")
 		entityManager.persist(dbo)
 
 		return dbo
 	}
-
 	private fun createAndSaveDummyLineDbo(receiptDbo: ReceiptDbo): LineDbo {
 		val lineDbo = createTestLineDbo(receiptDbo)
 		entityManager.persist(lineDbo)

@@ -28,7 +28,7 @@ class InitReceiptService (
 
         val extractedText = ocrService.extractText(imageUrl)
         if (extractedText != null) {
-            val receiptDbo = receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.TextExtracted, imgUrl = imageUrl, angle = extractedText.angle))
+            val receiptDbo = receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.Open, imgUrl = imageUrl, angle = extractedText.angle))
             val lineDbos = extractedText.lines.map { mapToLineDbo(it.text, it.boundingBox, receiptDbo) }
             lineDboRepository.saveAll(lineDbos)
             entityManager.refresh(receiptDbo)

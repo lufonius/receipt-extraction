@@ -27,6 +27,20 @@ class ReceiptController(
         return receiptMapper.dtoFromDbo(receiptDbo)
     }
 
+    @PostMapping("/receipt/start/{receiptId}")
+    fun startReceiptExtraction(@PathVariable receiptId: Int): ReceiptDto {
+        val receiptDbo = receiptService.startReceiptExtraction(receiptId)
+
+        return receiptMapper.dtoFromDbo(receiptDbo)
+    }
+
+    @PostMapping("/receipt/end/{receiptId}")
+    fun endReceiptExtraction(@PathVariable receiptId: Int): ReceiptDto {
+        val receiptDbo = receiptService.endReceiptExtraction(receiptId)
+
+        return receiptMapper.dtoFromDbo(receiptDbo)
+    }
+
     /***
      * When the user wants to continue editing a receipt, he needs to get the details
      */

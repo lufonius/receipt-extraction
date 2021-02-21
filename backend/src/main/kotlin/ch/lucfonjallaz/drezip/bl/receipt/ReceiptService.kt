@@ -23,6 +23,26 @@ class ReceiptService(
         }
     }
 
+    fun startReceiptExtraction(receiptId: Int): ReceiptDbo {
+        val receiptDbo = receiptDboRepository.getOne(receiptId)
+
+        val receiptDboInProgress = receiptDbo.copy(
+                status = ReceiptStatus.InProgress
+        )
+
+        return receiptDboRepository.save(receiptDboInProgress)
+    }
+
+    fun endReceiptExtraction(receiptId: Int): ReceiptDbo {
+        val receiptDbo = receiptDboRepository.getOne(receiptId)
+
+        val receiptDboDone = receiptDbo.copy(
+                status = ReceiptStatus.Done
+        )
+
+        return receiptDboRepository.save(receiptDboDone)
+    }
+
     fun upsertReceiptItem(dbo: ReceiptItemDbo): ReceiptItemDbo {
         validateReceiptItem(dbo)
         return receiptItemDboRepository.save(dbo)
@@ -31,6 +51,11 @@ class ReceiptService(
     fun deleteReceiptItem(id: Int) = receiptItemDboRepository.deleteById(id)
 
     private fun validateReceiptItem(dbo: ReceiptItemDbo) {
+        val receiptOfItem = dbo.receipt
+        if (receiptOfItem.status != ReceiptStatus.InProgress) {
+            throw Exception("You can only add ReceiptItems to Receipts which have the status 'InProgress'")
+        }
+
         if (dbo.type == ReceiptItemType.Category && dbo.category == null) {
             throw Exception("If you specify a ReceiptItem Type of 'Category', you have to pass a category")
         }
