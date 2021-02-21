@@ -50,6 +50,13 @@ class ReceiptService(
 
     fun deleteReceiptItem(id: Int) = receiptItemDboRepository.deleteById(id)
 
+    /**
+     * We could have made two separate tables for Categories and Taxes, but since we do not know
+     * if there will ever be more than two types, two tables are more complicated, as we would have one more objects in
+     * the system.
+     *
+     * If the amount of types grow, we could think about a separation
+     */
     private fun validateReceiptItem(dbo: ReceiptItemDbo) {
         val receiptOfItem = dbo.receipt
         if (receiptOfItem.status != ReceiptStatus.InProgress) {
@@ -62,6 +69,10 @@ class ReceiptService(
 
         if (dbo.amountLine.id == dbo.labelLine.id) {
             throw Exception("amount and label cannot be the same box on the receipt. select different lines.")
+        }
+
+        if (dbo.type == ReceiptItemType.Tax && dbo.category != null) {
+            throw Exception("If you specify a ReceiptItem Type of 'Tax', you must not pass a category")
         }
     }
 }

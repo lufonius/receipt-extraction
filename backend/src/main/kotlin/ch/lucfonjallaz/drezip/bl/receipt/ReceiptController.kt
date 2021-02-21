@@ -81,7 +81,6 @@ class ReceiptController(
         val dboWithExplicitId = dbo.copy(id = id)
 
         val updatedDbo = receiptService.upsertReceiptItem(dboWithExplicitId)
-
         return receiptItemMapper.dtoFromDbo(updatedDbo)
     }
 

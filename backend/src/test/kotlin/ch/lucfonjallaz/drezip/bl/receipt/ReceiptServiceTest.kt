@@ -59,6 +59,24 @@ class ReceiptServiceTest {
         assertThat(exc.message).isEqualTo("amount and label cannot be the same box on the receipt. select different lines.")
     }
 
+    @Test
+    fun `should validate that a receiptItem of type Tax has no category set`() {
+        val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.InProgress)
+        val categoryDbo = createTestCategoryDbo()
+        val lineDboWithId1 = createTestLineDbo(receiptDbo, id = 1)
+        val lineDboWithId2 = createTestLineDbo(receiptDbo, id = 2)
+        val dbo = createTestReceiptItemDbo(
+                labelLine = lineDboWithId1,
+                amountLine = lineDboWithId2,
+                receiptDbo = receiptDbo,
+                categoryDbo = categoryDbo,
+                type = ReceiptItemType.Tax
+        )
+        val exc = assertThrows<Exception> { receiptService.upsertReceiptItem(dbo) }
+
+        assertThat(exc.message).isEqualTo("If you specify a ReceiptItem Type of 'Tax', you must not pass a category")
+    }
+
     @ParameterizedTest
     @EnumSource(mode = EnumSource.Mode.EXCLUDE, value = ReceiptStatus::class, names = ["InProgress"])
     fun `should validate that ReceiptItems should not be added when not in progress`(status: ReceiptStatus) {

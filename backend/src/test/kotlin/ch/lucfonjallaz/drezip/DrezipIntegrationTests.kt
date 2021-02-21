@@ -3,6 +3,7 @@ package ch.lucfonjallaz.drezip
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.category.CategoryDto
 import ch.lucfonjallaz.drezip.bl.receipt.*
+import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDto
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
@@ -97,13 +98,16 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 	@Test
 	fun `happyflow - endpoint initReceipt should init a receipt and add some receipt items for a category`() {
-		var receiptDto = uploadAndInitReceipt()
+		val receiptDto = uploadAndInitReceipt()
 		val firstLineId = receiptDto.lines?.get(0)?.id ?: throw Exception("line at index 0 not found")
 		val secondLineId = receiptDto.lines?.get(1)?.id ?: throw Exception("line at index 1 not found")
 
-		receiptDto = startReceiptExtraction(receiptDto.id)
-		setTotalAndDateOfReceipt(receiptDto, firstLineId, secondLineId)
-		addReceiptItemWithCategory(firstLineId, secondLineId, receiptDto.id)
+		val inProgressReceiptDto = startReceiptExtraction(receiptDto.id)
+		setTotalAndDateOfReceipt(inProgressReceiptDto, firstLineId, secondLineId)
+		val receiptItemDto = addReceiptItemWithCategory(firstLineId, secondLineId, receiptDto.id)
+		editReceiptItem(receiptItemDto)
+		deleteReceiptItem(receiptItemDto.id)
+		addReceiptItemWithTax(firstLineId, secondLineId, receiptDto.id)
 		endReceiptExtraction(receiptDto.id)
 	}
 
@@ -163,7 +167,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		assertThat(updatedReceiptDto.dateLineId).isEqualTo(dateLineId)
 	}
 
-	private fun addReceiptItemWithCategory(labelLineId: Int, amountLineId: Int, receiptId: Int) {
+	private fun addReceiptItemWithCategory(labelLineId: Int, amountLineId: Int, receiptId: Int): ReceiptItemDto {
 		val restTemplate = TestRestTemplate()
 		val persistedCategory = createAndSaveDummyCategoryDbo()
 		TestTransaction.end()
@@ -195,6 +199,62 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				.usingRecursiveComparison()
 				.ignoringFields("id")
 				.isEqualTo(receiptItemToBeSaved)
+
+		return savedReceiptItem
+	}
+
+	private fun editReceiptItem(receiptItemDtoToBeEdited: ReceiptItemDto) {
+		val editedReceiptItemDto = receiptItemDtoToBeEdited.copy(
+				amount = 70.88F,
+				label = "editedLabel"
+		)
+
+		val restTemplate = TestRestTemplate()
+		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(editedReceiptItemDto, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/item/${editedReceiptItemDto.id}"))
+		val savedReceiptItemResponse = restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
+
+		val savedReceiptItem = savedReceiptItemResponse.body ?: throw Exception("did not save receipt item")
+
+		assertThat(savedReceiptItem.id).isNotNull
+		assertThat(savedReceiptItem)
+				.usingRecursiveComparison()
+				.ignoringFields("id")
+				.isEqualTo(editedReceiptItemDto)
+	}
+
+	private fun deleteReceiptItem(id: Int) {
+		val restTemplate = TestRestTemplate()
+		val saveReceiptItemRequest = RequestEntity<Unit>(HttpMethod.DELETE, URI("$apiBaseUrl/api/receipt/item/${id}"))
+		restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
+
+		val entity = entityManager.find(ReceiptItemDbo::class.java, id)
+		assertThat(entity).isNull()
+	}
+
+	private fun addReceiptItemWithTax(labelLineId: Int, amountLineId: Int, receiptId: Int): ReceiptItemDto {
+		val restTemplate = TestRestTemplate()
+		val receiptItemToBeSaved = ReceiptItemDto(
+				receiptId = receiptId,
+				type = ReceiptItemType.Tax,
+				label = "Tax",
+				labelLineId = labelLineId,
+				amount = 0.95F,
+				amountLineId = amountLineId,
+				categoryId = null
+		)
+
+		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(receiptItemToBeSaved, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/item"))
+		val savedReceiptItemResponse = restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
+
+		val savedReceiptItem = savedReceiptItemResponse.body ?: throw Exception("did not save receipt item")
+
+		assertThat(savedReceiptItem.id).isNotNull
+		assertThat(savedReceiptItem)
+				.usingRecursiveComparison()
+				.ignoringFields("id")
+				.isEqualTo(receiptItemToBeSaved)
+
+		return savedReceiptItem
 	}
 
 	private fun endReceiptExtraction(receiptId: Int) {
@@ -215,6 +275,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		return dbo
 	}
+
 	private fun createAndSaveDummyLineDbo(receiptDbo: ReceiptDbo): LineDbo {
 		val lineDbo = createTestLineDbo(receiptDbo)
 		entityManager.persist(lineDbo)
