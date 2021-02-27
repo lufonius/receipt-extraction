@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 class LineMapper {
     fun dtoFromDbo(dbo: LineDbo) = LineDto(
             id = dbo.id,
+            receiptId = dbo.receipt.id,
             topLeft = PointDto(dbo.topLeftX, dbo.topLeftY),
             topRight = PointDto(dbo.topRightX, dbo.topRightY),
             bottomRight = PointDto(dbo.bottomRightX, dbo.bottomRightY),

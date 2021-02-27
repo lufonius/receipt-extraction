@@ -6,8 +6,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [
-      "dom",
-      "es2015"
+      "es2017",
+      "dom"
     ],
     "moduleResolution": "node",
     "module": "esnext",

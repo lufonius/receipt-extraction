@@ -1,20 +1,13 @@
-import {Component, h, State} from '@stencil/core';
-import {GlobalStore} from "../../../global/global-store.service";
+import {Component, h, Prop, State} from '@stencil/core';
+import { RouterHistory } from '@stencil/router';
 import {Inject} from "../../../global/di/inject";
-import {OpenCvService} from "../../../global/opencv/opencv.service";
-import Konva from 'konva';
-import {DragableRectangle} from "./dragable-rectangle";
 import flyd from 'flyd';
-import {CssVarsService} from "../../../global/css-vars.service";
-import {makeStagePinchZoomable} from "../../common/canvas/make-stage-pinch-zoomable";
 import {CropCanvasFactory} from "./crop-canvas-factory";
 import {CropCanvas} from "./crop-canvas";
 import {MaterialIcons} from "../../../global/material-icons-enum";
-
-enum Orientation {
-  Landscape,
-  Portrait
-}
+import {InitReceiptService} from "./init-receipt.service";
+import {GlobalStore} from "../../../global/global-store.service";
+import {Mapper} from "../../model/mapper";
 
 @Component({
   tag: 'app-crop',
@@ -24,6 +17,11 @@ enum Orientation {
 export class AppCrop {
 
   @Inject(CropCanvasFactory) private cropCanvasFactory: CropCanvasFactory;
+  @Inject(InitReceiptService) private initReceiptService: InitReceiptService;
+  @Inject(GlobalStore) private globalStore: GlobalStore;
+  @Inject(Mapper) private mapper: Mapper
+
+  @Prop() history: RouterHistory;
 
   photoInput: HTMLInputElement;
   controlsHeight: number = 50;
@@ -64,7 +62,7 @@ export class AppCrop {
   async drawImageAndDetectedRectangle() {
     await this.setupCanvas();
 
-    const file = this.photoInput.files[0];
+    const file: File = this.photoInput.files[0];
 
     if (!!file) {
       await this.cropCanvas.drawImageAndDetectedRectangle(file);
@@ -75,6 +73,14 @@ export class AppCrop {
       this.alreadyTookPhotograph = true;
       this.cropShown = true;
     }
+  }
+
+  async initReceiptAndRedirect() {
+    const jpegAsBlob = await this.cropCanvas.imageAsPngBlob
+    const receiptDto = await this.initReceiptService.initReceipt(jpegAsBlob)
+    const receipt = this.mapper.receiptFromDto(receiptDto)
+    this.globalStore.setCurrentReceipt(receipt)
+    this.history.push('/receipt-extraction')
   }
 
   render() {
@@ -109,9 +115,9 @@ export class AppCrop {
           </app-button> }
 
 
-          <div class="grow"></div>
+          <div class="grow" />
           {this.cropShown && <app-button onPress={() => this.cropByDragableRectangle()} primary>Crop</app-button>}
-          {this.uploadShown && <app-button primary>Upload</app-button>}
+          {this.uploadShown && <app-button onPress={() => this.initReceiptAndRedirect()} primary>Upload</app-button>}
         </div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.drawImageAndDetectedRectangle()} ref={(el) => this.photoInput = el} />
       </div>

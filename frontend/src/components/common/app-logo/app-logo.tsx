@@ -1,6 +1,4 @@
-import {Component, Host, h, Prop, State} from '@stencil/core';
-import {Inject} from "../../../global/di/inject";
-import {CssVarsService} from "../../../global/css-vars.service";
+import {Component, Host, h} from '@stencil/core';
 
 @Component({
   tag: 'app-logo',

@@ -48,6 +48,15 @@ export class CropCanvas {
     return this.rectangle.dragEnd;
   }
 
+  get imageAsPngBlob(): Promise<Blob> {
+    const offscreenCanvas = new OffscreenCanvas(this.imageData.width, this.imageData.height)
+    offscreenCanvas.getContext("2d").putImageData(this.imageData, 0, 0)
+    return offscreenCanvas.convertToBlob({
+      type: "image/jpeg",
+      quality: 1
+    })
+  }
+
   private setupCanvas() {
     this.canvasWidth = innerWidth - this.canvasMarginX * 2;
     this.canvasHeight = innerHeight - this.controlsHeight;

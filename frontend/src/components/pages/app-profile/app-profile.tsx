@@ -7,11 +7,6 @@ import { MatchResults } from '@stencil/router';
   shadow: false,
 })
 export class AppProfile {
-
-  constructor() {
-
-  }
-
   @Prop() match: MatchResults;
 
   normalize(name: string): string {

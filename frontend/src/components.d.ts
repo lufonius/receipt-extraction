@@ -6,7 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { MaterialIcons } from "./global/material-icons-enum";
-import { MatchResults } from "@stencil/router";
+import { MatchResults, RouterHistory } from "@stencil/router";
+import { Line, Receipt } from "./components/model/client";
 export namespace Components {
     interface AppButton {
         "primary": boolean;
@@ -19,6 +20,7 @@ export namespace Components {
     interface AppComponents {
     }
     interface AppCrop {
+        "history": RouterHistory;
     }
     interface AppHome {
     }
@@ -38,6 +40,9 @@ export namespace Components {
     interface AppReceiptExtraction {
     }
     interface AppRoot {
+    }
+    interface ReceiptLines {
+        "receipt": Receipt;
     }
 }
 declare global {
@@ -119,6 +124,12 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLReceiptLinesElement extends Components.ReceiptLines, HTMLStencilElement {
+    }
+    var HTMLReceiptLinesElement: {
+        prototype: HTMLReceiptLinesElement;
+        new (): HTMLReceiptLinesElement;
+    };
     interface HTMLElementTagNameMap {
         "app-button": HTMLAppButtonElement;
         "app-button-round": HTMLAppButtonRoundElement;
@@ -133,6 +144,7 @@ declare global {
         "app-qr-scan": HTMLAppQrScanElement;
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-root": HTMLAppRootElement;
+        "receipt-lines": HTMLReceiptLinesElement;
     }
 }
 declare namespace LocalJSX {
@@ -149,6 +161,7 @@ declare namespace LocalJSX {
     interface AppComponents {
     }
     interface AppCrop {
+        "history"?: RouterHistory;
     }
     interface AppHome {
     }
@@ -169,6 +182,10 @@ declare namespace LocalJSX {
     }
     interface AppRoot {
     }
+    interface ReceiptLines {
+        "onLineClick"?: (event: CustomEvent<Line>) => void;
+        "receipt"?: Receipt;
+    }
     interface IntrinsicElements {
         "app-button": AppButton;
         "app-button-round": AppButtonRound;
@@ -183,6 +200,7 @@ declare namespace LocalJSX {
         "app-qr-scan": AppQrScan;
         "app-receipt-extraction": AppReceiptExtraction;
         "app-root": AppRoot;
+        "receipt-lines": ReceiptLines;
     }
 }
 export { LocalJSX as JSX };
@@ -202,6 +220,7 @@ declare module "@stencil/core" {
             "app-qr-scan": LocalJSX.AppQrScan & JSXBase.HTMLAttributes<HTMLAppQrScanElement>;
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "receipt-lines": LocalJSX.ReceiptLines & JSXBase.HTMLAttributes<HTMLReceiptLinesElement>;
         }
     }
 }

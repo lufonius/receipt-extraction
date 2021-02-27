@@ -8,6 +8,7 @@
     "start": "stencil build --dev --watch --serve",
     "start:prod": "stencil build --watch --serve",
     "test": "stencil test --spec --e2e",
+    "unit-test": "stencil test --spec",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate",
     "start:proxy": "node dev-http-https-redirect.proxy.js"
@@ -16,13 +17,17 @@
     "@stencil/core": "^2.0.0",
     "@stencil/router": "^1.0.1",
     "@stencil/sass": "^1.4.1",
+    "@types/jest": "^26.0.15",
     "@types/w3c-image-capture": "^1.0.2",
     "fs": "0.0.1-security",
     "http-proxy": "^1.18.1",
+    "jest": "^26.6.3",
+    "jest-cli": "^26.6.3",
     "workbox-build": "^4.3.1"
   },
   "license": "MIT",
   "dependencies": {
+    "@types/lodash": "^4.14.168",
     "deepmerge": "^4.2.2",
     "flyd": "^0.2.8",
     "immer": "^8.0.0",

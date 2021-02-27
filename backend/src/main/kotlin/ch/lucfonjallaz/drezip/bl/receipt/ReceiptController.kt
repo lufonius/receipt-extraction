@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
+// TODO: make configurable on a per-environment basis
+@CrossOrigin("*")
 class ReceiptController(
         val initReceiptService: InitReceiptService,
         val receiptService: ReceiptService,
@@ -19,10 +21,10 @@ class ReceiptController(
      * The user begins to extract text from the receipt
      */
     @PostMapping("/receipt/init", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun initReceipt(@RequestPart("file") file: MultipartFile): ReceiptDto {
-        val fileExtension = file.originalFilename?.split('.')?.lastOrNull() ?: throw Exception("file extension not specified")
+    fun initReceipt(@RequestPart("image") image: MultipartFile): ReceiptDto {
+        val imageFileExtension = image.originalFilename?.split('.')?.lastOrNull() ?: throw Exception("file extension not specified")
 
-        val receiptDbo = initReceiptService.initReceipt(file.bytes, fileExtension)
+        val receiptDbo = initReceiptService.initReceipt(image.bytes, imageFileExtension)
 
         return receiptMapper.dtoFromDbo(receiptDbo)
     }
