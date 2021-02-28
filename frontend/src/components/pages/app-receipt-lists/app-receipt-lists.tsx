@@ -52,7 +52,6 @@ export class AppReceiptLists {
     const nextReceiptToEdit = this.getNextReceiptWithStatus(status);
     const receiptDto = await this.fetchReceipt(nextReceiptToEdit.id);
     const receipt = this.mapper.receiptFromDto(receiptDto)
-    console.log(receipt);
     this.globalStore.setCurrentReceipt(receipt)
     this.history.push('/receipt-extraction')
   }

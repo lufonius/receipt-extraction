@@ -1,4 +1,4 @@
-import { Component, Host, h } from '@stencil/core';
+import {Component, Host, h, State} from '@stencil/core';
 import {Inject} from "../../../global/di/inject";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Line, Receipt} from "../../model/client";
@@ -12,14 +12,16 @@ import flyd from 'flyd';
 export class AppReceiptExtraction {
 
   @Inject(GlobalStore) private globalStore: GlobalStore;
-  public currentReceipt: Receipt;
+  @State() public currentReceipt: Receipt;
 
   componentDidLoad() {
-    flyd.on((receipt) => this.currentReceipt = receipt, this.globalStore.selectCurrentReceipt())
+    flyd.on((receipt) => {
+      this.currentReceipt = receipt;
+    }, this.globalStore.selectCurrentReceipt())
   }
 
   lineClicked(line: Line) {
-    alert("you clicked line with id: " + line.id);
+    alert(line.text);
   }
 
   render() {

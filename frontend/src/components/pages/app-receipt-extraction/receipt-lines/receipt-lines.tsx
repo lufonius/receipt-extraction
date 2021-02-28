@@ -3,6 +3,7 @@ import {Line, Receipt} from "../../../model/client";
 import Konva from "konva";
 import {makeStagePinchZoomable} from "../../../common/canvas/make-stage-pinch-zoomable";
 import KonvaEventObject = Konva.KonvaEventObject;
+import {makeStageZoomable} from "../../../common/canvas/make-stage-zoomable";
 
 // TODO: rename to start with app
 @Component({
@@ -14,9 +15,9 @@ export class ReceiptLines {
   @Prop() receipt: Receipt;
 
   @Watch('receipt')
-  receiptChanged() {
+  async receiptChanged() {
     this.setupStage();
-    this.drawImage();
+    await this.drawImage();
     this.drawLinesOntoImage();
   }
 
@@ -25,12 +26,15 @@ export class ReceiptLines {
 
   @Event() lineClick: EventEmitter<Line>;
 
-  drawImage() {
+  async drawImage(): Promise<void> {
     const layer = new Konva.Layer();
-    Konva.Image.fromURL(this.receipt.imgUrl, (img) => {
-      layer.add(img);
-      this.stage.add(layer);
-      this.stage.batchDraw();
+    return new Promise((resolve) => {
+      Konva.Image.fromURL(this.receipt.imgUrl, (img) => {
+        layer.add(img);
+        this.stage.add(layer);
+        this.stage.batchDraw();
+        resolve();
+      });
     });
   }
 
@@ -45,6 +49,7 @@ export class ReceiptLines {
     });
 
     makeStagePinchZoomable(this.stage);
+    makeStageZoomable(this.stage);
   }
 
   private drawLinesOntoImage() {
