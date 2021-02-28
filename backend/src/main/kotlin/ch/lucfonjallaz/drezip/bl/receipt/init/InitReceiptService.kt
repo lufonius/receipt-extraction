@@ -5,6 +5,7 @@ import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 import javax.persistence.EntityManager
 
 // TODO: check if transaction rollback works
@@ -28,13 +29,22 @@ class InitReceiptService (
 
         val extractedText = ocrService.extractText(imageUrl)
         if (extractedText != null) {
-            val receiptDbo = receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.Open, imgUrl = imageUrl, angle = extractedText.angle))
+            val receiptDbo = receiptDboRepository.save(ReceiptDbo(
+                    status = ReceiptStatus.Open,
+                    imgUrl = imageUrl,
+                    angle = extractedText.angle,
+                    uploadedAt = Date()
+            ))
             val lineDbos = extractedText.lines.map { mapToLineDbo(it.text, it.boundingBox, receiptDbo) }
             lineDboRepository.saveAll(lineDbos)
             entityManager.refresh(receiptDbo)
             return receiptDbo
         } else {
-            return receiptDboRepository.save(ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = imageUrl))
+            return receiptDboRepository.save(ReceiptDbo(
+                    status = ReceiptStatus.Uploaded,
+                    imgUrl = imageUrl,
+                    uploadedAt = Date()
+            ))
         }
     }
 

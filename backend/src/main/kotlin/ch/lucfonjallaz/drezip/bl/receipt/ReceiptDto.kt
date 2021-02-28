@@ -10,6 +10,7 @@ data class ReceiptDto(
         val id: Int,
         val status: ReceiptStatus,
         val imgUrl: String,
+        val uploadedAt: Date,
         val angle: Float? = null,
         val total: Float? = null,
         val totalLineId: Int? = null,

@@ -23,7 +23,8 @@ class ReceiptMapper(
             totalLineId = dbo.totalLine?.id,
             date = dbo.date,
             dateLineId = dbo.dateLine?.id,
-            items = dbo.items.map { receiptItemMapper.dtoFromDbo(it) }
+            items = dbo.items.map { receiptItemMapper.dtoFromDbo(it) },
+            uploadedAt = dbo.uploadedAt
     )
 
     fun dboFromDto(dto: ReceiptDto) = ReceiptDbo(
@@ -34,6 +35,7 @@ class ReceiptMapper(
             total = dto.total,
             totalLine = entityManager.getReference(LineDbo::class.java, dto.totalLineId),
             date = dto.date,
-            dateLine = entityManager.getReference(LineDbo::class.java, dto.dateLineId)
+            dateLine = entityManager.getReference(LineDbo::class.java, dto.dateLineId),
+            uploadedAt = dto.uploadedAt
     )
 }

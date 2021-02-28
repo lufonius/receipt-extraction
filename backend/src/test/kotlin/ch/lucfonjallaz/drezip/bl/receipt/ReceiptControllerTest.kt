@@ -2,7 +2,6 @@ package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.bl.receipt.init.InitReceiptService
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemMapper
-import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDto
 import ch.lucfonjallaz.drezip.bl.receipt.line.PointDto
 import io.mockk.every
@@ -10,10 +9,10 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.mock.web.MockMultipartFile
+import java.util.*
 
 @ExtendWith(MockKExtension::class)
 internal class ReceiptControllerTest {
@@ -37,11 +36,13 @@ internal class ReceiptControllerTest {
         val fileContents = ByteArray(0)
         val multipartFile = MockMultipartFile("test.jpg", "hello/world/test.jpg", "image/jpg", fileContents)
 
+        val currentDate = Date()
         val receiptDbo = createTestReceiptDbo(
                 imgUrl = "helloworld.jpg",
                 status = ReceiptStatus.Uploaded,
                 angle = 0.0F,
-                id = 9
+                id = 9,
+                uploadedAt = currentDate
         )
 
         val lineDbo = createTestLineDbo(
@@ -73,8 +74,10 @@ internal class ReceiptControllerTest {
                         topRight = PointDto(2, 3),
                         bottomRight = PointDto(4, 5),
                         bottomLeft = PointDto(6, 7),
-                        text = "extracted text"
-                ))
+                        text = "extracted text",
+                        receiptId = receiptDbo.id
+                )),
+                uploadedAt = currentDate
         )
 
         every { receiptMapper.dtoFromDbo(receiptDboWithLines) }.returns(expectedReceiptDto)
@@ -84,5 +87,23 @@ internal class ReceiptControllerTest {
         assertThat(result)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedReceiptDto)
+    }
+
+    @Test
+    fun `shoud return all receipts not done`() {
+        val receiptDbo = createTestReceiptDbo(id = 9, status = ReceiptStatus.Uploaded)
+        val receiptDbos = listOf(receiptDbo)
+        every { receiptService.getReceiptsNotDone() }
+                .returns(receiptDbos)
+
+        val receiptListElementDtos = receiptController.getReceiptsNotDone()
+
+        val expectedDto = ReceiptListElementDto(
+                id = 9,
+                status = ReceiptStatus.Uploaded
+        )
+        assertThat(receiptListElementDtos)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyInAnyOrder(expectedDto)
     }
 }

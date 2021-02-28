@@ -20,6 +20,7 @@ export class AppHome {
         <stencil-route-link url="/qr-scan">Qr scanning</stencil-route-link><br />
         <stencil-route-link url="/receipt-extraction">Receipt extraction</stencil-route-link><br />
         <stencil-route-link url="/components">All components</stencil-route-link>
+        <stencil-route-link url="/list-receipts">list receipts</stencil-route-link>
       </div>
     );
   }

@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus.*
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
@@ -15,6 +16,10 @@ class ReceiptService(
 ) {
     fun getReceipt(id: Int) = receiptDboRepository.getOne(id)
 
+    fun getReceiptsNotDone(): List<ReceiptDbo> {
+        return receiptDboRepository.findByStatusInOrderByUploadedAtDesc(listOf(Uploaded, Open, InProgress))
+    }
+
     fun updateReceipt(updateDbo: ReceiptDbo): ReceiptDbo {
         if(receiptDboRepository.existsById(updateDbo.id)) {
             return receiptDboRepository.save(updateDbo)
@@ -27,7 +32,7 @@ class ReceiptService(
         val receiptDbo = receiptDboRepository.getOne(receiptId)
 
         val receiptDboInProgress = receiptDbo.copy(
-                status = ReceiptStatus.InProgress
+                status = InProgress
         )
 
         return receiptDboRepository.save(receiptDboInProgress)
@@ -37,7 +42,7 @@ class ReceiptService(
         val receiptDbo = receiptDboRepository.getOne(receiptId)
 
         val receiptDboDone = receiptDbo.copy(
-                status = ReceiptStatus.Done
+                status = Done
         )
 
         return receiptDboRepository.save(receiptDboDone)
@@ -59,7 +64,7 @@ class ReceiptService(
      */
     private fun validateReceiptItem(dbo: ReceiptItemDbo) {
         val receiptOfItem = dbo.receipt
-        if (receiptOfItem.status != ReceiptStatus.InProgress) {
+        if (receiptOfItem.status != InProgress) {
             throw Exception("You can only add ReceiptItems to Receipts which have the status 'InProgress'")
         }
 

@@ -10,7 +10,6 @@ export class InitReceiptService {
     formData.append("image", image, "image.jpeg")
 
     return await fetch(`${this.baseApiUrl}/receipt/init`, {
-      referrerPolicy: "no-referrer-when-downgrade",
       method: 'POST',
       body: formData
     }).then(r => r.json());

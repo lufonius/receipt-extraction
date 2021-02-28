@@ -39,6 +39,9 @@ export namespace Components {
     }
     interface AppReceiptExtraction {
     }
+    interface AppReceiptLists {
+        "history": RouterHistory;
+    }
     interface AppRoot {
     }
     interface ReceiptLines {
@@ -118,6 +121,12 @@ declare global {
         prototype: HTMLAppReceiptExtractionElement;
         new (): HTMLAppReceiptExtractionElement;
     };
+    interface HTMLAppReceiptListsElement extends Components.AppReceiptLists, HTMLStencilElement {
+    }
+    var HTMLAppReceiptListsElement: {
+        prototype: HTMLAppReceiptListsElement;
+        new (): HTMLAppReceiptListsElement;
+    };
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
     }
     var HTMLAppRootElement: {
@@ -143,6 +152,7 @@ declare global {
         "app-qr-generation": HTMLAppQrGenerationElement;
         "app-qr-scan": HTMLAppQrScanElement;
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
+        "app-receipt-lists": HTMLAppReceiptListsElement;
         "app-root": HTMLAppRootElement;
         "receipt-lines": HTMLReceiptLinesElement;
     }
@@ -180,6 +190,9 @@ declare namespace LocalJSX {
     }
     interface AppReceiptExtraction {
     }
+    interface AppReceiptLists {
+        "history"?: RouterHistory;
+    }
     interface AppRoot {
     }
     interface ReceiptLines {
@@ -199,6 +212,7 @@ declare namespace LocalJSX {
         "app-qr-generation": AppQrGeneration;
         "app-qr-scan": AppQrScan;
         "app-receipt-extraction": AppReceiptExtraction;
+        "app-receipt-lists": AppReceiptLists;
         "app-root": AppRoot;
         "receipt-lines": ReceiptLines;
     }
@@ -219,6 +233,7 @@ declare module "@stencil/core" {
             "app-qr-generation": LocalJSX.AppQrGeneration & JSXBase.HTMLAttributes<HTMLAppQrGenerationElement>;
             "app-qr-scan": LocalJSX.AppQrScan & JSXBase.HTMLAttributes<HTMLAppQrScanElement>;
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
+            "app-receipt-lists": LocalJSX.AppReceiptLists & JSXBase.HTMLAttributes<HTMLAppReceiptListsElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "receipt-lines": LocalJSX.ReceiptLines & JSXBase.HTMLAttributes<HTMLReceiptLinesElement>;
         }

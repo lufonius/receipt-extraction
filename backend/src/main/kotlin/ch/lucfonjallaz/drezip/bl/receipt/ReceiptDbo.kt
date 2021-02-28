@@ -27,6 +27,9 @@ data class ReceiptDbo(
         @Column(nullable = true)
         var total: Float? = null,
 
+        @Column(nullable = false)
+        val uploadedAt: Date,
+
         @OneToOne(fetch = FetchType.LAZY, optional = true)
         @JoinColumn(name = "total_line_id")
         var totalLine: LineDbo? = null,

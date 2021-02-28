@@ -17,11 +17,6 @@ export enum ReceiptStatus {
   Done = "Done"
 }
 
-export interface ReceiptListItem {
-  id: number;
-  status: ReceiptStatus;
-}
-
 export interface Line {
   id: number;
   receiptId: number;

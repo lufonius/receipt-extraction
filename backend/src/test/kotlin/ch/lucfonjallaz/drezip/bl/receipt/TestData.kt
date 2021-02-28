@@ -45,14 +45,15 @@ fun createTestCategoryDbo(
 )
 
 fun createTestReceiptDbo(
-        status: ReceiptStatus,
+        status: ReceiptStatus = ReceiptStatus.Uploaded,
         id: Int = 0,
         imgUrl: String = "hoi",
         angle: Float? = null,
         total: Float? = null,
         totalLine: LineDbo? = null,
         date: Date? = null,
-        dateLine: LineDbo? = null
+        dateLine: LineDbo? = null,
+        uploadedAt: Date = Date()
 ) = ReceiptDbo(
         id = id,
         status = status,
@@ -61,7 +62,8 @@ fun createTestReceiptDbo(
         total = total,
         totalLine = totalLine,
         date = date,
-        dateLine = dateLine
+        dateLine = dateLine,
+        uploadedAt = uploadedAt
 )
 
 fun createTestReceiptItemDbo(

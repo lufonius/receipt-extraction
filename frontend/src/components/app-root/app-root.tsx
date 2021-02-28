@@ -35,6 +35,7 @@ export class AppRoot {
               <stencil-route url="/qr-scan" component="app-qr-scan" />
               <stencil-route url="/receipt-extraction" component="app-receipt-extraction" />
               <stencil-route url="/components" component="app-components" />
+              <stencil-route url="/list-receipts" component="app-receipt-lists" />
             </stencil-route-switch>
           </stencil-router>
         </main>

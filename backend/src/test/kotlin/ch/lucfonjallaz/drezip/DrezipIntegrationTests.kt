@@ -49,7 +49,8 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				total = 60.9F,
 				totalLineId = lineDbo.id,
 				date = currentDate,
-				dateLineId = lineDbo.id
+				dateLineId = lineDbo.id,
+				uploadedAt = currentDate
 		)
 
 		val restTemplate = TestRestTemplate()

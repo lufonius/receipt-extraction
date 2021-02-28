@@ -2,10 +2,13 @@ package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
+import io.mockk.InternalPlatformDsl.toArray
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.BDDAssumptions.given
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -95,5 +98,18 @@ class ReceiptServiceTest {
         val exc = assertThrows<Exception> { receiptService.upsertReceiptItem(dbo) }
 
         assertThat(exc.message).isEqualTo("You can only add ReceiptItems to Receipts which have the status 'InProgress'")
+    }
+
+    @Test
+    fun `should return all receipts which are not done`() {
+        val allStatiExceptDone = ReceiptStatus.values().filter { it != ReceiptStatus.Done }
+        val receipDbos = listOf(createTestReceiptDbo())
+        every { receiptDboRepository.findByStatusInOrderByUploadedAtDesc(allStatiExceptDone) }
+                .returns(receipDbos)
+
+        val receiptsNotDone = receiptService.getReceiptsNotDone()
+
+        assertThat(receiptsNotDone)
+                .containsExactlyInAnyOrder(*receipDbos.toTypedArray())
     }
 }

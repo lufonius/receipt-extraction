@@ -49,6 +49,20 @@ class ReceiptController(
     @GetMapping("/receipt/{id}")
     fun getReceipt(@PathVariable id: Int) = receiptMapper.dtoFromDbo(receiptService.getReceipt(id))
 
+    /**
+     * The user lists all receipts which are not done and selects one to continue working on it
+     */
+    @GetMapping("/receipt/not-done")
+    fun getReceiptsNotDone(): List<ReceiptListElementDto> {
+        val receiptsNotDone = receiptService.getReceiptsNotDone()
+
+        return receiptsNotDone.map { ReceiptListElementDto(
+                id = it.id,
+                status = it.status
+        ) }
+    }
+
+
     /***
      * When the user updates the total or the date afterwards
      */

@@ -16,6 +16,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.util.*
 import javax.persistence.EntityManager
 
 @ExtendWith(MockKExtension::class)
@@ -49,7 +50,7 @@ class InitReceiptServiceTest {
         every { ocrService.extractText(imageUrl = "https://gaggi.com/bongo.jpg") }.returns(null)
         every { uuidGenerator.generateRandomUUID() }.returns("bongo")
 
-        val receiptDbo = ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = "https://gaggi.com/bongo.jpg", angle = null)
+        val receiptDbo = ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = "https://gaggi.com/bongo.jpg", angle = null, uploadedAt = Date())
         every { receiptDboRepository.save(and(
                 match { it.status == ReceiptStatus.Uploaded },
                 match { it.imgUrl == "https://gaggi.com/bongo.jpg" }
@@ -76,7 +77,8 @@ class InitReceiptServiceTest {
                 id = 9,
                 status = ReceiptStatus.Open,
                 imgUrl = "https://gaggi.com/bongo.jpg",
-                angle = 90.0F
+                angle = 90.0F,
+                uploadedAt = Date()
         )
         every { receiptDboRepository.save(any()) }.returns(receiptDbo)
 

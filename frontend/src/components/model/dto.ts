@@ -1,3 +1,5 @@
+import {ReceiptStatus} from "./client";
+
 export interface ReceiptDto {
   id: number;
   status: ReceiptStatusDto;
@@ -9,6 +11,11 @@ export interface ReceiptDto {
   dateLineId?: number;
   lines: LineDto[];
   items: ReceiptItemDto[];
+}
+
+export interface ReceiptListElementDto {
+  id: number;
+  status: ReceiptStatusDto;
 }
 
 export interface LineDto {
