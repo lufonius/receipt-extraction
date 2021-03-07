@@ -1,10 +1,11 @@
 import {Component, h, Host, Prop, State, Watch} from '@stencil/core';
 import {MaterialIcons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
-import {Receipt, ReceiptItemType} from "../../../model/client";
+import {Receipt, ReceiptItem, ReceiptItemType} from "../../../model/client";
 import {Inject} from "../../../../global/di/inject";
 import {GlobalStore} from "../../../../global/global-store.service";
 import flyd from "flyd";
+import {ReceiptService} from "../receipt.service";
 
 @Component({
   tag: 'receipt-items-edit',
@@ -13,6 +14,8 @@ import flyd from "flyd";
 })
 export class ReceiptItemsEdit {
   @Inject(GlobalStore) private globalStore: GlobalStore;
+  @Inject(ReceiptService) private receiptService: ReceiptService;
+
   @State() public currentReceipt: Receipt;
 
   @State() public show: boolean = false;
@@ -38,6 +41,16 @@ export class ReceiptItemsEdit {
   viewListButtonClicked() {
     this.show = !this.show;
     this.toggleItemsVisibility();
+  }
+
+  async deleteReceiptItem(receiptItem: ReceiptItem) {
+    this.globalStore.deleteReceiptItemOfCurrentReceipt(receiptItem.id);
+    try {
+      await this.receiptService.deleteReceiptItem(receiptItem.id);
+    } catch {
+      // rollback in case it did not work
+      this.globalStore.addReceiptItemOfCurrentReceipt(receiptItem);
+    }
   }
 
   render() {
@@ -94,11 +107,11 @@ export class ReceiptItemsEdit {
                 .filter(it => it.type === ReceiptItemType.Tax)
                 .map(it =>
                   <list-item label={`${it.label}`} amount={`${it.amount}`}>
-                  <div slot="controls">
-                  <app-button-round size={Size.l}>
-                  <app-icon>{MaterialIcons.DELETE}</app-icon>
-                  </app-button-round>
-                  </div>
+                    <div slot="controls">
+                      <app-button-round size={Size.l} onPress={() => this.deleteReceiptItem(it)}>
+                        <app-icon>{MaterialIcons.DELETE}</app-icon>
+                      </app-button-round>
+                    </div>
                   </list-item>
                 )
               }
@@ -116,7 +129,7 @@ export class ReceiptItemsEdit {
                 .map(it =>
                   <list-item label={`${it.label}`} amount={`${it.amount}`}>
                     <div slot="controls">
-                      <app-button-round size={Size.l}>
+                      <app-button-round size={Size.l} onPress={() => this.deleteReceiptItem(it)}>
                         <app-icon>{MaterialIcons.DELETE}</app-icon>
                       </app-button-round>
                     </div>

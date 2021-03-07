@@ -1,6 +1,6 @@
 import {Injectable} from "./di/injectable";
 import {Dict, Patch, Store} from "./store";
-import {Receipt} from "../components/model/client";
+import {Receipt, ReceiptItem} from "../components/model/client";
 import {LocalstorageStore} from "./localstorage-store";
 
 @Injectable
@@ -12,6 +12,15 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
     });
   }
   setCurrentReceipt = (receipt: Receipt) => this.patch(state => { state.currentReceipt = receipt });
+
+  deleteReceiptItemOfCurrentReceipt = (id: number) => this.patch(state => {
+    const index = state.currentReceipt.items.findIndex(it => it.id === id);
+    state.currentReceipt.items.splice(index, 1);
+  });
+
+  addReceiptItemOfCurrentReceipt = (receiptItem: ReceiptItem) => this.patch(state => {
+    state.currentReceipt.items.push(receiptItem);
+  });
 
   // Selectors
   selectCurrentReceipt = () => this.select(state => state.currentReceipt);
