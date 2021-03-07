@@ -11,26 +11,15 @@ import flyd from 'flyd';
 })
 export class AppReceiptExtraction {
 
-  @Inject(GlobalStore) private globalStore: GlobalStore;
-  @State() public currentReceipt: Receipt;
-
-  componentDidLoad() {
-    flyd.on((receipt) => {
-      this.currentReceipt = receipt;
-    }, this.globalStore.selectCurrentReceipt())
-  }
-
   lineClicked(line: Line) {
-    alert(line.text);
+    alert(line.text + " / " + line.id);
   }
 
   render() {
     return (
       <Host>
-        <receipt-lines
-          receipt={this.currentReceipt}
-          onLineClick={(event: CustomEvent<Line>) => this.lineClicked(event.detail)}
-        />
+        <receipt-items-edit />
+        <receipt-lines onLineClick={(event: CustomEvent<Line>) => this.lineClicked(event.detail)} />
       </Host>
     );
   }

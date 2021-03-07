@@ -8,6 +8,23 @@ export interface Receipt {
   date?: Date;
   dateLineId?: number;
   lines: Line[];
+  items: ReceiptItem[];
+}
+
+export interface ReceiptItem {
+  id: number;
+  receiptId: number;
+  label: string;
+  labelLineId: number;
+  amount: number;
+  type: ReceiptItemType;
+  amountLineId: number;
+  categoryId?: number;
+}
+
+export enum ReceiptItemType {
+  Category = "Category",
+  Tax = "Tax"
 }
 
 export enum ReceiptStatus {

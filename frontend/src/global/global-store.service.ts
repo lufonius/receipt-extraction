@@ -1,9 +1,10 @@
 import {Injectable} from "./di/injectable";
-import {Dict, Store} from "./store";
+import {Dict, Patch, Store} from "./store";
 import {Receipt} from "../components/model/client";
+import {LocalstorageStore} from "./localstorage-store";
 
 @Injectable
-export class GlobalStore extends Store<GlobalState> {
+export class GlobalStore extends LocalstorageStore<GlobalState> {
   constructor() {
     super({
       currentReceipt: null,

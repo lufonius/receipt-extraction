@@ -1,5 +1,5 @@
-import {Component, Host, h, Prop, Event, EventEmitter} from '@stencil/core';
-import {MaterialIcons} from "../../../global/material-icons-enum";
+import {Component, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Size} from "../size";
 
 @Component({
   tag: 'app-button-round',
@@ -8,21 +8,30 @@ import {MaterialIcons} from "../../../global/material-icons-enum";
 })
 export class AppButtonRound {
 
-  @Prop() firstLine: string = "";
-  @Prop() secondLine: string = "";
-  @Prop() icon: MaterialIcons;
   @Event() press: EventEmitter<MouseEvent>;
+  @Prop() size: Size = Size.xxl;
+  @State() classes: string = "btn-round xxl"
+
+  componentDidLoad() {
+    this.buildClasses();
+  }
+
+  @Watch("size")
+  sizeChange() {
+    this.buildClasses();
+  }
+
+  private buildClasses() {
+    this.classes = "btn-round " + this.size.toString();
+  }
 
   render() {
     return (
       <Host>
-        <button class="btn-round" onClick={(e) => this.press.emit(e)}>
-          <app-icon>{ this.icon }</app-icon>
-          <span>{ this.firstLine }</span><br />
-          <span>{ this.secondLine }</span>
+        <button class={this.classes} onClick={(e) => this.press.emit(e)}>
+          <slot />
         </button>
       </Host>
     );
   }
-
 }

@@ -1,4 +1,5 @@
-import {Component, Host, h} from '@stencil/core';
+import {Component, Host, h, Prop, Watch, State} from '@stencil/core';
+import {Size} from "../size";
 
 @Component({
   tag: 'app-icon',
@@ -9,5 +10,4 @@ export class AppIcon {
   render() {
     return (<Host><i class="material-icons"><slot /></i></Host>);
   }
-
 }

@@ -1,5 +1,3 @@
-import {ReceiptStatus} from "./client";
-
 export interface ReceiptDto {
   id: number;
   status: ReceiptStatusDto;
@@ -44,7 +42,7 @@ export enum ReceiptStatusDto {
 export class ReceiptItemDto {
   id: number;
   receiptId: number;
-  type: ReceiptItemType;
+  type: ReceiptItemTypeDto;
   label: string;
   labelLineId: number;
   amount: number;
@@ -52,7 +50,7 @@ export class ReceiptItemDto {
   categoryId?: number;
 }
 
-export enum ReceiptItemType {
-  Tax,
-  Category
+export enum ReceiptItemTypeDto {
+  Tax = "Tax",
+  Category = "Category"
 }

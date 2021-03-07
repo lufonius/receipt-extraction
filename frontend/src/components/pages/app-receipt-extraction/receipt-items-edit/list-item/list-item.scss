@@ -1,0 +1,27 @@
+:host {
+  ::slotted([slot="controls"]) {
+    display: flex;
+  }
+
+  .edit-item {
+    display: flex;
+    padding: var(--size-s);
+
+    &-label {
+      display: flex;
+      flex-direction: column;
+
+      &-title {
+        font-size: var(--small-font-size);
+      }
+
+      &-amount {
+        font-size: var(--body-font-size)
+      }
+    }
+  }
+
+  .fill {
+    flex: 1;
+  }
+}

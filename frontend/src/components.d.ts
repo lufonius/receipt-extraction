@@ -5,17 +5,19 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { MaterialIcons } from "./global/material-icons-enum";
+import { Size } from "./components/common/size";
 import { MatchResults, RouterHistory } from "@stencil/router";
-import { Line, Receipt } from "./components/model/client";
+import { Line } from "./components/model/client";
 export namespace Components {
+    interface AppBackdrop {
+        "show": boolean;
+        "withAnimation": boolean;
+    }
     interface AppButton {
         "primary": boolean;
     }
     interface AppButtonRound {
-        "firstLine": string;
-        "icon": MaterialIcons;
-        "secondLine": string;
+        "size": Size;
     }
     interface AppComponents {
     }
@@ -44,11 +46,22 @@ export namespace Components {
     }
     interface AppRoot {
     }
+    interface ListItem {
+        "amount": string;
+        "label": string;
+    }
+    interface ReceiptItemsEdit {
+    }
     interface ReceiptLines {
-        "receipt": Receipt;
     }
 }
 declare global {
+    interface HTMLAppBackdropElement extends Components.AppBackdrop, HTMLStencilElement {
+    }
+    var HTMLAppBackdropElement: {
+        prototype: HTMLAppBackdropElement;
+        new (): HTMLAppBackdropElement;
+    };
     interface HTMLAppButtonElement extends Components.AppButton, HTMLStencilElement {
     }
     var HTMLAppButtonElement: {
@@ -133,6 +146,18 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLListItemElement extends Components.ListItem, HTMLStencilElement {
+    }
+    var HTMLListItemElement: {
+        prototype: HTMLListItemElement;
+        new (): HTMLListItemElement;
+    };
+    interface HTMLReceiptItemsEditElement extends Components.ReceiptItemsEdit, HTMLStencilElement {
+    }
+    var HTMLReceiptItemsEditElement: {
+        prototype: HTMLReceiptItemsEditElement;
+        new (): HTMLReceiptItemsEditElement;
+    };
     interface HTMLReceiptLinesElement extends Components.ReceiptLines, HTMLStencilElement {
     }
     var HTMLReceiptLinesElement: {
@@ -140,6 +165,7 @@ declare global {
         new (): HTMLReceiptLinesElement;
     };
     interface HTMLElementTagNameMap {
+        "app-backdrop": HTMLAppBackdropElement;
         "app-button": HTMLAppButtonElement;
         "app-button-round": HTMLAppButtonRoundElement;
         "app-components": HTMLAppComponentsElement;
@@ -154,19 +180,23 @@ declare global {
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-receipt-lists": HTMLAppReceiptListsElement;
         "app-root": HTMLAppRootElement;
+        "list-item": HTMLListItemElement;
+        "receipt-items-edit": HTMLReceiptItemsEditElement;
         "receipt-lines": HTMLReceiptLinesElement;
     }
 }
 declare namespace LocalJSX {
+    interface AppBackdrop {
+        "show"?: boolean;
+        "withAnimation"?: boolean;
+    }
     interface AppButton {
         "onPress"?: (event: CustomEvent<MouseEvent>) => void;
         "primary"?: boolean;
     }
     interface AppButtonRound {
-        "firstLine"?: string;
-        "icon"?: MaterialIcons;
         "onPress"?: (event: CustomEvent<MouseEvent>) => void;
-        "secondLine"?: string;
+        "size"?: Size;
     }
     interface AppComponents {
     }
@@ -195,11 +225,17 @@ declare namespace LocalJSX {
     }
     interface AppRoot {
     }
+    interface ListItem {
+        "amount"?: string;
+        "label"?: string;
+    }
+    interface ReceiptItemsEdit {
+    }
     interface ReceiptLines {
         "onLineClick"?: (event: CustomEvent<Line>) => void;
-        "receipt"?: Receipt;
     }
     interface IntrinsicElements {
+        "app-backdrop": AppBackdrop;
         "app-button": AppButton;
         "app-button-round": AppButtonRound;
         "app-components": AppComponents;
@@ -214,6 +250,8 @@ declare namespace LocalJSX {
         "app-receipt-extraction": AppReceiptExtraction;
         "app-receipt-lists": AppReceiptLists;
         "app-root": AppRoot;
+        "list-item": ListItem;
+        "receipt-items-edit": ReceiptItemsEdit;
         "receipt-lines": ReceiptLines;
     }
 }
@@ -221,6 +259,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "app-backdrop": LocalJSX.AppBackdrop & JSXBase.HTMLAttributes<HTMLAppBackdropElement>;
             "app-button": LocalJSX.AppButton & JSXBase.HTMLAttributes<HTMLAppButtonElement>;
             "app-button-round": LocalJSX.AppButtonRound & JSXBase.HTMLAttributes<HTMLAppButtonRoundElement>;
             "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
@@ -235,6 +274,8 @@ declare module "@stencil/core" {
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-receipt-lists": LocalJSX.AppReceiptLists & JSXBase.HTMLAttributes<HTMLAppReceiptListsElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "list-item": LocalJSX.ListItem & JSXBase.HTMLAttributes<HTMLListItemElement>;
+            "receipt-items-edit": LocalJSX.ReceiptItemsEdit & JSXBase.HTMLAttributes<HTMLReceiptItemsEditElement>;
             "receipt-lines": LocalJSX.ReceiptLines & JSXBase.HTMLAttributes<HTMLReceiptLinesElement>;
         }
     }
