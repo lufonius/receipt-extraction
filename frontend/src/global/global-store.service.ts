@@ -1,6 +1,6 @@
 import {Injectable} from "./di/injectable";
-import {Dict, Patch, Store} from "./store";
-import {Receipt, ReceiptItem} from "../components/model/client";
+import {Dict} from "./store";
+import {Receipt, ReceiptItem, ReceiptItemType} from "../components/model/client";
 import {LocalstorageStore} from "./localstorage-store";
 
 @Injectable
@@ -24,6 +24,36 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
 
   // Selectors
   selectCurrentReceipt = () => this.select(state => state.currentReceipt);
+
+  selectTotalOfCurrentReceipt = () => {
+    return this.select(state => {
+      return state.currentReceipt.items
+        .find(it => it.type === ReceiptItemType.Total);
+    });
+  }
+
+  selectDateOfCurrentReceipt = () => {
+    return this.select(state => {
+      return state.currentReceipt.items
+        .find(it => it.type === ReceiptItemType.Date);
+    });
+  }
+
+  selectTaxesOfCurrentReceipt = () => {
+    return this.select(state => {
+      return state.currentReceipt.items.filter(it => it.type === ReceiptItemType.Tax);
+    });
+  }
+
+  selectCategoryItemsOfCurrentReceipt = () => {
+    return this.select(state => {
+      return state.currentReceipt.items.filter(it => it.type === ReceiptItemType.Category);
+    });
+  }
+
+  selectHasCurrentReceiptAnyItems = () => {
+    return this.select(state => state.currentReceipt.items.length > 0);
+  };
 }
 
 const toArray = <T>(obj: Dict<string | number, T>): T[] => Object.keys(obj).map(key => obj[key]);

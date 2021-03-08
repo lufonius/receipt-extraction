@@ -17,19 +17,19 @@ data class ReceiptItemDbo(
         @Column(nullable = false)
         val type: ReceiptItemType,
 
-        @Column(nullable = false, length = 2000)
-        val label: String,
+        @Column(nullable = true, length = 2000)
+        var label: String? = null,
 
-        @OneToOne(fetch = FetchType.LAZY, optional = false)
+        @OneToOne(fetch = FetchType.LAZY, optional = true)
         @JoinColumn(name = "label_line_id")
-        var labelLine: LineDbo,
+        var labelLine: LineDbo? = null,
 
-        @Column(nullable = false)
-        val amount: Float,
+        @Column(nullable = true)
+        val value: String? = null,
 
-        @OneToOne(fetch = FetchType.LAZY, optional = false)
-        @JoinColumn(name = "amount_line_id")
-        var amountLine: LineDbo,
+        @OneToOne(fetch = FetchType.LAZY, optional = true)
+        @JoinColumn(name = "value_line_id")
+        var valueLine: LineDbo? = null,
 
         @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = [CascadeType.PERSIST])
         @JoinColumn(name = "receipt_id")

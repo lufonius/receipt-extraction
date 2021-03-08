@@ -17,10 +17,7 @@ CREATE TABLE IF NOT EXISTS `receipt` (
     `img_url` VARCHAR(250) NOT NULL,
     `angle` FLOAT,
     `transaction_id` INT UNSIGNED COMMENT 'a transaction can be based on a receipt',
-    `total` FLOAT,
-    `total_line_id` INT UNSIGNED COMMENT 'the original detected line on the receipt, used for training an AI',
-    `date` DATE,
-    `date_line_id` INT UNSIGNED COMMENT 'the original detect line on the receipt, used for training an AI'
+    `uploaded_at` DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `transaction_item` (
@@ -34,10 +31,10 @@ CREATE TABLE IF NOT EXISTS `transaction_item` (
 CREATE TABLE IF NOT EXISTS `receipt_item` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `receipt_id` INT UNSIGNED NOT NULL,
-    `label` VARCHAR(2000) NOT NULL,
-    `label_line_id` INT UNSIGNED NOT NULL,
-    `amount` FLOAT NOT NULL,
-    `amount_line_id` INT UNSIGNED NOT NULL,
+    `label` VARCHAR(2000),
+    `label_line_id` INT UNSIGNED,
+    `value` VARCHAR(50),
+    `value_line_id` INT UNSIGNED,
     `type` VARCHAR(50) NOT NULL,
     `category_id` INT UNSIGNED COMMENT 'the reference to the category must be set if the itemType is equal to category'
 );
@@ -59,15 +56,13 @@ CREATE TABLE IF NOT EXISTS `line` (
 ALTER TABLE `category` ADD CONSTRAINT fkCategoryParentCategoryId FOREIGN KEY (parent_category_id) REFERENCES category(id);
 
 ALTER TABLE `receipt` ADD CONSTRAINT fkReceiptTransactionId FOREIGN KEY (transaction_id) REFERENCES transaction(id);
-ALTER TABLE `receipt` ADD CONSTRAINT fkReceiptTotalLineId FOREIGN KEY (total_line_id) REFERENCES line(id);
-ALTER TABLE `receipt` ADD CONSTRAINT fkReceiptDateLineIdTransactionId FOREIGN KEY (date_line_id) REFERENCES line(id);
 
 ALTER TABLE `transaction_item` ADD CONSTRAINT fkTransactionItemCategoryId FOREIGN KEY (category_id) REFERENCES category(id);
 ALTER TABLE `transaction_item` ADD CONSTRAINT fkTransactionItemTransactionId FOREIGN KEY (transaction_id) REFERENCES transaction(id);
 ALTER TABLE `transaction_item` ADD CONSTRAINT fkTransactionItemReceiptId FOREIGN KEY (receipt_id) REFERENCES receipt(id);
 
 ALTER TABLE `receipt_item` ADD CONSTRAINT fkReceiptItemItemLabelLineId FOREIGN KEY (label_line_id) REFERENCES line(id);
-ALTER TABLE `receipt_item` ADD CONSTRAINT fkReceiptItemItemAmountLineId FOREIGN KEY (amount_line_id) REFERENCES line(id);
+ALTER TABLE `receipt_item` ADD CONSTRAINT fkReceiptItemItemValueLineId FOREIGN KEY (value_line_id) REFERENCES line(id);
 ALTER TABLE `receipt_item` ADD CONSTRAINT fkReceiptItemCategoryId FOREIGN KEY (category_id) REFERENCES category(id);
 ALTER TABLE `receipt_item` ADD CONSTRAINT fkReceiptItemReceiptId FOREIGN KEY (receipt_id) REFERENCES receipt(id);
 

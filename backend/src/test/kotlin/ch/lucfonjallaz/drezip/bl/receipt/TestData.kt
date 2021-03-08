@@ -49,20 +49,12 @@ fun createTestReceiptDbo(
         id: Int = 0,
         imgUrl: String = "hoi",
         angle: Float? = null,
-        total: Float? = null,
-        totalLine: LineDbo? = null,
-        date: Date? = null,
-        dateLine: LineDbo? = null,
         uploadedAt: Date = Date()
 ) = ReceiptDbo(
         id = id,
         status = status,
         imgUrl = imgUrl,
         angle = angle,
-        total = total,
-        totalLine = totalLine,
-        date = date,
-        dateLine = dateLine,
         uploadedAt = uploadedAt
 )
 
@@ -74,15 +66,15 @@ fun createTestReceiptItemDbo(
         categoryDbo: CategoryDbo?,
         type: ReceiptItemType = ReceiptItemType.Category,
         label: String = "testLabel",
-        amount: Float = 0.95F
+        value: String = "0.95"
 ) = ReceiptItemDbo(
     id = id,
         labelLine = labelLine,
-        amountLine = amountLine,
+        valueLine = amountLine,
         receipt = receiptDbo,
         category = categoryDbo,
         type = type,
         label = label,
-        amount = amount
+        value = value
 )
 

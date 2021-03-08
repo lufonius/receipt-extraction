@@ -53,15 +53,16 @@ class ReceiptService(
         return receiptItemDboRepository.save(dbo)
     }
 
-    fun deleteReceiptItem(id: Int) = receiptItemDboRepository.deleteById(id)
+    fun deleteReceiptItem(id: Int) {
+        validateBeforeDelete(id)
+        receiptItemDboRepository.deleteById(id)
+    }
 
     /**
-     * We could have made two separate tables for Categories and Taxes, but since we do not know
-     * if there will ever be more than two types, two tables are more complicated, as we would have one more objects in
-     * the system.
-     *
-     * If the amount of types grow, we could think about a separation
+     * The receipt item table is quite a general container, that's why have a lot of validation rules for it
      */
+    // TODO: validate for format
+    // TODO: validate for setting line id but not the value and vice versa
     private fun validateReceiptItem(dbo: ReceiptItemDbo) {
         val receiptOfItem = dbo.receipt
         if (receiptOfItem.status != InProgress) {
@@ -72,12 +73,22 @@ class ReceiptService(
             throw Exception("If you specify a ReceiptItem Type of 'Category', you have to pass a category")
         }
 
-        if (dbo.amountLine.id == dbo.labelLine.id) {
-            throw Exception("amount and label cannot be the same box on the receipt. select different lines.")
-        }
-
         if (dbo.type == ReceiptItemType.Tax && dbo.category != null) {
             throw Exception("If you specify a ReceiptItem Type of 'Tax', you must not pass a category")
+        }
+
+        if (dbo.valueLine != null && dbo.labelLine != null) {
+            if (dbo.valueLine?.id == dbo.labelLine?.id) {
+                throw Exception("amount and label cannot be the same box on the receipt. select different lines.")
+            }
+        }
+    }
+
+    private fun validateBeforeDelete(id: Int) {
+        val receiptItem = receiptItemDboRepository.getOne(id)
+
+        if (receiptItem.type == ReceiptItemType.Total || receiptItem.type == ReceiptItemType.Date) {
+            throw Exception("receipt items with type ${receiptItem.type} must always be present and cannot be deleted")
         }
     }
 }

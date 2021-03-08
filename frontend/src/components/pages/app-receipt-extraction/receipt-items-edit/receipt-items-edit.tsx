@@ -1,11 +1,9 @@
-import {Component, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
 import {MaterialIcons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
-import {Receipt, ReceiptItem, ReceiptItemType} from "../../../model/client";
+import {ReceiptItem, ReceiptItemType} from "../../../model/client";
 import {Inject} from "../../../../global/di/inject";
 import {GlobalStore} from "../../../../global/global-store.service";
-import flyd from "flyd";
-import {ReceiptService} from "../receipt.service";
 
 @Component({
   tag: 'receipt-items-edit',
@@ -14,19 +12,22 @@ import {ReceiptService} from "../receipt.service";
 })
 export class ReceiptItemsEdit {
   @Inject(GlobalStore) private globalStore: GlobalStore;
-  @Inject(ReceiptService) private receiptService: ReceiptService;
 
-  @State() public currentReceipt: Receipt;
+  @Prop() public total: ReceiptItem;
+  @Prop() public date: ReceiptItem;
+  @Prop() public taxes: ReceiptItem[] = [];
+  @Prop() public categoryItems: ReceiptItem[] = [];
 
-  @State() public show: boolean = false;
+  @Event() public add: EventEmitter<ReceiptItemType>;
+  @Event() public update: EventEmitter<ReceiptItem>;
+  @Event() public delete: EventEmitter<ReceiptItem>;
+  @Event() public resetEmpty: EventEmitter<ReceiptItem>;
+
+  @Prop() public show: boolean = false;
   @State() editContainerClasses: string;
 
   componentDidLoad() {
-    flyd.on((receipt) => {
-      this.currentReceipt = receipt;
-      this.show = this.currentReceipt.items.length > 0;
-      this.toggleItemsVisibility();
-    }, this.globalStore.selectCurrentReceipt());
+    this.toggleItemsVisibility();
   }
 
   @Watch("show")
@@ -43,105 +44,92 @@ export class ReceiptItemsEdit {
     this.toggleItemsVisibility();
   }
 
-  async deleteReceiptItem(receiptItem: ReceiptItem) {
-    this.globalStore.deleteReceiptItemOfCurrentReceipt(receiptItem.id);
-    try {
-      await this.receiptService.deleteReceiptItem(receiptItem.id);
-    } catch {
-      // rollback in case it did not work
-      this.globalStore.addReceiptItemOfCurrentReceipt(receiptItem);
-    }
-  }
-
   render() {
     return (
       <Host>
-        {this.currentReceipt && <div>
-          <div class="backdrop-container">
+        <div class="backdrop-container">
+          <div class="fill" />
+          <div class="edit-controls">
+            <app-button-round size={Size.xxl}>
+              <app-icon>{ MaterialIcons.DONE_ALL }</app-icon>
+              <span>done</span>
+            </app-button-round>
             <div class="fill" />
-            <div class="edit-controls">
-              <app-button-round size={Size.xxl}>
-                <app-icon>{ MaterialIcons.DONE_ALL }</app-icon>
-                <span>done</span>
-              </app-button-round>
-              <div class="fill" />
-              <app-button-round size={Size.xxl} onPress={() => this.viewListButtonClicked()}>
-                <app-icon>{ MaterialIcons.VIEW_LIST }</app-icon>
-                <span>entries</span>
-              </app-button-round>
-            </div>
-            <div class={this.editContainerClasses}>
-              <list-item label="Total" amount={`${this.currentReceipt.total.toString(2)}`}>
-                <div slot="controls">
-                  <app-button-round size={Size.l}>
-                    <app-icon>{MaterialIcons.EDIT}</app-icon>
-                  </app-button-round>
-                  <div class="spacer-xs" />
-                  <app-button-round size={Size.l}>
-                    <app-icon>{MaterialIcons.DELETE}</app-icon>
-                  </app-button-round>
-                </div>
-              </list-item>
-`
-              <list-item label="Date" amount={`${this.currentReceipt.date}`}>
-                <div slot="controls">
-                  <app-button-round size={Size.l}>
-                    <app-icon>{MaterialIcons.EDIT}</app-icon>
-                  </app-button-round>
-                  <div class="spacer-xs" />
-                  <app-button-round size={Size.l}>
-                    <app-icon>{MaterialIcons.DELETE}</app-icon>
-                  </app-button-round>
-                </div>
-              </list-item>
-
-              <div class="divider">
-                Taxes
-                <div class="fill" />
-                <app-button-round size={Size.l}>
-                  <app-icon>{MaterialIcons.ADD}</app-icon>
-                </app-button-round>
-              </div>
-
-              {this.currentReceipt.items
-                .filter(it => it.type === ReceiptItemType.Tax)
-                .map(it =>
-                  <list-item label={`${it.label}`} amount={`${it.amount}`}>
-                    <div slot="controls">
-                      <app-button-round size={Size.l} onPress={() => this.deleteReceiptItem(it)}>
-                        <app-icon>{MaterialIcons.DELETE}</app-icon>
-                      </app-button-round>
-                    </div>
-                  </list-item>
-                )
-              }
-
-              <div class="divider">
-                Items
-                <div class="fill" />
-                <app-button-round size={Size.l}>
-                  <app-icon>{MaterialIcons.ADD}</app-icon>
-                </app-button-round>
-              </div>
-
-              {this.currentReceipt.items
-                .filter(it => it.type === ReceiptItemType.Category)
-                .map(it =>
-                  <list-item label={`${it.label}`} amount={`${it.amount}`}>
-                    <div slot="controls">
-                      <app-button-round size={Size.l} onPress={() => this.deleteReceiptItem(it)}>
-                        <app-icon>{MaterialIcons.DELETE}</app-icon>
-                      </app-button-round>
-                    </div>
-                  </list-item>
-                )
-              }
-            </div>
+            <app-button-round size={Size.xxl} onPress={() => this.viewListButtonClicked()}>
+              <app-icon>{ MaterialIcons.VIEW_LIST }</app-icon>
+              <span>entries</span>
+            </app-button-round>
           </div>
-          <app-backdrop show={this.show} withAnimation={true} />
-        </div> }
+          <div class={this.editContainerClasses}>
+            <div class="divider">Total</div>
+            {this.total && <list-item label={`${this.total.label}`} amount={`${this.total.value}`}>
+              <div slot="controls">
+                <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
+                  <app-icon>{MaterialIcons.EDIT}</app-icon>
+                </app-button-round>
+                <div class="spacer-xs" />
+                <app-button-round size={Size.l} onPress={() => this.resetEmpty.emit(this.total)}>
+                  <app-icon>{MaterialIcons.DELETE}</app-icon>
+                </app-button-round>
+              </div>
+            </list-item> }
+
+            <div class="divider">Date</div>
+            {this.date && <list-item label={`${this.date.label}`} amount={`${this.date.value}`}>
+              <div slot="controls">
+                <app-button-round size={Size.l} onPress={() => this.update.emit(this.date)}>
+                  <app-icon>{MaterialIcons.EDIT}</app-icon>
+                </app-button-round>
+                <div class="spacer-xs" />
+                <app-button-round size={Size.l} onPress={() => this.resetEmpty.emit(this.date)}>
+                  <app-icon>{MaterialIcons.DELETE}</app-icon>
+                </app-button-round>
+              </div>
+            </list-item> }
+
+            <div class="divider">
+              Taxes
+              <div class="fill" />
+              <app-button-round size={Size.l} onPress={() => this.add.emit(ReceiptItemType.Tax)}>
+                <app-icon>{MaterialIcons.ADD}</app-icon>
+              </app-button-round>
+            </div>
+
+            {this.taxes
+              .map(it =>
+                <list-item label={`${it.label}`} amount={`${it.value}`}>
+                  <div slot="controls">
+                    <app-button-round size={Size.l} onPress={() => this.delete.emit(it)}>
+                      <app-icon>{MaterialIcons.DELETE}</app-icon>
+                    </app-button-round>
+                  </div>
+                </list-item>
+              )
+            }
+
+            <div class="divider">
+              Items
+              <div class="fill" />
+              <app-button-round size={Size.l} onPress={() => this.add.emit(ReceiptItemType.Category)}>
+                <app-icon>{MaterialIcons.ADD}</app-icon>
+              </app-button-round>
+            </div>
+
+            {this.categoryItems
+              .map(it =>
+                <list-item label={`${it.label}`} amount={`${it.value}`}>
+                  <div slot="controls">
+                    <app-button-round size={Size.l} onPress={() => this.delete.emit(it)}>
+                      <app-icon>{MaterialIcons.DELETE}</app-icon>
+                    </app-button-round>
+                  </div>
+                </list-item>
+              )
+            }
+          </div>
+        </div>
+        <app-backdrop show={this.show} withAnimation={true} />
       </Host>
     );
   }
-
 }

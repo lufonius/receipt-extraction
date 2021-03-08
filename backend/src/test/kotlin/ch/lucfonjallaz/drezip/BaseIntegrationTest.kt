@@ -11,13 +11,15 @@ import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
+// this is just some helper class so that we can use the fluent api. Otherwise the "SELF" generic
+// of the MySQLContainer hinders us doing that
 class DatabaseContainer : MySQLContainer<DatabaseContainer>("mysql:8.0") {}
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
 @Testcontainers
 abstract class BaseIntegrationTest {
-    @LocalServerPort val port: Int = 8080
+    @LocalServerPort val port: Int = 67988
 
     val apiBaseUrl: String
             get() = "http://localhost:$port"

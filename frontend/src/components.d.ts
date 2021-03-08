@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Size } from "./components/common/size";
 import { MatchResults, RouterHistory } from "@stencil/router";
-import { Line } from "./components/model/client";
+import { Line, ReceiptItem, ReceiptItemType } from "./components/model/client";
 export namespace Components {
     interface AppBackdrop {
         "show": boolean;
@@ -51,6 +51,11 @@ export namespace Components {
         "label": string;
     }
     interface ReceiptItemsEdit {
+        "categoryItems": ReceiptItem[];
+        "date": ReceiptItem;
+        "show": boolean;
+        "taxes": ReceiptItem[];
+        "total": ReceiptItem;
     }
     interface ReceiptLines {
     }
@@ -230,6 +235,15 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     interface ReceiptItemsEdit {
+        "categoryItems"?: ReceiptItem[];
+        "date"?: ReceiptItem;
+        "onAdd"?: (event: CustomEvent<ReceiptItemType>) => void;
+        "onDelete"?: (event: CustomEvent<ReceiptItem>) => void;
+        "onResetEmpty"?: (event: CustomEvent<ReceiptItem>) => void;
+        "onUpdate"?: (event: CustomEvent<ReceiptItem>) => void;
+        "show"?: boolean;
+        "taxes"?: ReceiptItem[];
+        "total"?: ReceiptItem;
     }
     interface ReceiptLines {
         "onLineClick"?: (event: CustomEvent<Line>) => void;

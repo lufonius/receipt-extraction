@@ -24,27 +24,12 @@ data class ReceiptDbo(
         @Column(nullable = true)
         val angle: Float? = null,
 
-        @Column(nullable = true)
-        var total: Float? = null,
-
         @Column(nullable = false)
         val uploadedAt: Date,
 
-        @OneToOne(fetch = FetchType.LAZY, optional = true)
-        @JoinColumn(name = "total_line_id")
-        var totalLine: LineDbo? = null,
-
-        @Column(nullable = true)
-        @Temporal(TemporalType.DATE)
-        var date: Date? = null,
-
-        @OneToOne(fetch = FetchType.LAZY, optional = true)
-        @JoinColumn(name = "date_line_id")
-        var dateLine: LineDbo? = null,
-
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "receipt")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "receipt", cascade = [CascadeType.REFRESH, CascadeType.PERSIST])
         var lines: List<LineDbo> = listOf(),
 
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "receipt")
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "receipt", cascade = [CascadeType.REFRESH, CascadeType.PERSIST])
         var items: List<ReceiptItemDbo> = listOf()
 )

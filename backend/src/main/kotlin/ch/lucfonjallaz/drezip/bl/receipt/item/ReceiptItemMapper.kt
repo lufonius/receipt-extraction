@@ -14,8 +14,8 @@ class ReceiptItemMapper(val entityManager: EntityManager) {
                 type = dto.type,
                 label = dto.label,
                 labelLine = entityManager.getReference(LineDbo::class.java, dto.labelLineId),
-                amount = dto.amount,
-                amountLine = entityManager.getReference(LineDbo::class.java, dto.amountLineId),
+                value = dto.value,
+                valueLine = entityManager.getReference(LineDbo::class.java, dto.valueLineId),
                 category = dto.categoryId?.let { entityManager.getReference(CategoryDbo::class.java, dto.categoryId) },
                 receipt = entityManager.getReference(ReceiptDbo::class.java, dto.receiptId)
         )
@@ -25,9 +25,9 @@ class ReceiptItemMapper(val entityManager: EntityManager) {
         id = dbo.id,
         type = dbo.type,
         label = dbo.label,
-        labelLineId = dbo.labelLine.id,
-        amount = dbo.amount,
-        amountLineId = dbo.amountLine.id,
+        labelLineId = dbo.labelLine?.id,
+        value = dbo.value,
+        valueLineId = dbo.valueLine?.id,
         categoryId = dbo.category?.id,
         receiptId = dbo.receipt.id
     )

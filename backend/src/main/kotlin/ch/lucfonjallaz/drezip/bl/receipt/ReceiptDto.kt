@@ -12,10 +12,6 @@ data class ReceiptDto(
         val imgUrl: String,
         val uploadedAt: Date,
         val angle: Float? = null,
-        val total: Float? = null,
-        val totalLineId: Int? = null,
-        val date: Date? = null,
-        val dateLineId: Int? = null,
         var lines: List<LineDto>? = null,
         var items: List<ReceiptItemDto>? = null
 )

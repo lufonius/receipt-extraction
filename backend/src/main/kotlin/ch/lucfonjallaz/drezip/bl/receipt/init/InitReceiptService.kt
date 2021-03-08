@@ -1,6 +1,9 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
 import ch.lucfonjallaz.drezip.bl.receipt.*
+import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
+import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
+import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
 import org.springframework.stereotype.Component
@@ -20,12 +23,14 @@ class InitReceiptService (
         val fileStorageService: FileStorageService,
         val lineDboRepository: LineDboRepository,
         val receiptDboRepository: ReceiptDboRepository,
+        val receiptItemDboRepository: ReceiptItemDboRepository,
         val uuidGenerator: UUIDGenerator,
         val entityManager: EntityManager
 ) {
 
     fun initReceipt(image: ByteArray, fileExtension: String): ReceiptDbo {
-        val imageUrl = uploadImageWithRandomUUIDFileName(image, fileExtension)
+        val uuid = uuidGenerator.generateRandomUUID()
+        val imageUrl = fileStorageService.uploadImage(image, "$uuid.$fileExtension")
 
         val extractedText = ocrService.extractText(imageUrl)
         if (extractedText != null) {
@@ -37,20 +42,22 @@ class InitReceiptService (
             ))
             val lineDbos = extractedText.lines.map { mapToLineDbo(it.text, it.boundingBox, receiptDbo) }
             lineDboRepository.saveAll(lineDbos)
+            createInitialReceiptItems(receiptDbo)
+
             entityManager.refresh(receiptDbo)
             return receiptDbo
         } else {
-            return receiptDboRepository.save(ReceiptDbo(
+            val receiptDbo = receiptDboRepository.save(ReceiptDbo(
                     status = ReceiptStatus.Uploaded,
                     imgUrl = imageUrl,
                     uploadedAt = Date()
             ))
-        }
-    }
 
-    private fun uploadImageWithRandomUUIDFileName(image: ByteArray, fileExtension: String): String {
-        val uuid = uuidGenerator.generateRandomUUID()
-        return fileStorageService.uploadImage(image, "$uuid.$fileExtension")
+            createInitialReceiptItems(receiptDbo)
+
+            entityManager.refresh(receiptDbo)
+            return receiptDbo
+        }
     }
 
     private fun mapToLineDbo(text: String, boundingBox: List<Int>, receipt: ReceiptDbo) = LineDbo(
@@ -65,4 +72,11 @@ class InitReceiptService (
             text = text,
             receipt = receipt
     )
+
+    private fun createInitialReceiptItems(receiptDbo: ReceiptDbo) {
+        val totalReceiptItemDbo = ReceiptItemDbo(type = ReceiptItemType.Total, receipt = receiptDbo)
+        val dateReceiptItemDbo = ReceiptItemDbo(type = ReceiptItemType.Date, receipt = receiptDbo)
+
+        receiptItemDboRepository.saveAll(listOf(totalReceiptItemDbo, dateReceiptItemDbo))
+    }
 }

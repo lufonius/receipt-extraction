@@ -19,10 +19,6 @@ class ReceiptMapper(
             imgUrl = dbo.imgUrl,
             angle = dbo.angle,
             lines = dbo.lines.map { lineMapper.dtoFromDbo(it) },
-            total = dbo.total,
-            totalLineId = dbo.totalLine?.id,
-            date = dbo.date,
-            dateLineId = dbo.dateLine?.id,
             items = dbo.items.map { receiptItemMapper.dtoFromDbo(it) },
             uploadedAt = dbo.uploadedAt
     )
@@ -32,10 +28,6 @@ class ReceiptMapper(
             status = dto.status,
             imgUrl = dto.imgUrl,
             angle = dto.angle,
-            total = dto.total,
-            totalLine = entityManager.getReference(LineDbo::class.java, dto.totalLineId),
-            date = dto.date,
-            dateLine = entityManager.getReference(LineDbo::class.java, dto.dateLineId),
             uploadedAt = dto.uploadedAt
     )
 }
