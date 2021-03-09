@@ -249,5 +249,5 @@ INSERT IGNORE INTO drezip.line (id, text, top_left_x, top_left_y, top_right_x, t
 INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, label, label_line_id, value, value_line_id, type, category_id) VALUES (1, 1, 'KKT Integriert', 20, 8, 21, 'Category', 1);
 INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, label, label_line_id, value, value_line_id, type, category_id) VALUES (2, 1, '7.7%', 28, 0.57, 29, 'Tax', null);
 
-INSERT INTO drezip.receipt_item (id, receipt_id, type) VALUES(3, 1, 'Total');
-INSERT INTO drezip.receipt_item (id, receipt_id, type) VALUES(4, 1, 'Date');
+INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, type) VALUES(3, 1, 'Total');
+INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, type) VALUES(4, 1, 'Date');

@@ -1,51 +1,11 @@
 :host {
-  --min-height: 100vh;
-  --padding: var(--size-s);
-  --edit-controls-height: calc(var(--padding) * 2 + var(--size-xxl));
-
-  // TODO: rename
-  .backdrop-container {
+  .divider {
     display: flex;
-    flex-direction: column;
-    pointer-events: none;
-
-    min-height: var(--min-height);
-
-    * { z-index: 2; }
-
-    app-button-round { pointer-events: all; }
-
-    .edit-controls {
-      box-sizing: border-box;
-      display: flex;
-      height: var(--edit-controls-height);
-      padding: var(--padding);
-    }
-
-    .edit-container {
-      width: 100%;
-      background-color: var(--background);
-      overflow-y: auto;
-
-      transition: max-height 0.2s cubic-bezier(0.56, 0.06, 0.05, 0.95);
-
-      &.open {
-        max-height: calc(var(--min-height) - var(--edit-controls-height));
-      }
-
-      &.closed {
-        max-height: 0;
-      }
-
-      .divider {
-        display: flex;
-        align-items: center;
-        background-color: var(--primary);
-        color: var(--background);
-        font-size: var(--body-font-size);
-        padding: var(--size-s);
-      }
-    }
+    align-items: center;
+    background-color: var(--primary);
+    color: var(--background);
+    font-size: var(--body-font-size);
+    padding: var(--size-s);
   }
 
   .fill {

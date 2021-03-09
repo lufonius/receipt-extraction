@@ -4,10 +4,12 @@ import {GlobalStore} from "../../../global/global-store.service";
 import {Line, ReceiptItem, ReceiptItemType} from "../../model/client";
 import flyd from 'flyd';
 import {ReceiptService} from "./receipt.service";
+import {Size} from "../../common/size";
+import {MaterialIcons} from "../../../global/material-icons-enum";
 
 @Component({
   tag: 'app-receipt-extraction',
-  styleUrl: 'app-receipt-extraction.css',
+  styleUrl: 'app-receipt-extraction.scss',
   shadow: true,
 })
 export class AppReceiptExtraction {
@@ -18,11 +20,11 @@ export class AppReceiptExtraction {
   @State() public date: ReceiptItem;
   @State() public taxes: ReceiptItem[] = [];
   @State() public categoryItems: ReceiptItem[] = [];
-  @State() public hasAnyItems: boolean = false;
+  @State() public showEditItems: boolean = false;
 
   componentDidLoad() {
     flyd.on((hasAnyItems) => {
-      this.hasAnyItems = hasAnyItems;
+      this.showEditItems = hasAnyItems;
     }, this.globalStore.selectHasCurrentReceiptAnyItems());
 
     flyd.on(taxes => this.taxes = taxes, this.globalStore.selectTaxesOfCurrentReceipt());
@@ -44,27 +46,48 @@ export class AppReceiptExtraction {
   }
 
   async add(type: ReceiptItemType) {
-    console.log("add");
+    this.showEditItems = false;
   }
 
   async update(receiptItem: ReceiptItem) {
     console.log("update");
   }
 
+
+
   render() {
     return (
       <Host>
-        <receipt-items-edit
-          show={this.hasAnyItems}
-          total={this.total}
-          date={this.date}
-          taxes={this.taxes}
-          categoryItems={this.categoryItems}
-          onResetEmpty={(item: CustomEvent<ReceiptItem>) => this.reset(item.detail)}
-          onDelete={(item: CustomEvent<ReceiptItem>) => this.delete(item.detail)}
-          onUpdate={(item: CustomEvent<ReceiptItem>) => this.update(item.detail)}
-          onAdd={(item: CustomEvent<ReceiptItemType>) => this.add(item.detail)}
-        />
+        <dropup-controls
+          show={this.showEditItems}
+          onContainerShownAnimationEnd={() => console.log("open closed animation end")}
+        >
+          <div class="controls" slot="controls">
+            <app-button-round size={Size.xxl}>
+              <app-icon>{ MaterialIcons.DONE_ALL }</app-icon>
+              <span>done</span>
+            </app-button-round>
+            <div class="fill" />
+            <app-button-round size={Size.xxl} onPress={() => this.showEditItems = !this.showEditItems}>
+              <app-icon>{ MaterialIcons.VIEW_LIST }</app-icon>
+              <span>entries</span>
+            </app-button-round>
+          </div>
+
+          <div slot="dropup">
+            <receipt-items-edit
+              total={this.total}
+              date={this.date}
+              taxes={this.taxes}
+              categoryItems={this.categoryItems}
+              onResetEmpty={(item: CustomEvent<ReceiptItem>) => this.reset(item.detail)}
+              onDelete={(item: CustomEvent<ReceiptItem>) => this.delete(item.detail)}
+              onUpdate={(item: CustomEvent<ReceiptItem>) => this.update(item.detail)}
+              onAdd={(item: CustomEvent<ReceiptItemType>) => this.add(item.detail)}
+            />
+          </div>
+        </dropup-controls>
+
         <receipt-lines onLineClick={(event: CustomEvent<Line>) => this.lineClicked(event.detail)} />
       </Host>
     );

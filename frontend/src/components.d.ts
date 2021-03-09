@@ -46,14 +46,18 @@ export namespace Components {
     }
     interface AppRoot {
     }
+    interface DropupControls {
+        "show": boolean;
+    }
     interface ListItem {
         "amount": string;
         "label": string;
     }
+    interface ReceiptItemAdd {
+    }
     interface ReceiptItemsEdit {
         "categoryItems": ReceiptItem[];
         "date": ReceiptItem;
-        "show": boolean;
         "taxes": ReceiptItem[];
         "total": ReceiptItem;
     }
@@ -151,11 +155,23 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLDropupControlsElement extends Components.DropupControls, HTMLStencilElement {
+    }
+    var HTMLDropupControlsElement: {
+        prototype: HTMLDropupControlsElement;
+        new (): HTMLDropupControlsElement;
+    };
     interface HTMLListItemElement extends Components.ListItem, HTMLStencilElement {
     }
     var HTMLListItemElement: {
         prototype: HTMLListItemElement;
         new (): HTMLListItemElement;
+    };
+    interface HTMLReceiptItemAddElement extends Components.ReceiptItemAdd, HTMLStencilElement {
+    }
+    var HTMLReceiptItemAddElement: {
+        prototype: HTMLReceiptItemAddElement;
+        new (): HTMLReceiptItemAddElement;
     };
     interface HTMLReceiptItemsEditElement extends Components.ReceiptItemsEdit, HTMLStencilElement {
     }
@@ -185,7 +201,9 @@ declare global {
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-receipt-lists": HTMLAppReceiptListsElement;
         "app-root": HTMLAppRootElement;
+        "dropup-controls": HTMLDropupControlsElement;
         "list-item": HTMLListItemElement;
+        "receipt-item-add": HTMLReceiptItemAddElement;
         "receipt-items-edit": HTMLReceiptItemsEditElement;
         "receipt-lines": HTMLReceiptLinesElement;
     }
@@ -230,9 +248,15 @@ declare namespace LocalJSX {
     }
     interface AppRoot {
     }
+    interface DropupControls {
+        "onContainerShownAnimationEnd"?: (event: CustomEvent<boolean>) => void;
+        "show"?: boolean;
+    }
     interface ListItem {
         "amount"?: string;
         "label"?: string;
+    }
+    interface ReceiptItemAdd {
     }
     interface ReceiptItemsEdit {
         "categoryItems"?: ReceiptItem[];
@@ -241,7 +265,6 @@ declare namespace LocalJSX {
         "onDelete"?: (event: CustomEvent<ReceiptItem>) => void;
         "onResetEmpty"?: (event: CustomEvent<ReceiptItem>) => void;
         "onUpdate"?: (event: CustomEvent<ReceiptItem>) => void;
-        "show"?: boolean;
         "taxes"?: ReceiptItem[];
         "total"?: ReceiptItem;
     }
@@ -264,7 +287,9 @@ declare namespace LocalJSX {
         "app-receipt-extraction": AppReceiptExtraction;
         "app-receipt-lists": AppReceiptLists;
         "app-root": AppRoot;
+        "dropup-controls": DropupControls;
         "list-item": ListItem;
+        "receipt-item-add": ReceiptItemAdd;
         "receipt-items-edit": ReceiptItemsEdit;
         "receipt-lines": ReceiptLines;
     }
@@ -288,7 +313,9 @@ declare module "@stencil/core" {
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-receipt-lists": LocalJSX.AppReceiptLists & JSXBase.HTMLAttributes<HTMLAppReceiptListsElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "dropup-controls": LocalJSX.DropupControls & JSXBase.HTMLAttributes<HTMLDropupControlsElement>;
             "list-item": LocalJSX.ListItem & JSXBase.HTMLAttributes<HTMLListItemElement>;
+            "receipt-item-add": LocalJSX.ReceiptItemAdd & JSXBase.HTMLAttributes<HTMLReceiptItemAddElement>;
             "receipt-items-edit": LocalJSX.ReceiptItemsEdit & JSXBase.HTMLAttributes<HTMLReceiptItemsEditElement>;
             "receipt-lines": LocalJSX.ReceiptLines & JSXBase.HTMLAttributes<HTMLReceiptLinesElement>;
         }

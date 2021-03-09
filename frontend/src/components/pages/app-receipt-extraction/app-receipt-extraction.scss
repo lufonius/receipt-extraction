@@ -1,0 +1,18 @@
+:host {
+  --padding: var(--size-s);
+  --edit-controls-height: calc(var(--padding) * 2 + var(--size-xxl));
+
+  .controls {
+    box-sizing: border-box;
+    display: flex;
+    height: var(--edit-controls-height);
+    padding: var(--padding);
+
+    app-button-round { pointer-events: all; }
+  }
+
+  .fill {
+    flex: 1;
+    height: 1px;
+  }
+}
