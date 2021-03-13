@@ -69,10 +69,6 @@ class ReceiptService(
             throw Exception("You can only add ReceiptItems to Receipts which have the status 'InProgress'")
         }
 
-        if (dbo.type == ReceiptItemType.Category && dbo.category == null) {
-            throw Exception("If you specify a ReceiptItem Type of 'Category', you have to pass a category")
-        }
-
         if (dbo.type == ReceiptItemType.Tax && dbo.category != null) {
             throw Exception("If you specify a ReceiptItem Type of 'Tax', you must not pass a category")
         }

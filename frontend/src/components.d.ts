@@ -56,6 +56,7 @@ export namespace Components {
         "label": string;
     }
     interface ReceiptItemAdd {
+        "receiptItem": ReceiptItem;
         "selectLine": (line: Line) => Promise<void>;
     }
     interface ReceiptItemsEdit {
@@ -269,6 +270,8 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     interface ReceiptItemAdd {
+        "onReceiptItemChange"?: (event: CustomEvent<ReceiptItem>) => void;
+        "receiptItem"?: ReceiptItem;
     }
     interface ReceiptItemsEdit {
         "categoryItems"?: ReceiptItem[];

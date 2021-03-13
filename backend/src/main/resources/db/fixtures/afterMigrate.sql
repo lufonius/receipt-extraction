@@ -5,7 +5,7 @@ INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category
 INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (2, 'test', '#ff00e0', 'Household', null);
 
 # receipt
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (1, 'Open', 'https://drezip.blob.core.windows.net/local/9b6b01d7-b133-466a-b758-b6309b55bc19.jpeg', -0.6052, null, '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (1, 'InProgress', 'https://drezip.blob.core.windows.net/local/9b6b01d7-b133-466a-b758-b6309b55bc19.jpeg', -0.6052, null, '2021-02-28');
 INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (2, 'Open', 'https://drezip.blob.core.windows.net/local/5c91693e-b137-4787-9f96-9210908a2d80.jpeg', -0.6052, null, '2021-02-28');
 INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (3, 'Open', 'https://drezip.blob.core.windows.net/local/8cf19e45-3b1b-4af8-b2ee-52eb3e38cf9a.jpeg', -0.6052, null, '2021-02-28');
 INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (4, 'Open', 'https://drezip.blob.core.windows.net/local/1691d113-9120-446d-9630-8e234213bab2.jpeg', 0, null, '2021-02-28');

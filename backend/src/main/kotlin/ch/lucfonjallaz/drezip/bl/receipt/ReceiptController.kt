@@ -63,6 +63,7 @@ class ReceiptController(
     }
 
 
+    // TODO: remove
     /***
      * When the user updates the total or the date afterwards
      */

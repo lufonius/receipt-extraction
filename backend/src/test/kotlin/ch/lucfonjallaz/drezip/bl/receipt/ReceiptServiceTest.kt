@@ -28,23 +28,6 @@ class ReceiptServiceTest {
     private lateinit var receiptService: ReceiptService
 
     @Test
-    fun `should validate upsert for setting category on ReceiptItem if type is Category`() {
-        val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.InProgress)
-        val lineDboWithId1 = createTestLineDbo(receiptDbo, id = 1)
-        val lineDboWithId2 = createTestLineDbo(receiptDbo, id = 2)
-        val dbo = createTestReceiptItemDbo(
-                labelLine = lineDboWithId1,
-                amountLine = lineDboWithId2,
-                receiptDbo = receiptDbo,
-                categoryDbo = null,
-                type = ReceiptItemType.Category
-        )
-        val exc = assertThrows<Exception> { receiptService.upsertReceiptItem(dbo) }
-
-        assertThat(exc.message).isEqualTo("If you specify a ReceiptItem Type of 'Category', you have to pass a category")
-    }
-
-    @Test
     fun `should validate upsert for setting amount line and label line the same`() {
         val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.InProgress)
         val lineDboWithId1 = createTestLineDbo(receiptDbo, id = 1)

@@ -1,5 +1,5 @@
-import {Component, Host, h, Prop, Watch, Method, State} from '@stencil/core';
-import {Line} from "../../../model/client";
+import {Component, Host, h, Prop, Watch, Method, State, EventEmitter, Event} from '@stencil/core';
+import {Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
 
 @Component({
   tag: 'receipt-item-add',
@@ -7,25 +7,64 @@ import {Line} from "../../../model/client";
   shadow: true,
 })
 export class ReceiptItemAdd {
-
-  @State() public selectedLine?: Line = null;
-
-  @Method() async selectLine(line: Line) {
-    this.selectedLine = line;
-    this.focusedInput.value = this.selectedLine.text;
-  }
-
   public labelInput: HTMLInputElement;
   public valueInput: HTMLInputElement;
   public focusedInput: HTMLInputElement;
 
+  private focusedProp: 'value' | 'label' = 'label';
+
+  @Event() receiptItemChange: EventEmitter<ReceiptItem>;
+  @Prop() receiptItem: ReceiptItem;
+  @Watch("receiptItem")
+  receiptItemChanged() {
+    this.fillInputsWithReceiptItem();
+  }
+
+  @Method() async selectLine(line: Line) {
+    this.focusedInput.value = line.text;
+
+    if (this.focusedProp === 'value') {
+      this.receiptItem.value = line.text;
+      this.receiptItem.valueLineId = line.id;
+    } else if (this.focusedProp === 'label') {
+      this.receiptItem.label = line.text;
+      this.receiptItem.labelLineId = line.id;
+    } else {
+      throw Error("unknown type of focused prop.");
+    }
+
+    this.receiptItemChange.emit(this.receiptItem);
+  }
+
   componentDidLoad() {
-    this.labelInput.blur();
+    this.labelInput.focus();
+    this.focusedInput = this.labelInput;
+    this.fillInputsWithReceiptItem();
+  }
+
+  fillInputsWithReceiptItem() {
+    this.labelInput.value = this.receiptItem.label;
+    this.valueInput.value = this.receiptItem.value;
+  }
+
+  setLabelCurrentlyFocused() {
+    this.focusedProp = 'label';
     this.focusedInput = this.labelInput;
   }
 
-  setFocusedInput(input: HTMLInputElement) {
-    this.focusedInput = input;
+  setValueCurrentlyFocused() {
+    this.focusedProp = 'value';
+    this.focusedInput = this.valueInput;
+  }
+
+  valueChanged(text: string) {
+    this.receiptItem.value = text;
+    this.receiptItemChange.emit(this.receiptItem);
+  }
+
+  labelChanged(text: string) {
+    this.receiptItem.label = text;
+    this.receiptItemChange.emit(this.receiptItem);
   }
 
   render() {
@@ -39,7 +78,8 @@ export class ReceiptItemAdd {
               id="label"
               class="full-width"
               type="text"
-              onFocus={() => this.setFocusedInput(this.labelInput)}
+              onInput={(e: InputEvent) => this.labelChanged(this.labelInput.value)}
+              onFocus={() => this.setLabelCurrentlyFocused()}
               ref={(el) => this.labelInput = el}
             />
           </app-input>
@@ -51,7 +91,8 @@ export class ReceiptItemAdd {
               id="value"
               class="full-width"
               type="text"
-              onFocus={() => this.setFocusedInput(this.valueInput)}
+              onInput={(e: InputEvent) => this.valueChanged(this.valueInput.value)}
+              onFocus={() => this.setValueCurrentlyFocused()}
               ref={(el) => this.valueInput = el}
             />
           </app-input>
