@@ -42,6 +42,12 @@ export class AppComponents {
           <span>rotate</span><br />
           <span>image</span>
         </app-button-round>
+
+        <br />
+
+        <app-input>
+          <input type="text" />
+        </app-input>
       </Host>
     );
   }

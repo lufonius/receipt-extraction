@@ -1,0 +1,17 @@
+:host {
+  display: block;
+
+  ::slotted(input) {
+    box-sizing: border-box;
+    border: 0.3rem solid var(--primary);
+    height: var(--size-l);
+    outline: none;
+    background: transparent;
+    padding-left: var(--size-xs);
+    padding-right: var(--size-xs);
+  }
+
+  ::slotted(label) {
+    display: block;
+  }
+}

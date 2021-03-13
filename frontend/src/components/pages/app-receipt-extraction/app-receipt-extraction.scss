@@ -15,4 +15,9 @@
     flex: 1;
     height: 1px;
   }
+
+  .spacer-xs {
+    width: var(--padding);
+    height: 1px;
+  }
 }

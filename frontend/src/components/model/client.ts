@@ -39,7 +39,7 @@ export interface Line {
   topRight: Point;
   bottomRight: Point;
   bottomLeft: Point;
-  text: String;
+  text: string;
 }
 
 export interface Point {

@@ -1,0 +1,21 @@
+:host {
+  display: flex;
+  flex-direction: column;
+
+  .divider {
+    display: flex;
+    align-items: center;
+    background-color: var(--primary);
+    color: var(--background);
+    font-size: var(--body-font-size);
+    padding: var(--size-s);
+  }
+
+  .input {
+    padding: var(--size-s);
+  }
+
+  .full-width {
+    width: 100%;
+  }
+}

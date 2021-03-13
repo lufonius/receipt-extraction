@@ -28,6 +28,8 @@ export namespace Components {
     }
     interface AppIcon {
     }
+    interface AppInput {
+    }
     interface AppLayoutVerticalSplit {
     }
     interface AppLogo {
@@ -54,6 +56,7 @@ export namespace Components {
         "label": string;
     }
     interface ReceiptItemAdd {
+        "selectLine": (line: Line) => Promise<void>;
     }
     interface ReceiptItemsEdit {
         "categoryItems": ReceiptItem[];
@@ -106,6 +109,12 @@ declare global {
     var HTMLAppIconElement: {
         prototype: HTMLAppIconElement;
         new (): HTMLAppIconElement;
+    };
+    interface HTMLAppInputElement extends Components.AppInput, HTMLStencilElement {
+    }
+    var HTMLAppInputElement: {
+        prototype: HTMLAppInputElement;
+        new (): HTMLAppInputElement;
     };
     interface HTMLAppLayoutVerticalSplitElement extends Components.AppLayoutVerticalSplit, HTMLStencilElement {
     }
@@ -193,6 +202,7 @@ declare global {
         "app-crop": HTMLAppCropElement;
         "app-home": HTMLAppHomeElement;
         "app-icon": HTMLAppIconElement;
+        "app-input": HTMLAppInputElement;
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
         "app-logo": HTMLAppLogoElement;
         "app-profile": HTMLAppProfileElement;
@@ -229,6 +239,8 @@ declare namespace LocalJSX {
     interface AppHome {
     }
     interface AppIcon {
+    }
+    interface AppInput {
     }
     interface AppLayoutVerticalSplit {
     }
@@ -279,6 +291,7 @@ declare namespace LocalJSX {
         "app-crop": AppCrop;
         "app-home": AppHome;
         "app-icon": AppIcon;
+        "app-input": AppInput;
         "app-layout-vertical-split": AppLayoutVerticalSplit;
         "app-logo": AppLogo;
         "app-profile": AppProfile;
@@ -305,6 +318,7 @@ declare module "@stencil/core" {
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
+            "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
             "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
