@@ -1,12 +1,11 @@
 import {Component, Host, h, Event, Prop, EventEmitter, Watch, State} from '@stencil/core';
 import {Line, Receipt} from "../../../model/client";
-import Konva from "konva";
-import {makeStagePinchZoomable} from "../../../common/canvas/make-stage-pinch-zoomable";
-import KonvaEventObject = Konva.KonvaEventObject;
-import {makeStageZoomable} from "../../../common/canvas/make-stage-zoomable";
 import {Inject} from "../../../../global/di/inject";
 import {GlobalStore} from "../../../../global/global-store.service";
 import flyd from "flyd";
+import {Image} from "../../../common/drawing/image";
+import {Stage} from "../../../common/drawing/stage";
+import {Rectangle} from "../../../common/drawing/rectangle";
 
 // TODO: rename to start with app
 @Component({
@@ -32,65 +31,47 @@ export class ReceiptLines {
   }
 
   private canvas: HTMLDivElement;
-  private stage: Konva.Stage;
+  private stage: Stage;
 
   @Event() lineClick: EventEmitter<Line>;
 
   async drawImage(): Promise<void> {
-    const layer = new Konva.Layer();
-    return new Promise((resolve) => {
-      Konva.Image.fromURL(this.currentReceipt.imgUrl, (img) => {
-        layer.add(img);
-        this.stage.add(layer);
-        this.stage.batchDraw();
-        resolve();
-      });
-    });
+    const image = await Image.fromUrl(this.currentReceipt.imgUrl);
+    this.stage.addShape(image);
   }
 
   private setupStage() {
-    Konva.hitOnDragEnabled = true;
-
-    this.stage = new Konva.Stage({
-      container: this.canvas,
+    this.stage = new Stage({
+      hostElement: this.canvas,
       width: innerWidth,
-      height: innerHeight,
-      draggable: true
+      height: innerHeight
     });
-
-    makeStagePinchZoomable(this.stage);
-    makeStageZoomable(this.stage);
   }
 
   private drawLinesOntoImage() {
-    const layer = new Konva.Layer();
     this.currentReceipt.lines.forEach(line => {
       const width = line.topRight.x - line.topLeft.x;
       const height = line.bottomLeft.y - line.topLeft.y;
 
-      const box = new Konva.Rect({
+      const box = new Rectangle({
         x: line.topLeft.x,
         y: line.topLeft.y,
         width,
         height,
         strokeWidth: 3,
-        stroke: "red",
-        id: line.id.toString()
+        strokeColor: "red",
+        id: line.id
       });
 
-      const clickOrTapCallback = (e: KonvaEventObject<any>) => {
-        const clickedLine = this.getLineById(parseInt(e.target.id()));
+      const clickOrTapCallback = (rectangle) => {
+        const clickedLine = this.getLineById(rectangle.id);
         this.lineClick.emit(clickedLine);
       };
 
-      box.on("click",  clickOrTapCallback);
-      box.on("tap", clickOrTapCallback);
+      box.onClickOrTap(clickOrTapCallback)
 
-      layer.add(box);
+      this.stage.addShape(box);
     });
-
-    this.stage.add(layer);
-    this.stage.batchDraw();
   }
 
   private getLineById(id: number): Line {

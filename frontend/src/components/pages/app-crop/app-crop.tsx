@@ -67,9 +67,6 @@ export class AppCrop {
     if (!!file) {
       await this.cropCanvas.drawImageAndDetectedRectangle(file);
 
-      flyd.on(() => this.controlsShown = false, this.cropCanvas.rectCornerDragStart);
-      flyd.on(() => this.controlsShown = true, this.cropCanvas.rectCornerDragEnd);
-
       this.alreadyTookPhotograph = true;
       this.cropShown = true;
     }

@@ -26,7 +26,6 @@ export class CropCanvasFactory {
       height,
       controlsHeight,
       canvas,
-      magnifiedCanvas,
       this.cssVarsService.primaryColor
     );
   }

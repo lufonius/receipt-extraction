@@ -1,9 +1,7 @@
 import {OpenCvService} from "../../../global/opencv/opencv.service";
-import Konva from "konva";
 import {DragableRectangle} from "./dragable-rectangle";
-import {makeStagePinchZoomable} from "../../common/canvas/make-stage-pinch-zoomable";
-import flyd from "flyd";
-import Stream = flyd.Stream;
+import {Stage} from "../../common/drawing/stage";
+import {Image} from "../../common/drawing/image";
 
 enum Orientation {
   Landscape,
@@ -17,14 +15,11 @@ export class CropCanvas {
   private canvasOrientation: Orientation;
   private canvasAspectRatio: number;
 
-  private stage: Konva.Stage;
-  private magnifiedStage: Konva.Stage;
-  private image: Konva.Image;
-  private imageLayer: Konva.Layer;
+  private stage: Stage;
+  private image: Image;
   private rectangle: DragableRectangle;
 
-  private imageData: ImageData;
-  private imageMarginXY: { x: number, y: number };
+  private imageData: ImageData;  private imageMarginXY: { x: number, y: number };
   private imageScaleRatio: number;
 
   constructor(
@@ -32,20 +27,10 @@ export class CropCanvas {
     private width: number,
     private height: number,
     private controlsHeight: number,
-    private canvas: HTMLDivElement,
-    private magnifiedCanvas: HTMLDivElement,
+    private hostElement: HTMLDivElement,
     private primaryColor: string
   ) {
     this.setupCanvas();
-    this.setupMagnifiedCanvas();
-  }
-
-  get rectCornerDragStart(): Stream<void> {
-    return this.rectangle.dragStart;
-  }
-
-  get rectCornerDragEnd(): Stream<void> {
-    return this.rectangle.dragEnd;
   }
 
   get imageAsPngBlob(): Promise<Blob> {
@@ -63,28 +48,14 @@ export class CropCanvas {
     this.canvasOrientation = this.determineOrientation(this.canvasWidth, this.canvasHeight);
     this.canvasAspectRatio = this.calculateAspectRatio(this.canvasWidth, this.canvasHeight);
 
-    this.stage = new Konva.Stage({
-      container: this.canvas,
+    this.stage = new Stage({
+      hostElement: this.hostElement,
       width: this.canvasWidth,
       height: this.canvasHeight,
-    });
-
-    makeStagePinchZoomable(this.stage);
-
-    this.stage.draw();
-  }
-
-  private setupMagnifiedCanvas() {
-    this.magnifiedStage = new Konva.Stage({
-      container: this.magnifiedCanvas,
-      width: innerWidth,
-      height: this.controlsHeight
     });
   }
 
   async drawImageAndDetectedRectangle(imageBlob: File) {
-    this.stage.clear();
-    this.stage.draw();
     const imageBitmap = await createImageBitmap(imageBlob);
     this.imageData = this.convertBitmapToImageData(imageBitmap);
 
@@ -106,9 +77,7 @@ export class CropCanvas {
       y: (corner.y * this.imageScaleRatio) + this.imageMarginXY.y
     }));
 
-    this.rectangle = new DragableRectangle(this.stage, this.magnifiedStage, points, this.primaryColor);
-
-    this.stage.draw();
+    this.rectangle = new DragableRectangle(this.stage, points, this.primaryColor);
   }
 
   private determineOrientation(width: number, height: number): Orientation {
@@ -177,22 +146,17 @@ export class CropCanvas {
 
 
     if (!this.image) {
-      this.image = new Konva.Image({
+      this.image = new Image({
         image: smallCanvas,
         x: this.imageMarginXY.x,
         y: this.imageMarginXY.y,
         id: "image"
       });
 
-      this.imageLayer = new Konva.Layer();
-      this.imageLayer.add(this.image);
-      this.stage.add(this.imageLayer);
+      this.stage.addShape(this.image);
     } else {
-      this.image.image(smallCanvas);
-      this.image.x(this.imageMarginXY.x);
-      this.image.y(this.imageMarginXY.y);
-
-      this.imageLayer.batchDraw();
+      this.image.setImage(smallCanvas);
+      this.image.setPosition(this.imageMarginXY);
     }
   }
 
