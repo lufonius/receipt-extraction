@@ -1,5 +1,17 @@
 {
+  // used for pixi.js
   "compilerOptions": {
+    "moduleResolution": "node",
+    // Required for importing 3rd-party dependencies like EventEmitter3
+    "esModuleInterop": true,
+    // Loaders needs this to use the more strict mini-signal types
+    "paths": {
+      "mini-signals": [
+        "node_modules/resource-loader/typings/mini-signals.d.ts"
+      ]
+    },
+    "baseUrl": "./",
+    // ---
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "declaration": false,
@@ -9,7 +21,6 @@
       "es2017",
       "dom"
     ],
-    "moduleResolution": "node",
     "module": "esnext",
     "target": "es2017",
     "noUnusedLocals": false,

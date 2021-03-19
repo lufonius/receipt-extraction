@@ -1,6 +1,6 @@
 import {Stage} from "../../common/drawing/stage";
 import {Line} from "../../common/drawing/line";
-import {Drawable} from "../../common/drawing/drawable";
+import {PixiShape} from "../../common/drawing/pixiShape";
 import {Circle} from "../../common/drawing/circle";
 
 let counter = 0;
@@ -66,8 +66,8 @@ class Edge {
     this.line.setP2({ x: this.vertice2.x, y: this.vertice2.y });
   }
 
-  get shape(): Drawable {
-    return this;
+  get shape(): PixiShape {
+    return this.line;
   }
 }
 
@@ -105,7 +105,7 @@ class Vertice {
     return this.ellipse.y;
   }
 
-  get shape(): Drawable {
-    return this;
+  get shape(): PixiShape {
+    return this.ellipse;
   }
 }

@@ -1,6 +1,7 @@
-import {Drawable} from "./drawable";
+import {PixiShape} from "./pixiShape";
+import * as PIXI from 'pixi.js'
 
-export class Line implements Drawable {
+export class Line implements PixiShape {
   private p1:  { x: number, y: number };
   private p2:  { x: number, y: number };
   private strokeColor: string;
@@ -29,5 +30,9 @@ export class Line implements Drawable {
   // upate drawing
   setP2(p: { x: number, y: number }) {
     this.p2 = p;
+  }
+
+  getImpl(): PIXI.DisplayObject {
+    throw Error();
   }
 }

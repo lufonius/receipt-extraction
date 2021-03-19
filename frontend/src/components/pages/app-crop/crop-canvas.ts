@@ -144,9 +144,9 @@ export class CropCanvas {
     smallCtx.scale(this.imageScaleRatio, this.imageScaleRatio);
     smallCtx.drawImage(canvas, 0, 0);
 
-
     if (!this.image) {
-      this.image = new Image({
+      this.image = new Image();
+      this.image.createManually({
         image: smallCanvas,
         x: this.imageMarginXY.x,
         y: this.imageMarginXY.y,

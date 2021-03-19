@@ -1,6 +1,5 @@
 import {Container} from "./di/container";
 import type QrScanner from 'qr-scanner';
-import {Constructable} from "./di/constructable";
 
 declare global {
   interface Window {

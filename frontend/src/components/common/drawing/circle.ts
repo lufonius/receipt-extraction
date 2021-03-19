@@ -1,6 +1,7 @@
-import {Drawable} from "./drawable";
+import {PixiShape} from "./pixiShape";
+import * as PIXI from 'pixi.js'
 
-export class Circle implements Drawable {
+export class Circle implements PixiShape {
   private _x: number;
   private _y: number;
 
@@ -27,5 +28,9 @@ export class Circle implements Drawable {
 
   get y(): number {
     return this._y;
+  }
+
+  getImpl(): PIXI.DisplayObject {
+    throw Error();
   }
 }

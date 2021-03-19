@@ -35,8 +35,12 @@ export class ReceiptLines {
 
   @Event() lineClick: EventEmitter<Line>;
 
-  async drawImage(): Promise<void> {
-    const image = await Image.fromUrl(this.currentReceipt.imgUrl);
+  drawImage() {
+    const image = new Image();
+    image.crateFromUrl({
+      url: this.currentReceipt.imgUrl,
+      id: ""
+    });
     this.stage.addShape(image);
   }
 
