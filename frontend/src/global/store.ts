@@ -1,6 +1,7 @@
 import flyd from 'flyd';
 import produce from 'immer';
 import Stream = flyd.Stream;
+import {distinctUntilChanged} from "./distinct-until-changed";
 
 export type Patch<T> = (draft: T) => void;
 
@@ -29,7 +30,9 @@ export abstract class Store<T> {
   }, this.initialState, this.patches);
 
   select<R>(mapFn: (state: T) => R): Stream<R> {
-    return flyd.map(mapFn, this.state);
+    const mapped: Stream<R> = flyd.map(mapFn, this.state);
+
+    return distinctUntilChanged(mapped);
   }
 
   patch(patch: Patch<T>): void {

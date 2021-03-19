@@ -35,8 +35,8 @@ export class Stage {
     shapes.forEach((it) => this.addShape(it));
   }
 
-  destroy() {
-    this.app.destroy(true);
+  removeAllChildren() {
+    this.container.removeChildren();
   }
 
   private setupZoom() {

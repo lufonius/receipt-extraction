@@ -44,6 +44,8 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
 
   // Selectors
   selectCurrentReceipt = () => this.select(state => state.currentReceipt);
+  selectCurrentReceiptImgUrl = () => this.select(state => state.currentReceipt.imgUrl);
+  selectCurrentReceiptLines = () => this.select(state => state.currentReceipt.lines);
 
   selectTotalOfCurrentReceipt = () => {
     return this.select(state => {

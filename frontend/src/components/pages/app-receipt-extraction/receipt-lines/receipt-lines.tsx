@@ -3,6 +3,8 @@ import {Line, Receipt} from "../../../model/client";
 import {Inject} from "../../../../global/di/inject";
 import {GlobalStore} from "../../../../global/global-store.service";
 import flyd from "flyd";
+import lift from "flyd/module/lift";
+import filter from "flyd/module/filter";
 import {Image} from "../../../common/drawing/image";
 import {Stage} from "../../../common/drawing/stage";
 import {Rectangle} from "../../../common/drawing/rectangle";
@@ -15,18 +17,26 @@ import {Rectangle} from "../../../common/drawing/rectangle";
 })
 export class ReceiptLines {
   @Inject(GlobalStore) private globalStore: GlobalStore;
-  @State() public currentReceipt: Receipt;
+  @State() public currentReceiptLines: Line[];
+  @State() public currentReceiptImgUrl: string;
 
   componentDidLoad() {
-    flyd.on(async (receipt) => {
-      this.currentReceipt = receipt;
-      await this.receiptChanged();
-    }, this.globalStore.selectCurrentReceipt());
+    const lines$ = this.globalStore.selectCurrentReceiptLines();
+    const imgUrl$ = this.globalStore.selectCurrentReceiptImgUrl();
+    const both$ = lift((line, imgUrl) => [line, imgUrl], lines$, imgUrl$).pipe(
+      filter(([line, imgUrl]) => !!line && !!imgUrl)
+    );
+
+    flyd.on(([lines, imgUrl]: [Line[], string]) => {
+      this.currentReceiptLines = lines;
+      this.currentReceiptImgUrl = imgUrl;
+      this.receiptChanged();
+    }, both$);
   }
 
-  async receiptChanged() {
+  receiptChanged() {
     this.setupStage();
-    await this.drawImage();
+    this.drawImage();
     this.drawLinesOntoImage();
   }
 
@@ -38,7 +48,7 @@ export class ReceiptLines {
   drawImage() {
     const image = new Image();
     image.crateFromUrl({
-      url: this.currentReceipt.imgUrl,
+      url: this.currentReceiptImgUrl,
       id: ""
     });
     this.stage.addShape(image);
@@ -46,18 +56,18 @@ export class ReceiptLines {
 
   private setupStage() {
     if (this.stage) {
-      this.stage.destroy();
+      this.stage.removeAllChildren();
+    } else {
+      this.stage = new Stage({
+        hostElement: this.canvas,
+        width: innerWidth,
+        height: innerHeight
+      });
     }
-
-    this.stage = new Stage({
-      hostElement: this.canvas,
-      width: innerWidth,
-      height: innerHeight
-    });
   }
 
   private drawLinesOntoImage() {
-    this.currentReceipt.lines.forEach(line => {
+    this.currentReceiptLines.forEach(line => {
       const width = line.topRight.x - line.topLeft.x;
       const height = line.bottomLeft.y - line.topLeft.y;
 
@@ -83,7 +93,7 @@ export class ReceiptLines {
   }
 
   private getLineById(id: number): Line {
-    return this.currentReceipt.lines.find(it => it.id === id);
+    return this.currentReceiptLines.find(it => it.id === id);
   }
 
   render() {
