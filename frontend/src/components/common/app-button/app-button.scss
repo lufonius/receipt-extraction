@@ -42,6 +42,16 @@
     font-weight: var(--font-weight-bold);
   }
 
+  &--inverted {
+    background: var(--primary);
+    color: var(--background);
+    border: 3px solid var(--background);
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
   &:active {
     transform: scale(1.05);
   }

@@ -31,8 +31,8 @@ export class AppReceiptExtraction {
   @State() public currentReceiptItem: ReceiptItem;
   private currentReceiptItemType: ReceiptItemType;
   private currentReceipt: Receipt;
-
   public receiptItemAdd: HTMLReceiptItemAddElement;
+  public dialog: HTMLAppDialogElement;
 
   componentWillLoad() {
     flyd.on((hasAnyItems) => {
@@ -212,6 +212,7 @@ export class AppReceiptExtraction {
           <div slot="dropup">
 
             {this.showAddItem && <receipt-item-add
+              onSetCategoryChange={() => this.dialog.showChange(true)}
               receiptItem={this.currentReceiptItem}
               onReceiptItemChange={({ detail }) => this.currentReceiptItem = detail}
               ref={(el) => this.receiptItemAdd = el} />}
@@ -230,6 +231,21 @@ export class AppReceiptExtraction {
         </dropup-controls>
 
         <receipt-lines onLineClick={(event: CustomEvent<Line>) => this.lineClicked(event.detail)} />
+
+        <app-dialog ref={(el) => this.dialog = el}>
+          <div class="dialog">
+            <h1>Set a category for the receipt item</h1>
+            <app-input>
+              <input type="text" class="full-width" />
+            </app-input>
+          </div>
+          <app-button
+            primary
+            fullWidth
+            onPress={() => this.dialog.showChange(false)}>
+            set selected category
+          </app-button>
+        </app-dialog>
       </Host>
     );
   }

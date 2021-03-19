@@ -15,6 +15,8 @@ export class ReceiptItemAdd {
 
   private focusedProp: 'value' | 'label' = 'label';
 
+  @Event() setCategoryChange: EventEmitter<void>;
+
   @Event() receiptItemChange: EventEmitter<ReceiptItem>;
   @Prop() receiptItem: ReceiptItem;
   @Watch("receiptItem")
@@ -94,7 +96,16 @@ export class ReceiptItemAdd {
   render() {
     return (
       <Host>
-        <div class="divider">Select receipt item label and amount</div>
+        <div class="divider">
+          Select receipt item label and amount
+          <div class="fill" />
+          {this.receiptItem.type === ReceiptItemType.Category && <app-button
+            primary
+            inverted
+            onPress={() => this.setCategoryChange.emit()}>
+            set category
+          </app-button>}
+        </div>
         <div class="input">
           <div class="fill">
             <app-input>

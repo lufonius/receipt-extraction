@@ -15,6 +15,8 @@ export namespace Components {
         "withAnimation": boolean;
     }
     interface AppButton {
+        "fullWidth": boolean;
+        "inverted": boolean;
         "primary": boolean;
     }
     interface AppButtonRound {
@@ -237,6 +239,8 @@ declare namespace LocalJSX {
         "withAnimation"?: boolean;
     }
     interface AppButton {
+        "fullWidth"?: boolean;
+        "inverted"?: boolean;
         "onPress"?: (event: CustomEvent<MouseEvent>) => void;
         "primary"?: boolean;
     }
@@ -286,6 +290,7 @@ declare namespace LocalJSX {
     }
     interface ReceiptItemAdd {
         "onReceiptItemChange"?: (event: CustomEvent<ReceiptItem>) => void;
+        "onSetCategoryChange"?: (event: CustomEvent<void>) => void;
         "receiptItem"?: ReceiptItem;
     }
     interface ReceiptItemsEdit {
