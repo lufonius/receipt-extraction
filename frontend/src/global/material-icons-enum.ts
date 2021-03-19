@@ -8,5 +8,6 @@ export enum MaterialIcons {
   VIEW_LIST = "view_list",
   CLOSE = "close",
   DONE = "done",
-  NEXT_PLAN = "next_plan"
+  NEXT_PLAN = "next_plan",
+  ARROW_RIGHT_ALT = "arrow_right_alt"
 }

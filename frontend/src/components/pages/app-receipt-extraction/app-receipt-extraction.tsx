@@ -1,9 +1,8 @@
-import {Component, h, Host, State, Event} from '@stencil/core';
+import {Component, h, Host, State} from '@stencil/core';
 import {Inject} from "../../../global/di/inject";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Line, Receipt, ReceiptItem, ReceiptItemType} from "../../model/client";
 import flyd from 'flyd';
-import Stream = flyd.Stream;
 import {ReceiptService} from "./receipt.service";
 import {Size} from "../../common/size";
 import {MaterialIcons} from "../../../global/material-icons-enum";
@@ -168,6 +167,11 @@ export class AppReceiptExtraction {
     };
   }
 
+  isTaxOrCategory() {
+    return this.currentReceiptItem.type === ReceiptItemType.Tax
+      || this.currentReceiptItem.type === ReceiptItemType.Category;
+  }
+
   render() {
     return (
       <Host>
@@ -193,11 +197,11 @@ export class AppReceiptExtraction {
               <span>cancel</span>
             </app-button-round>
             <div class="fill" />
-            <app-button-round size={Size.xxl} onPress={async () => { await this.saveItem(); await this.resetCurrentReceiptItem(); }}>
+            {this.isTaxOrCategory() && <app-button-round size={Size.xxl} onPress={async () => { await this.saveItem(); await this.resetCurrentReceiptItem(); }}>
               <app-icon>{ MaterialIcons.NEXT_PLAN }</app-icon>
               <span>save and</span><br />
               <span>next</span>
-            </app-button-round>
+            </app-button-round>}
             <div class="spacer-xs" />
             <app-button-round size={Size.xxl} onPress={async () => { await this.saveItem(); await this.hideAddItem();}}>
               <app-icon>{ MaterialIcons.DONE }</app-icon>

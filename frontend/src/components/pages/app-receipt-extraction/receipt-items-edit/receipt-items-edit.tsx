@@ -32,10 +32,9 @@ export class ReceiptItemsEdit {
             <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
               <app-icon>{MaterialIcons.EDIT}</app-icon>
             </app-button-round>
-            <div class="spacer-xs" />
-            <app-button-round size={Size.l} onPress={() => this.resetEmpty.emit(this.total)}>
+            {this.total.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.total)}>
               <app-icon>{MaterialIcons.DELETE}</app-icon>
-            </app-button-round>
+            </app-button-round>}
           </div>
         </list-item> }
 
@@ -45,10 +44,9 @@ export class ReceiptItemsEdit {
             <app-button-round size={Size.l} onPress={() => this.update.emit(this.date)}>
               <app-icon>{MaterialIcons.EDIT}</app-icon>
             </app-button-round>
-            <div class="spacer-xs" />
-            <app-button-round size={Size.l} onPress={() => this.resetEmpty.emit(this.date)}>
+            {this.date.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.date)}>
               <app-icon>{MaterialIcons.DELETE}</app-icon>
-            </app-button-round>
+            </app-button-round>}
           </div>
         </list-item> }
 
@@ -91,8 +89,6 @@ export class ReceiptItemsEdit {
             </list-item>
           )
         }
-
-        <app-backdrop show={true} withAnimation={true} />
       </Host>
     );
   }

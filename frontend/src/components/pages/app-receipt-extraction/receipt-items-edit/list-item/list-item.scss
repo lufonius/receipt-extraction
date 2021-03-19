@@ -10,6 +10,7 @@
     &-label {
       display: flex;
       flex-direction: column;
+      justify-content: center;
 
       &-title {
         font-size: var(--small-font-size);
@@ -17,6 +18,11 @@
 
       &-amount {
         font-size: var(--body-font-size)
+      }
+
+      &-novalue {
+        display: flex;
+        font-size: var(--body-font-size);
       }
     }
   }
