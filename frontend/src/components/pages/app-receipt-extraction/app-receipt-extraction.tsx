@@ -35,7 +35,7 @@ export class AppReceiptExtraction {
 
   public receiptItemAdd: HTMLReceiptItemAddElement;
 
-  componentDidLoad() {
+  componentWillLoad() {
     flyd.on((hasAnyItems) => {
       this.showDropup = hasAnyItems;
     }, this.globalStore.selectHasCurrentReceiptAnyItems());

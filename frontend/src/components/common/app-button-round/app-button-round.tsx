@@ -12,7 +12,7 @@ export class AppButtonRound {
   @Prop() size: Size = Size.xxl;
   @State() classes: string = "btn-round xxl"
 
-  componentDidLoad() {
+  componentWillLoad() {
     this.buildClasses();
   }
 

@@ -16,7 +16,7 @@ export class Stage {
     this.app = new PIXI.Application({
       width: params.width,
       height: params.height,
-      transparent: true
+      backgroundAlpha: 0
     });
 
     params.hostElement.appendChild(this.app.view);

@@ -18,7 +18,7 @@ export class DropupControls {
     this.toggleItemsVisibility();
   }
 
-  componentDidLoad() {
+  componentWillLoad() {
     this.toggleItemsVisibility();
   }
 
