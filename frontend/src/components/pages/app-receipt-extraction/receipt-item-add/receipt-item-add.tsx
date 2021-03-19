@@ -1,5 +1,7 @@
 import {Component, Host, h, Prop, Watch, Method, State, EventEmitter, Event} from '@stencil/core';
 import {Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
+import {MaterialIcons} from "../../../../global/material-icons-enum";
+import {Size} from "../../../common/size";
 
 @Component({
   tag: 'receipt-item-add',
@@ -75,35 +77,59 @@ export class ReceiptItemAdd {
     this.receiptItemChange.emit(this.receiptItem);
   }
 
+  resetReferencedLabelLineId() {
+    this.receiptItem.label = "";
+    this.receiptItem.labelLineId = null;
+    this.receiptItemChange.emit(this.receiptItem);
+    this.labelInput.value = "";
+  }
+
+  resetReferencedValueLineId() {
+    this.receiptItem.value = "";
+    this.receiptItem.valueLineId = null;
+    this.receiptItemChange.emit(this.receiptItem);
+    this.valueInput.value = "";
+  }
+
   render() {
     return (
       <Host>
         <div class="divider">Select receipt item label and amount</div>
         <div class="input">
-          <app-input>
-            <label htmlFor="label">Select an items <b>label</b> on the receipt</label>
-            <input
-              id="label"
-              class="full-width"
-              type="text"
-              onInput={(e: InputEvent) => this.labelChanged(this.labelInput.value)}
-              onFocus={() => this.setLabelCurrentlyFocused()}
-              ref={(el) => this.labelInput = el}
-            />
-          </app-input>
+          <div class="fill">
+            <app-input>
+              <label htmlFor="label">Select an items <b>label</b> on the receipt</label>
+              <input
+                id="label"
+                type="text"
+                class="full-width"
+                onInput={(e: InputEvent) => this.labelChanged(this.labelInput.value)}
+                onFocus={() => this.setLabelCurrentlyFocused()}
+                ref={(el) => this.labelInput = el}
+              />
+            </app-input>
+          </div>
+          <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.resetReferencedLabelLineId()}>
+            <app-icon>{ MaterialIcons.DELETE }</app-icon>
+          </app-button-round>
         </div>
         <div class="input">
-          <app-input>
-            <label htmlFor="value">Select an items <b>amount</b> on the receipt</label>
-            <input
-              id="value"
-              class="full-width"
-              type="text"
-              onInput={(e: InputEvent) => this.valueChanged(this.valueInput.value)}
-              onFocus={() => this.setValueCurrentlyFocused()}
-              ref={(el) => this.valueInput = el}
-            />
-          </app-input>
+          <div class="fill">
+            <app-input>
+              <label htmlFor="value">Select an items <b>amount</b> on the receipt</label>
+              <input
+                id="value"
+                class="full-width"
+                type="text"
+                onInput={(e: InputEvent) => this.valueChanged(this.valueInput.value)}
+                onFocus={() => this.setValueCurrentlyFocused()}
+                ref={(el) => this.valueInput = el}
+              />
+            </app-input>
+          </div>
+          <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.resetReferencedValueLineId()}>
+            <app-icon>{ MaterialIcons.DELETE }</app-icon>
+          </app-button-round>
         </div>
       </Host>
     );

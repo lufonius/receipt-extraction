@@ -12,7 +12,7 @@ export class ListItem {
   @Prop() amount: string;
 
   hasAnyValueSet() {
-    return this.label !== "null" && this.amount !== "null";
+    return (this.label !== "null" || this.amount !== "null") && (!!this.label || !!this.amount);
   }
 
   render() {

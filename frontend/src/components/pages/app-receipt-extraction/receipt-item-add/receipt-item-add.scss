@@ -12,10 +12,25 @@
   }
 
   .input {
+    display: flex;
     padding: var(--size-s);
+    align-items: flex-end;
+  }
+
+  .margin-left-s {
+    margin-left: var(--size-s);
   }
 
   .full-width {
     width: 100%;
+  }
+
+  .fill {
+    flex: 1;
+  }
+
+  .spacer-s {
+    width: var(--size-s);
+    height: 1px;
   }
 }
