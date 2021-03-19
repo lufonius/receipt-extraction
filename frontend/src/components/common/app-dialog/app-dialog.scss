@@ -1,0 +1,15 @@
+:host {
+  .flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    .content {
+      width: fit-content;
+      height: fit-content;
+      background-color: var(--background);
+    }
+  }
+}
+

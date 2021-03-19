@@ -1,3 +1,7 @@
 :host {
   display: block;
+
+  .dialog-title, .dialog-content {
+    padding: var(--size-s);
+  }
 }

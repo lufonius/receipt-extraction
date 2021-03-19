@@ -10,12 +10,18 @@ import {Size} from "../../common/size";
 export class AppComponents {
 
   size = Size;
+  dialog: HTMLAppDialogElement;
+
+  async showDialog() {
+    await this.dialog.componentOnReady();
+    this.dialog.showChange(true);
+  }
 
   render() {
     return (
       <Host>
         <app-button>Normal button</app-button><br />
-        <app-button primary={true}>Primary button</app-button><br />
+        <app-button primary={true} onPress={() => this.showDialog()}>show dialog</app-button><br />
 
         <app-button-round size={Size.xs}>
           <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
@@ -48,6 +54,18 @@ export class AppComponents {
         <app-input>
           <input type="text" />
         </app-input>
+
+        <app-dialog ref={(e) => this.dialog = e}>
+          <div class="dialog-title">
+            <h1>HOI!</h1>
+          </div>
+          <div class="dialog-content">
+            <app-input>
+              <input type="text" />
+            </app-input>
+          </div>
+          <app-button onPress={(e) => this.dialog.showChange(false)} primary>close this annoying thing</app-button>
+        </app-dialog>
       </Host>
     );
   }

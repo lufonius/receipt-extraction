@@ -11,6 +11,7 @@ import { Line, ReceiptItem, ReceiptItemType } from "./components/model/client";
 export namespace Components {
     interface AppBackdrop {
         "show": boolean;
+        "showChange": (show: boolean) => Promise<void>;
         "withAnimation": boolean;
     }
     interface AppButton {
@@ -23,6 +24,10 @@ export namespace Components {
     }
     interface AppCrop {
         "history": RouterHistory;
+    }
+    interface AppDialog {
+        "show": boolean;
+        "showChange": (show: boolean) => Promise<void>;
     }
     interface AppHome {
     }
@@ -98,6 +103,12 @@ declare global {
     var HTMLAppCropElement: {
         prototype: HTMLAppCropElement;
         new (): HTMLAppCropElement;
+    };
+    interface HTMLAppDialogElement extends Components.AppDialog, HTMLStencilElement {
+    }
+    var HTMLAppDialogElement: {
+        prototype: HTMLAppDialogElement;
+        new (): HTMLAppDialogElement;
     };
     interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
     }
@@ -201,6 +212,7 @@ declare global {
         "app-button-round": HTMLAppButtonRoundElement;
         "app-components": HTMLAppComponentsElement;
         "app-crop": HTMLAppCropElement;
+        "app-dialog": HTMLAppDialogElement;
         "app-home": HTMLAppHomeElement;
         "app-icon": HTMLAppIconElement;
         "app-input": HTMLAppInputElement;
@@ -236,6 +248,9 @@ declare namespace LocalJSX {
     }
     interface AppCrop {
         "history"?: RouterHistory;
+    }
+    interface AppDialog {
+        "show"?: boolean;
     }
     interface AppHome {
     }
@@ -292,6 +307,7 @@ declare namespace LocalJSX {
         "app-button-round": AppButtonRound;
         "app-components": AppComponents;
         "app-crop": AppCrop;
+        "app-dialog": AppDialog;
         "app-home": AppHome;
         "app-icon": AppIcon;
         "app-input": AppInput;
@@ -319,6 +335,7 @@ declare module "@stencil/core" {
             "app-button-round": LocalJSX.AppButtonRound & JSXBase.HTMLAttributes<HTMLAppButtonRoundElement>;
             "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
+            "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
             "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
