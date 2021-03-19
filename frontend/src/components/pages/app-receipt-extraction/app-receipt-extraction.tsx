@@ -55,7 +55,22 @@ export class AppReceiptExtraction {
   }
 
   async delete(receiptItem: ReceiptItem) {
-    console.log("delete");
+    this.globalStore.deleteReceiptItemOfCurrentReceipt(receiptItem.id);
+
+    try {
+      await this.receiptService.deleteReceiptItem(receiptItem.id);
+
+      if (receiptItem.labelLineId) {
+        this.globalStore.updateLine(receiptItem.labelLineId, { isLinked: false });
+      }
+
+      if (receiptItem.valueLineId) {
+        this.globalStore.updateLine(receiptItem.valueLineId, { isLinked: false });
+      }
+    } catch (error) {
+      // show snackbar
+      this.globalStore.addReceiptItemOfCurrentReceipt(receiptItem);
+    }
   }
 
   public dropUpAnimationEnd = false;
