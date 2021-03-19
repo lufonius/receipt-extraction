@@ -6,13 +6,20 @@ import {cloneDeep} from "./cloneDeep";
 @Injectable
 export class Mapper {
   receiptFromDto(receiptDto: ReceiptDto): Receipt {
-    return cloneDeep<ReceiptDto, Receipt>(
+    const cloned = cloneDeep<ReceiptDto, Receipt>(
       receiptDto,
       {
         ".status": (status: ReceiptStatusDto) => ReceiptStatus[status],
         ".items.type": (type: ReceiptItemTypeDto) => ReceiptItemType[type]
       }
     );
+
+    cloned.lines.forEach((it) => {
+      it.isLinked = cloned.items.some((item) => item.valueLineId === it.id || item.labelLineId === it.id);
+      console.log(cloned.items);
+    });
+
+    return cloned;
   }
 
   receiptItemFromDto(receiptItemDto: ReceiptItemDto): ReceiptItem {

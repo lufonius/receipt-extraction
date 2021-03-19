@@ -18,6 +18,7 @@ export class ReceiptItemAdd {
   @Watch("receiptItem")
   receiptItemChanged() {
     this.fillInputsWithReceiptItem();
+    this.onInit();
   }
 
   @Method() async selectLine(line: Line) {
@@ -29,6 +30,9 @@ export class ReceiptItemAdd {
     } else if (this.focusedProp === 'label') {
       this.receiptItem.label = line.text;
       this.receiptItem.labelLineId = line.id;
+      this.valueInput.focus();
+      this.focusedInput = this.valueInput;
+      this.focusedProp = 'value';
     } else {
       throw Error("unknown type of focused prop.");
     }
@@ -37,6 +41,10 @@ export class ReceiptItemAdd {
   }
 
   componentDidLoad() {
+    this.onInit();
+  }
+
+  private onInit() {
     this.labelInput.focus();
     this.focusedInput = this.labelInput;
     this.fillInputsWithReceiptItem();

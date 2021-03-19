@@ -88,6 +88,14 @@ export class AppReceiptExtraction {
     const savedReceiptItemDto = await this.receiptService.createReceiptItem(dto);
     const savedReceiptItem = this.mapper.receiptItemFromDto(savedReceiptItemDto);
     this.globalStore.addReceiptItemOfCurrentReceipt(savedReceiptItem);
+
+    if (savedReceiptItem.labelLineId) {
+      this.globalStore.updateLine(savedReceiptItem.labelLineId, { isLinked: true });
+    }
+
+    if (savedReceiptItem.valueLineId) {
+      this.globalStore.updateLine(savedReceiptItem.valueLineId, { isLinked: true });
+    }
   }
 
   resetCurrentReceiptItem() {

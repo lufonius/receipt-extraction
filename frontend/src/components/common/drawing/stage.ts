@@ -6,6 +6,7 @@ export class Stage {
   private container: PIXI.Container;
   private dragging: boolean;
   private dragData: PIXI.InteractionData;
+  private shiftPressing: boolean;
 
   constructor(params: {
     hostElement: HTMLElement,
@@ -32,6 +33,10 @@ export class Stage {
 
   addShapes(shapes: PixiShape[]) {
     shapes.forEach((it) => this.addShape(it));
+  }
+
+  destroy() {
+    this.app.destroy(true);
   }
 
   private setupZoom() {
@@ -68,14 +73,29 @@ export class Stage {
       .on('pointerup', () => this.onDragEnd())
       .on('pointerupoutside', () => this.onDragEnd())
       .on('pointermove', () => this.onDragMove());
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        this.shiftPressing = true;
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        this.shiftPressing = false;
+        this.onDragEnd();
+      }
+    });
   }
 
   private onDragStart(event) {
-    this.dragData = event.data;
-    const relativeMousePosition = this.dragData.getLocalPosition(this.container);
-    this.container.pivot.set(relativeMousePosition.x, relativeMousePosition.y);
-    this.container.alpha = 0.5;
-    this.dragging = true;
+    if (this.shiftPressing) {
+      this.dragging = true;
+      this.dragData = event.data;
+      const relativeMousePosition = this.dragData.getLocalPosition(this.container);
+      this.container.pivot.set(relativeMousePosition.x, relativeMousePosition.y);
+      this.container.alpha = 0.5;
+    }
   }
 
   private onDragEnd() {
@@ -85,7 +105,7 @@ export class Stage {
   }
 
   private onDragMove() {
-      if (this.dragging) {
+      if (this.dragging  && this.shiftPressing) {
         const mousePosition = this.dragData.getLocalPosition(this.container.parent);
 
         this.container.x = mousePosition.x;

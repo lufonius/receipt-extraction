@@ -45,6 +45,10 @@ export class ReceiptLines {
   }
 
   private setupStage() {
+    if (this.stage) {
+      this.stage.destroy();
+    }
+
     this.stage = new Stage({
       hostElement: this.canvas,
       width: innerWidth,
@@ -63,7 +67,7 @@ export class ReceiptLines {
         width,
         height,
         strokeWidth: 3,
-        strokeColor: "red",
+        strokeColor: line.isLinked ? 0x03b700 : 0x696969,
         id: line.id
       });
 

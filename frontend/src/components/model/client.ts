@@ -40,6 +40,7 @@ export interface Line {
   bottomRight: Point;
   bottomLeft: Point;
   text: string;
+  isLinked: boolean;
 }
 
 export interface Point {

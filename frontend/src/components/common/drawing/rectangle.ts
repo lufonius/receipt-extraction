@@ -11,8 +11,8 @@ export class Rectangle implements PixiShape {
     y: number,
     width: number,
     height: number,
-    strokeWidth: 3,
-    strokeColor: "red",
+    strokeWidth: number,
+    strokeColor: number,
     id: number
   }) {
     this.id = params.id;
@@ -21,7 +21,7 @@ export class Rectangle implements PixiShape {
 
   private createImpl() {
     var graphics = new PIXI.Graphics();
-    graphics.lineStyle(5, 0xFF0000);
+    graphics.lineStyle(this.params.strokeWidth, this.params.strokeColor);
 
     graphics.drawRect(
       this.params.x,
