@@ -18,6 +18,16 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
     state.currentReceipt.items.splice(index, 1);
   });
 
+  updateReceiptItemOfCurrentReceipt = (id: number, changes: Partial<ReceiptItem>) => this.patch(state => {
+    const index = state.currentReceipt.items.findIndex(it => it.id === id);
+    const item = state.currentReceipt.items[index];
+
+    state.currentReceipt.items[index] = {
+      ...item,
+      ...changes
+    };
+  });
+
   addReceiptItemOfCurrentReceipt = (receiptItem: ReceiptItem) => this.patch(state => {
     state.currentReceipt.items.push(receiptItem);
   });
