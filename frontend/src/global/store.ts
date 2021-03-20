@@ -5,11 +5,6 @@ import {distinctUntilChanged} from "./distinct-until-changed";
 
 export type Patch<T> = (draft: T) => void;
 
-export type Dict<T extends string | number, R> = {
-  // @ts-ignore
-  [id: T]: R
-};
-
 
 // TODO: implement some kind of debugging capability, like setting the type of a patch,
 // maybe logging the differences before and after the patch (like jest snapshot comparison)

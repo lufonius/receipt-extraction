@@ -13,7 +13,7 @@ data class CategoryDbo (
     val avatarUrl: String,
 
     @Column(nullable = false, length = 7)
-    val color: String,
+    val color: Int,
 
     @Column(nullable = false, length = 250)
     val name: String,

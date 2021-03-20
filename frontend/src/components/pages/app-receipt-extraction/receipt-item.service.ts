@@ -2,7 +2,7 @@ import {Injectable} from "../../../global/di/injectable";
 import {ReceiptItemDto} from "../../model/dto";
 
 @Injectable
-export class ReceiptService {
+export class ReceiptItemService {
   private baseApiUrl: string = "http://localhost:8080/api"
 
   async deleteReceiptItem(id: number): Promise<void> {

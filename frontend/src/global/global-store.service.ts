@@ -1,6 +1,5 @@
 import {Injectable} from "./di/injectable";
-import {Dict} from "./store";
-import {Line, Receipt, ReceiptItem, ReceiptItemType} from "../components/model/client";
+import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../components/model/client";
 import {LocalstorageStore} from "./localstorage-store";
 
 @Injectable
@@ -8,6 +7,7 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
   constructor() {
     super({
       currentReceipt: null,
+      categories: [],
       linkedUId: null
     });
   }
@@ -41,6 +41,8 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
       ...changes
     };
   });
+
+  setCategories = (categories: Category[]) => this.patch(state => state.categories = categories);
 
   // Selectors
   selectCurrentReceipt = () => this.select(state => state.currentReceipt);
@@ -76,18 +78,13 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
   selectHasCurrentReceiptAnyItems = () => {
     return this.select(state => state.currentReceipt.items.length > 0);
   };
+
+  selectCategories = () => this.select(state => state.categories);
 }
 
-const toArray = <T>(obj: Dict<string | number, T>): T[] => Object.keys(obj).map(key => obj[key]);
-const toMap = <T extends { id: string | number }>(arr: T[]): Dict<string | number, T> => {
-  return arr.reduce((acc, curr) => {
-    // @ts-ignore
-    acc[curr.id] = curr;
-    return acc;
-  }, {});
-};
 
 export interface GlobalState {
   currentReceipt: Receipt;
+  categories: Category[];
   linkedUId: string;
 }

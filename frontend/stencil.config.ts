@@ -48,7 +48,8 @@ export const config: Config = {
       cert: readFileSync('cert.pem', 'utf8'),
       key: readFileSync('key.pem', 'utf8')
     },
-    gzip: true
+    gzip: true,
+    port: 3333
   },
   plugins: [
     sass()

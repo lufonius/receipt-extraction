@@ -41,10 +41,18 @@ export interface Line {
   bottomLeft: Point;
   text: string;
   isLinked: boolean;
+  color: number;
 }
 
 export interface Point {
   id: number;
   x: number;
   y: number;
+}
+
+export interface Category {
+  id: number;
+  avatar_url: string;
+  color: number;
+  name: string;
 }

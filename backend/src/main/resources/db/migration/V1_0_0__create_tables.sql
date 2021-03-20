@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `category` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `avatar_url` VARCHAR(250) NOT NULL,
-    `color` VARCHAR(7) NOT NULL,
+    `color` INT NOT NULL,
     `name` VARCHAR(250) NOT NULL,
     `parent_category_id` INT UNSIGNED
 );

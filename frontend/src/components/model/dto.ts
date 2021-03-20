@@ -52,3 +52,10 @@ export enum ReceiptItemTypeDto {
   Total = "Total",
   Date = "Date"
 }
+
+export interface CategoryDto {
+  id: number;
+  avatar_url: string;
+  color: number;
+  name: string;
+}

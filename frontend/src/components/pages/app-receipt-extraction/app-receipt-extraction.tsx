@@ -1,9 +1,9 @@
 import {Component, h, Host, State} from '@stencil/core';
 import {Inject} from "../../../global/di/inject";
 import {GlobalStore} from "../../../global/global-store.service";
-import {Line, Receipt, ReceiptItem, ReceiptItemType} from "../../model/client";
+import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../../model/client";
 import flyd from 'flyd';
-import {ReceiptService} from "./receipt.service";
+import {ReceiptItemService} from "./receipt-item.service";
 import {Size} from "../../common/size";
 import {MaterialIcons} from "../../../global/material-icons-enum";
 import {waitFor} from "../../../global/waitFor";
@@ -17,7 +17,7 @@ import {cloneDeep} from "../../model/cloneDeep";
 })
 export class AppReceiptExtraction {
   @Inject(GlobalStore) private globalStore: GlobalStore;
-  @Inject(ReceiptService) private receiptService: ReceiptService;
+  @Inject(ReceiptItemService) private receiptItemService: ReceiptItemService;
   @Inject(Mapper) private mapper: Mapper;
 
   @State() public total: ReceiptItem;
@@ -33,11 +33,16 @@ export class AppReceiptExtraction {
   private currentReceipt: Receipt;
   public receiptItemAdd: HTMLReceiptItemAddElement;
   public dialog: HTMLAppDialogElement;
+  private categories: Category[];
 
   componentWillLoad() {
     flyd.on((hasAnyItems) => {
       this.showDropup = hasAnyItems;
     }, this.globalStore.selectHasCurrentReceiptAnyItems());
+
+    flyd.on((categories) => {
+      return this.categories = categories;
+    }, this.globalStore.selectCategories());
 
     // TODO: currently, the problem is only with the receipt items. until we do not have a distinct select, let's just clone depp
     flyd.on((receipt) => this.currentReceipt = cloneDeep(receipt), this.globalStore.selectCurrentReceipt());
@@ -62,7 +67,7 @@ export class AppReceiptExtraction {
     try {
       this.globalStore.updateReceiptItemOfCurrentReceipt(clonedReceiptItem.id, clonedReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(clonedReceiptItem);
-      await this.receiptService.updateReceiptItem(clonedReceiptItem.id, dto);
+      await this.receiptItemService.updateReceiptItem(clonedReceiptItem.id, dto);
     } catch(error) {
       // show snackbar
       this.globalStore.updateReceiptItemOfCurrentReceipt(receiptItem.id, receiptItem);
@@ -73,7 +78,7 @@ export class AppReceiptExtraction {
     this.globalStore.deleteReceiptItemOfCurrentReceipt(receiptItem.id);
 
     try {
-      await this.receiptService.deleteReceiptItem(receiptItem.id);
+      await this.receiptItemService.deleteReceiptItem(receiptItem.id);
       this.updateLinesLinked(receiptItem, false);
     } catch (error) {
       // show snackbar
@@ -124,7 +129,7 @@ export class AppReceiptExtraction {
 
   private async createItem() {
     const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
-    const savedReceiptItemDto = await this.receiptService.createReceiptItem(dto);
+    const savedReceiptItemDto = await this.receiptItemService.createReceiptItem(dto);
     const savedReceiptItem = this.mapper.receiptItemFromDto(savedReceiptItemDto);
     this.globalStore.addReceiptItemOfCurrentReceipt(savedReceiptItem);
     this.updateLinesLinked(savedReceiptItem, true);
@@ -136,7 +141,7 @@ export class AppReceiptExtraction {
     try {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.currentReceiptItem.id, this.currentReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
-      await this.receiptService.updateReceiptItem(this.currentReceiptItem.id, dto);
+      await this.receiptItemService.updateReceiptItem(this.currentReceiptItem.id, dto);
       this.updateLinesLinked(this.currentReceiptItem, true);
     } catch(error) {
       // show snackbar

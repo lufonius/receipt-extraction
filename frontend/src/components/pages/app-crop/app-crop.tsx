@@ -8,6 +8,7 @@ import {MaterialIcons} from "../../../global/material-icons-enum";
 import {InitReceiptService} from "./init-receipt.service";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";
+import {CategoryService} from "../category.service";
 
 @Component({
   tag: 'app-crop',
@@ -18,6 +19,7 @@ export class AppCrop {
 
   @Inject(CropCanvasFactory) private cropCanvasFactory: CropCanvasFactory;
   @Inject(InitReceiptService) private initReceiptService: InitReceiptService;
+  @Inject(CategoryService) private categoryService: CategoryService;
   @Inject(GlobalStore) private globalStore: GlobalStore;
   @Inject(Mapper) private mapper: Mapper
 
@@ -75,9 +77,11 @@ export class AppCrop {
   async initReceiptAndRedirect() {
     const jpegAsBlob = await this.cropCanvas.imageAsPngBlob
     const receiptDto = await this.initReceiptService.initReceipt(jpegAsBlob)
-    const receipt = this.mapper.receiptFromDto(receiptDto)
-    this.globalStore.setCurrentReceipt(receipt)
-    this.history.push('/receipt-extraction')
+    const categories = await this.categoryService.getCategories();
+    const receipt = this.mapper.receiptFromDto(receiptDto, categories);
+    this.globalStore.setCurrentReceipt(receipt);
+    this.globalStore.setCategories(categories);
+    this.history.push('/receipt-extraction');
   }
 
   render() {

@@ -77,7 +77,7 @@ export class ReceiptLines {
         width,
         height,
         strokeWidth: 3,
-        strokeColor: line.isLinked ? 0x03b700 : 0x696969,
+        strokeColor: line.color,
         id: line.id
       });
 
