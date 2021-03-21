@@ -142,7 +142,7 @@ export class AppReceiptExtraction {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.currentReceiptItem.id, this.currentReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
       await this.receiptItemService.updateReceiptItem(this.currentReceiptItem.id, dto);
-      this.updateLinesColor(this.currentReceiptItem);
+      this.updateLinesColor(this.currentReceiptItem, 0x03b700);
     } catch(error) {
       // show snackbar
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.receiptItemBeforeUpdate.id, this.receiptItemBeforeUpdate);
