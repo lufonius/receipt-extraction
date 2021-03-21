@@ -24,10 +24,6 @@ export class AppDialog {
         this.showChange(false);
       }
     });
-
-    this.backdrop.addEventListener('click', () => {
-      this.showChange(false);
-    });
   }
 
   render() {
