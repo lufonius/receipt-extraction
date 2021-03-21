@@ -39,9 +39,7 @@ export class AppReceiptExtraction {
       this.showDropup = hasAnyItems;
     }, this.globalStore.selectHasCurrentReceiptAnyItems());
 
-    flyd.on((categories) => {
-      return this.categories = categories;
-    }, this.globalStore.selectCategories());
+    flyd.on((categories) => this.categories = categories, this.globalStore.selectCategories());
 
     // TODO: currently, the problem is only with the receipt items. until we do not have a distinct select, let's just clone depp
     flyd.on((receipt) => this.currentReceipt = cloneDeep(receipt), this.globalStore.selectCurrentReceipt());
@@ -67,9 +65,11 @@ export class AppReceiptExtraction {
       this.globalStore.updateReceiptItemOfCurrentReceipt(clonedReceiptItem.id, clonedReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(clonedReceiptItem);
       await this.receiptItemService.updateReceiptItem(clonedReceiptItem.id, dto);
+      this.updateLinesColor(receiptItem, 0x696969);
     } catch(error) {
       // show snackbar
       this.globalStore.updateReceiptItemOfCurrentReceipt(receiptItem.id, receiptItem);
+      this.updateLinesColor(receiptItem);
     }
   }
 
@@ -78,10 +78,11 @@ export class AppReceiptExtraction {
 
     try {
       await this.receiptItemService.deleteReceiptItem(receiptItem.id);
-      this.updateLinesLinked(receiptItem, false);
+      this.updateLinesColor(receiptItem, 0x696969);
     } catch (error) {
       // show snackbar
       this.globalStore.addReceiptItemOfCurrentReceipt(receiptItem);
+      this.updateLinesColor(receiptItem);
     }
   }
 
@@ -131,31 +132,35 @@ export class AppReceiptExtraction {
     const savedReceiptItemDto = await this.receiptItemService.createReceiptItem(dto);
     const savedReceiptItem = this.mapper.receiptItemFromDto(savedReceiptItemDto);
     this.globalStore.addReceiptItemOfCurrentReceipt(savedReceiptItem);
-    this.updateLinesLinked(savedReceiptItem, true);
+    this.updateLinesColor(savedReceiptItem);
   }
 
   private async updateItem() {
-    this.updateLinesLinked(this.receiptItemBeforeUpdate, false);
+    this.updateLinesColor(this.receiptItemBeforeUpdate, 0x696969);
 
     try {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.currentReceiptItem.id, this.currentReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
       await this.receiptItemService.updateReceiptItem(this.currentReceiptItem.id, dto);
-      this.updateLinesLinked(this.currentReceiptItem, true);
+      this.updateLinesColor(this.currentReceiptItem);
     } catch(error) {
       // show snackbar
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.receiptItemBeforeUpdate.id, this.receiptItemBeforeUpdate);
-      this.updateLinesLinked(this.receiptItemBeforeUpdate, true);
+      this.updateLinesColor(this.receiptItemBeforeUpdate, 0x696969);
     }
   }
 
-  private updateLinesLinked(receiptItem: ReceiptItem, isLinked: boolean) {
+  private updateLinesColor(receiptItem: ReceiptItem, color: number = null) {
+    if (!color) {
+      color = this.categories.find(it => it.id === receiptItem.categoryId).color;
+    }
+
     if (receiptItem.labelLineId) {
-      this.globalStore.updateLine(receiptItem.labelLineId, { isLinked });
+      this.globalStore.updateLine(receiptItem.labelLineId, { color });
     }
 
     if (receiptItem.valueLineId) {
-      this.globalStore.updateLine(receiptItem.valueLineId, { isLinked });
+      this.globalStore.updateLine(receiptItem.valueLineId, { color });
     }
   }
 
