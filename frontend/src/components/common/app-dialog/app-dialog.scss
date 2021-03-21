@@ -2,7 +2,8 @@
   .flex-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    margin-top: var(--size-s);
     min-height: 100vh;
 
     .content {

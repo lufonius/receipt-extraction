@@ -8,18 +8,32 @@ import {Component, Host, h, Prop, Method} from '@stencil/core';
 export class AppDialog {
 
   @Prop() public show: boolean = false;
-  dialog: HTMLAppBackdropElement;
+  backdrop: HTMLAppBackdropElement;
 
   @Method() async showChange(show: boolean) {
     this.show = show;
-    await this.dialog.componentOnReady();
-    this.dialog.showChange(this.show);
+    await this.backdrop.componentOnReady();
+    this.backdrop.showChange(this.show);
+  }
+
+
+
+  componentDidLoad() {
+    document.addEventListener('keyup', (event: KeyboardEvent) => {
+      if (event.code === 'Escape') {
+        this.showChange(false);
+      }
+    });
+
+    this.backdrop.addEventListener('click', () => {
+      this.showChange(false);
+    });
   }
 
   render() {
     return (
       <Host>
-        <app-backdrop ref={(el) => this.dialog = el} withAnimation={true}>
+        <app-backdrop ref={(el) => this.backdrop = el} withAnimation={true}>
           <div class="flex-container">
             <div class="content">
               <slot />
