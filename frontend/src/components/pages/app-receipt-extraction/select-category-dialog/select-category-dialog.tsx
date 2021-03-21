@@ -16,8 +16,8 @@ export class SelectCategoryDialog {
   @Prop() selectedCategoryId?: number;
   @Event() selectedCategoryIdChange: EventEmitter<number>;
   @State() public categories: Category[] = [];
-
   @State() searchText: string;
+  private input: HTMLInputElement;
 
   public dialog: HTMLAppDialogElement;
 
@@ -27,6 +27,10 @@ export class SelectCategoryDialog {
 
   @Method() async show() {
     this.dialog.showChange(true);
+    console.log(this.input);
+    setTimeout(() => {
+      this.input.focus();
+    }, 300);
   }
 
   @Method() async hide() {
@@ -49,6 +53,11 @@ export class SelectCategoryDialog {
     this.hide();
   }
 
+  setSelectedCategory(category: Category) {
+    this.selectedCategoryId = category.id
+    this.setSelectedCategoryAndClose();
+  }
+
   render() {
     return (
       <Host>
@@ -59,6 +68,7 @@ export class SelectCategoryDialog {
               <app-input>
                 <input
                   type="text"
+                  ref={(e) => this.input = e}
                   class="full-width"
                   placeholder="Search for categories"
                   onInput={(e) => this.setSearchText(e)}
@@ -71,7 +81,7 @@ export class SelectCategoryDialog {
                 .filter(category => this.matchesSearchText(category))
                 .map((category) => <div
                 class="category-item"
-                onClick={() => this.selectedCategoryId = category.id}>
+                onClick={() => this.setSelectedCategory(category)}>
                 <div class="category-item-divider full-width" />
                 <div class={{ "category-item-body": true, selected: this.selectedCategoryId === category.id }}>
                   <div class="category-item-body-circle" style={({ "background-color": "#" + category.color.toString(16) })}/>
