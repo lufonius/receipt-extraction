@@ -11,17 +11,9 @@
     app-button-round { pointer-events: all; }
   }
 
-  .dialog {
-    padding: var(--size-s);
-  }
-
   .fill {
     flex: 1;
     height: 1px;
-  }
-
-  .full-width {
-    width: 100%;
   }
 
   .spacer-xs {

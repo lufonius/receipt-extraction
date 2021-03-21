@@ -3,6 +3,8 @@ use drezip;
 # category
 INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (1, 'test', 0xe400ff, 'Food', null);
 INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (2, 'test', 0x00f3ff, 'Household', null);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (3, 'test', 0x00f3ff, 'Snacks', 2);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (4, 'test', 0x00f3ff, 'Sweets', 2);
 
 # receipt
 INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (1, 'InProgress', 'https://drezip.blob.core.windows.net/local/9b6b01d7-b133-466a-b758-b6309b55bc19.jpeg', -0.6052, null, '2021-02-28');

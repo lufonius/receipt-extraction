@@ -17,6 +17,17 @@
     align-items: flex-end;
   }
 
+  .circle {
+    height: var(--size-m);
+    width: var(--size-m);
+    border-radius: 50%;
+  }
+
+  .selected-category {
+    display: flex;
+    align-items: center;
+  }
+
   .margin-left-s {
     margin-left: var(--size-s);
   }

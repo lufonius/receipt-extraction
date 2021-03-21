@@ -74,6 +74,11 @@ export namespace Components {
     }
     interface ReceiptLines {
     }
+    interface SelectCategoryDialog {
+        "hide": () => Promise<void>;
+        "selectedCategoryId"?: number;
+        "show": () => Promise<void>;
+    }
 }
 declare global {
     interface HTMLAppBackdropElement extends Components.AppBackdrop, HTMLStencilElement {
@@ -208,6 +213,12 @@ declare global {
         prototype: HTMLReceiptLinesElement;
         new (): HTMLReceiptLinesElement;
     };
+    interface HTMLSelectCategoryDialogElement extends Components.SelectCategoryDialog, HTMLStencilElement {
+    }
+    var HTMLSelectCategoryDialogElement: {
+        prototype: HTMLSelectCategoryDialogElement;
+        new (): HTMLSelectCategoryDialogElement;
+    };
     interface HTMLElementTagNameMap {
         "app-backdrop": HTMLAppBackdropElement;
         "app-button": HTMLAppButtonElement;
@@ -231,6 +242,7 @@ declare global {
         "receipt-item-add": HTMLReceiptItemAddElement;
         "receipt-items-edit": HTMLReceiptItemsEditElement;
         "receipt-lines": HTMLReceiptLinesElement;
+        "select-category-dialog": HTMLSelectCategoryDialogElement;
     }
 }
 declare namespace LocalJSX {
@@ -290,7 +302,6 @@ declare namespace LocalJSX {
     }
     interface ReceiptItemAdd {
         "onReceiptItemChange"?: (event: CustomEvent<ReceiptItem>) => void;
-        "onSetCategoryChange"?: (event: CustomEvent<void>) => void;
         "receiptItem"?: ReceiptItem;
     }
     interface ReceiptItemsEdit {
@@ -305,6 +316,10 @@ declare namespace LocalJSX {
     }
     interface ReceiptLines {
         "onLineClick"?: (event: CustomEvent<Line>) => void;
+    }
+    interface SelectCategoryDialog {
+        "onSelectedCategoryIdChange"?: (event: CustomEvent<number>) => void;
+        "selectedCategoryId"?: number;
     }
     interface IntrinsicElements {
         "app-backdrop": AppBackdrop;
@@ -329,6 +344,7 @@ declare namespace LocalJSX {
         "receipt-item-add": ReceiptItemAdd;
         "receipt-items-edit": ReceiptItemsEdit;
         "receipt-lines": ReceiptLines;
+        "select-category-dialog": SelectCategoryDialog;
     }
 }
 export { LocalJSX as JSX };
@@ -357,6 +373,7 @@ declare module "@stencil/core" {
             "receipt-item-add": LocalJSX.ReceiptItemAdd & JSXBase.HTMLAttributes<HTMLReceiptItemAddElement>;
             "receipt-items-edit": LocalJSX.ReceiptItemsEdit & JSXBase.HTMLAttributes<HTMLReceiptItemsEditElement>;
             "receipt-lines": LocalJSX.ReceiptLines & JSXBase.HTMLAttributes<HTMLReceiptLinesElement>;
+            "select-category-dialog": LocalJSX.SelectCategoryDialog & JSXBase.HTMLAttributes<HTMLSelectCategoryDialogElement>;
         }
     }
 }

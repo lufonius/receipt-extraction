@@ -18,8 +18,6 @@ export class Mapper {
 
     // TODO: consider moving this to the backend
     const lineDict = arrayToDict(clonedReceiptItem.lines, "id");
-    const itemByLabelLineIdDict = arrayToDict(clonedReceiptItem.items, "labelLineId");
-    const itemByValueLineIdDict = arrayToDict(clonedReceiptItem.items, "valueLineId");
     const categoryDict = arrayToDict(categories, "id");
 
     for (const key in lineDict) {

@@ -1,7 +1,10 @@
 import {Component, Host, h, Prop, Watch, Method, State, EventEmitter, Event} from '@stencil/core';
-import {Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
+import {Category, Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
 import {MaterialIcons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
+import {Inject} from "../../../../global/di/inject";
+import {GlobalStore} from "../../../../global/global-store.service";
+import flyd from 'flyd';
 
 @Component({
   tag: 'receipt-item-add',
@@ -14,8 +17,10 @@ export class ReceiptItemAdd {
   public focusedInput: HTMLInputElement;
 
   private focusedProp: 'value' | 'label' = 'label';
-
-  @Event() setCategoryChange: EventEmitter<void>;
+  private selectCategoryDialog: HTMLSelectCategoryDialogElement;
+  @Inject(GlobalStore) private store: GlobalStore;
+  @State() categoryOfReceiptItem: Category;
+  private categories: Category[];
 
   @Event() receiptItemChange: EventEmitter<ReceiptItem>;
   @Prop() receiptItem: ReceiptItem;
@@ -48,7 +53,12 @@ export class ReceiptItemAdd {
     this.onInit();
   }
 
+  componentWillLoad() {
+    flyd.on(categories => this.categories = categories, this.store.selectCategories());
+  }
+
   private onInit() {
+    this.setSelectedCategory(this.receiptItem.categoryId);
     this.labelInput.focus();
     this.focusedInput = this.labelInput;
     this.fillInputsWithReceiptItem();
@@ -93,17 +103,28 @@ export class ReceiptItemAdd {
     this.valueInput.value = "";
   }
 
+  setSelectedCategory(id: number) {
+    this.receiptItem.categoryId = id;
+    this.categoryOfReceiptItem = this.categories.find(it => it.id === id);
+  }
+
   render() {
     return (
       <Host>
         <div class="divider">
           Select receipt item label and amount
           <div class="fill" />
+          {this.categoryOfReceiptItem && <div class="selected-category">
+            <div class="circle" style={({ "background-color": "#" + this.categoryOfReceiptItem.color.toString(16) })} />
+            <span class="margin-left-s">{this.categoryOfReceiptItem.name}</span>
+          </div>}
           {this.receiptItem.type === ReceiptItemType.Category && <app-button
+            class="margin-left-s"
             primary
             inverted
-            onPress={() => this.setCategoryChange.emit()}>
-            set category
+            onPress={() => this.selectCategoryDialog.show()}>
+            {!this.categoryOfReceiptItem && <span>set category</span>}
+            {this.categoryOfReceiptItem && <span>change</span>}
           </app-button>}
         </div>
         <div class="input">
@@ -142,6 +163,12 @@ export class ReceiptItemAdd {
             <app-icon>{ MaterialIcons.DELETE }</app-icon>
           </app-button-round>
         </div>
+
+        {this.receiptItem && <select-category-dialog
+          ref={(e) => this.selectCategoryDialog = e}
+          selectedCategoryId={this.receiptItem.categoryId}
+          onSelectedCategoryIdChange={({ detail }) => this.setSelectedCategory(detail)}
+        />}
       </Host>
     );
   }
