@@ -2,9 +2,23 @@
   display: block;
 
   .dialog {
+    position: relative;
+    max-height: 95vh;
+    overflow-y: scroll;
+    min-width: 50rem;
 
     &-header {
-      padding: var(--size-s);
+      position: sticky;
+      width: 100%;
+      background-color: var(--background);
+      top: 0;
+      // needed as otherwise on hover or select of an item it will overlap the header
+      z-index: 100;
+
+      > div {
+        position: relative;
+        padding: var(--size-s);
+      }
     }
 
     &-body {

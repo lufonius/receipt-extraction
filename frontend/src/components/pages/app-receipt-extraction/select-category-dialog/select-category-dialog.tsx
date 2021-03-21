@@ -27,7 +27,6 @@ export class SelectCategoryDialog {
 
   @Method() async show() {
     this.dialog.showChange(true);
-    console.log(this.input);
     setTimeout(() => {
       this.input.focus();
     }, 300);
@@ -64,18 +63,19 @@ export class SelectCategoryDialog {
         <app-dialog ref={(el) => this.dialog = el}>
           <div class="dialog">
             <div class="dialog-header">
-              <h1>Set a category for the receipt item</h1>
-              <app-input>
-                <input
-                  type="text"
-                  ref={(e) => this.input = e}
-                  class="full-width"
-                  placeholder="Search for categories"
-                  onInput={(e) => this.setSearchText(e)}
-                />
-              </app-input>
+              <div>
+                <h1>Set a category for the receipt item</h1>
+                <app-input>
+                  <input
+                    type="text"
+                    ref={(e) => this.input = e}
+                    class="full-width"
+                    placeholder="Search for categories"
+                    onInput={(e) => this.setSearchText(e)}
+                  />
+                </app-input>
+              </div>
             </div>
-
             <div class="dialog-body">
               {this.categories
                 .filter(category => this.matchesSearchText(category))
@@ -89,13 +89,7 @@ export class SelectCategoryDialog {
                 </div>
               </div>)}
             </div>
-          <app-button
-            primary
-            fullWidth
-            onPress={() => this.setSelectedCategoryAndClose()}>
-            set selected category
-          </app-button>
-          </div>
+            </div>
         </app-dialog>
       </Host>
     );
