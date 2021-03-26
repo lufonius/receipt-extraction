@@ -124,8 +124,7 @@ export class CropCanvas {
       this.imageScaleRatio = this.canvasWidth / this.imageData.width;
       const scaledHeight = this.imageData.height * this.imageScaleRatio;
       this.imageMarginXY = { x: 0, y: (this.canvasHeight - scaledHeight) / 2 };
-    } else {
-      // we set the scale ratio so that the height will be exactly as big as the height of the canvas.
+    } else {      // we set the scale ratio so that the height will be exactly as big as the height of the canvas.
       // (we want the height to be 100%)
       this.imageScaleRatio = this.canvasHeight / this.imageData.height;
       const scaledWidth = this.imageData.width * this.imageScaleRatio;

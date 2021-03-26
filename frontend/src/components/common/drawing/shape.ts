@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
 
-export interface PixiShape {
+export interface Shape {
   getImpl(): PIXI.DisplayObject;
 }

@@ -1,11 +1,10 @@
-import {PixiShape} from "./pixiShape";
+import {Shape} from "./shape";
 import * as PIXI from 'pixi.js'
+import {Drag} from "./drag";
 
-export class Stage {
+export class Stage extends Drag {
   private app: PIXI.Application;
   private container: PIXI.Container;
-  private dragging: boolean;
-  private dragData: PIXI.InteractionData;
   private shiftPressing: boolean;
 
   constructor(params: {
@@ -13,30 +12,57 @@ export class Stage {
     width: number,
     height: number
   }) {
+    super({
+      setPivotToMousePosition: true
+    });
+
     this.app = new PIXI.Application({
       width: params.width,
       height: params.height,
-      backgroundAlpha: 0
+      backgroundAlpha: 0,
+      antialias: true
     });
 
     params.hostElement.appendChild(this.app.view);
     this.container = new PIXI.Container();
     this.container.interactive = true;
     this.setupZoom();
-    this.setupDrag();
     this.app.stage.addChild(this.container);
+
+    this.setupDrag();
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        this.shiftPressing = true;
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        this.shiftPressing = false;
+        this.onDragEnd();
+      }
+    });
   }
 
-  addShape(shape: PixiShape) {
+  addShape(shape: Shape) {
     this.container.addChild(shape.getImpl());
   }
 
-  addShapes(shapes: PixiShape[]) {
+  addShapes(shapes: Shape[]) {
     shapes.forEach((it) => this.addShape(it));
   }
 
   removeAllChildren() {
     this.container.removeChildren();
+  }
+
+  isDragStartPreconditionMet(): boolean {
+    return this.shiftPressing;
+  }
+
+  shapeToDrag(): PIXI.DisplayObject {
+    return this.container;
   }
 
   private setupZoom() {
@@ -65,52 +91,6 @@ export class Stage {
       this.app.stage.x = newPos.x;
       this.app.stage.y = newPos.y;
     });
-  }
-
-  private setupDrag() {
-    this.container
-      .on('pointerdown', (e) => this.onDragStart(e))
-      .on('pointerup', () => this.onDragEnd())
-      .on('pointerupoutside', () => this.onDragEnd())
-      .on('pointermove', () => this.onDragMove());
-
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        this.shiftPressing = true;
-      }
-    });
-
-    document.addEventListener('keyup', (e) => {
-      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        this.shiftPressing = false;
-        this.onDragEnd();
-      }
-    });
-  }
-
-  private onDragStart(event) {
-    if (this.shiftPressing) {
-      this.dragging = true;
-      this.dragData = event.data;
-      const relativeMousePosition = this.dragData.getLocalPosition(this.container);
-      this.container.pivot.set(relativeMousePosition.x, relativeMousePosition.y);
-      this.container.alpha = 0.5;
-    }
-  }
-
-  private onDragEnd() {
-    this.container.alpha = 1;
-    this.dragging = false;
-    this.dragData = null;
-  }
-
-  private onDragMove() {
-      if (this.dragging  && this.shiftPressing) {
-        const mousePosition = this.dragData.getLocalPosition(this.container.parent);
-
-        this.container.x = mousePosition.x;
-        this.container.y = mousePosition.y;
-      }
   }
 }
 

@@ -16,8 +16,6 @@ export class AppDialog {
     this.backdrop.showChange(this.show);
   }
 
-
-
   componentDidLoad() {
     document.addEventListener('keyup', (event: KeyboardEvent) => {
       if (event.code === 'Escape') {
@@ -39,5 +37,4 @@ export class AppDialog {
       </Host>
     );
   }
-
 }

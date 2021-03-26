@@ -1,79 +1,82 @@
 import {Stage} from "../../common/drawing/stage";
 import {Line} from "../../common/drawing/line";
-import {PixiShape} from "../../common/drawing/pixiShape";
+import {Shape} from "../../common/drawing/shape";
 import {Circle} from "../../common/drawing/circle";
 
 let counter = 0;
 
 export class DragableRectangle {
-  private vertices: Array<Vertice> = [];
-  private edges: Array<Edge> = [];
+  private corners: Array<Corner> = [];
+  private sides: Array<Side> = [];
 
   constructor(
     private stage: Stage,
-    private corners: { x: number, y: number }[],
+    corners: { x: number, y: number }[],
     private color: string
   ) {
-    this.vertices = corners.map(({x, y}) => {
-      return new Vertice(x, y, color);
-    });
+    this.corners = corners.map(({x, y}) => new Corner(x, y, color));
 
-    const [vertice0, vertice1, vertice2, vertice3] = this.vertices;
+    const [vertice0, vertice1, vertice2, vertice3] = this.corners;
 
-    this.edges = [
-      new Edge(vertice0, vertice1, color),
-      new Edge(vertice1, vertice2, color),
-      new Edge(vertice2, vertice3, color),
-      new Edge(vertice3, vertice0, color)
+    this.sides = [
+      new Side(vertice0, vertice1, color),
+      new Side(vertice1, vertice2, color),
+      new Side(vertice2, vertice3, color),
+      new Side(vertice3, vertice0, color)
     ];
 
-    this.stage.addShapes(this.edges.map(e => e.shape));
-    this.stage.addShapes(this.vertices.map(v => v.shape));
+    this.stage.addShapes(this.corners.map(v => v.shape));
+    this.stage.addShapes(this.sides.map(e => e.shape));
   }
 
   getRectangle(): { x: number, y: number }[] {
-    return this.vertices
+    return this.corners
       .map((vertice) => ({ x: vertice.x, y: vertice.y }));
   }
 
   clear() {
-    // TODO: implement
+    this.corners.forEach(it => it.destroy());
+    this.sides.forEach(it => it.destroy());
   }
 }
 
-class Edge {
+class Side {
   private line: Line;
 
   constructor(
-    public vertice1: Vertice,
-    public vertice2: Vertice,
+    public corner1: Corner,
+    public corner2: Corner,
     private color: string
   ) {
-    vertice1.edges.push(this);
-    vertice2.edges.push(this);
+    corner1.sides.push(this);
+    corner2.sides.push(this);
 
     this.line = new Line({
-      p1: { x: vertice1.initialX, y: vertice1.initialY },
-      p2: { x: vertice2.initialX, y: vertice2.initialY },
-      strokeColor: color,
+      p1: { x: corner1.initialX, y: corner1.initialY },
+      p2: { x: corner2.initialX, y: corner2.initialY },
+      strokeColor: 0x000000,
       strokeWidth: 2,
       id: `${counter++}`
     });
   }
 
   update() {
-    this.line.setP1({ x: this.vertice1.x, y: this.vertice1.y });
-    this.line.setP2({ x: this.vertice2.x, y: this.vertice2.y });
+    this.line.setP1({ x: this.corner1.x, y: this.corner1.y });
+    this.line.setP2({ x: this.corner2.x, y: this.corner2.y });
   }
 
-  get shape(): PixiShape {
+  get shape(): Shape {
     return this.line;
+  }
+
+  destroy() {
+    this.line.destroy();
   }
 }
 
-class Vertice {
+class Corner {
   private ellipse: Circle;
-  public edges: Array<Edge> = [];
+  public sides: Array<Side> = [];
 
   constructor(
     public initialX: number,
@@ -83,17 +86,13 @@ class Vertice {
     this.ellipse = new Circle({
       x: initialX,
       y: initialY,
-      strokeColor: color,
+      strokeColor: 0x000000,
       strokeWidth: 2,
-      radiusX: 10,
-      radiusY: 10,
+      radius: 10,
       draggable: true,
       hitStrokeWidth: 25,
-      id: `${counter++}`
-    });
-
-    this.ellipse.onDragMove(() => {
-      this.edges.forEach((edge) => edge.update());
+      id: `${counter++}`,
+      onMove: () => this.sides.forEach((side) => side.update())
     });
   }
 
@@ -105,7 +104,11 @@ class Vertice {
     return this.ellipse.y;
   }
 
-  get shape(): PixiShape {
+  destroy() {
+    this.ellipse.destroy();
+  }
+
+  get shape(): Shape {
     return this.ellipse;
   }
 }

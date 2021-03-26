@@ -1,10 +1,10 @@
-import {PixiShape} from "./pixiShape";
+import {Shape} from "./shape";
 import * as PIXI from 'pixi.js'
 
-export class Rectangle implements PixiShape {
+export class Rectangle implements Shape {
   id: number;
 
-  private graphics: PIXI.Graphics;
+  private pixiRectangle: PIXI.Graphics;
 
   constructor(private params: {
     x: number,
@@ -42,14 +42,14 @@ export class Rectangle implements PixiShape {
 
     graphics.endFill();
 
-    this.graphics = graphics;
+    this.pixiRectangle = graphics;
   }
 
   onClickOrTap(fn: (rect: Rectangle) => void) {
-    this.graphics.on('mousedown', () => fn(this));
+    this.pixiRectangle.on('mousedown', () => fn(this));
   }
 
   getImpl(): PIXI.DisplayObject {
-    return this.graphics;
+    return this.pixiRectangle;
   }
 }

@@ -1,11 +1,11 @@
-import {PixiShape} from "./pixiShape";
+import {Shape} from "./shape";
 import * as PIXI from 'pixi.js'
 
-export class Image implements PixiShape {
+export class Image implements Shape {
   private _x: number;
   private _y: number;
 
-  private image: PIXI.Sprite;
+  private pixiImage: PIXI.Sprite;
 
   createManually(params: {
     image: OffscreenCanvas,
@@ -23,22 +23,27 @@ export class Image implements PixiShape {
     id: string
   }) {
     const texture = PIXI.Texture.from(params.url);
-    this.image = new PIXI.Sprite(texture);
+    this.pixiImage = new PIXI.Sprite(texture);
   }
 
   setImage(image: OffscreenCanvas) {
     const texture = PIXI.Texture.from(image.transferToImageBitmap());
-    this.image.texture = texture;
+
+    if (this.pixiImage) {
+      this.pixiImage.texture = texture;
+    } else {
+      this.pixiImage = new PIXI.Sprite(texture);
+    }
   }
 
   setPosition(p: { x: number, y: number }) {
     this._x = p.x;
     this._y = p.y;
-    this.image.x = this._x;
-    this.image.y = this._y;
+    this.pixiImage.x = this._x;
+    this.pixiImage.y = this._y;
   }
 
   getImpl(): PIXI.DisplayObject {
-    return this.image;
+    return this.pixiImage;
   }
 }
