@@ -6,6 +6,7 @@ import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";
 import {RouterHistory} from "@stencil/router";
 import {CategoryService} from "../category.service";
+import {ReceiptService} from "../receipt.service";
 
 @Component({
   tag: 'app-receipt-lists',
@@ -17,6 +18,7 @@ export class AppReceiptLists {
   @Inject(GlobalStore) private globalStore: GlobalStore;
   @Inject(Mapper) private mapper: Mapper;
   @Inject(CategoryService) private categoryService: CategoryService;
+  @Inject(ReceiptService) private receiptService: ReceiptService;
 
   @Prop() history: RouterHistory;
   @State() receiptListHasBeenLoaded: boolean = false;
@@ -54,6 +56,11 @@ export class AppReceiptLists {
   async continueEditingNextReceipt(status: ReceiptStatusDto) {
     const nextReceiptToEdit = this.getNextReceiptWithStatus(status);
     const receiptDto = await this.fetchReceipt(nextReceiptToEdit.id);
+
+    if (status === ReceiptStatusDto.Open) {
+      await this.receiptService.startExtraction(receiptDto.id);
+    }
+
     const categories = await this.categoryService.getCategories();
     const receipt = this.mapper.receiptFromDto(receiptDto, categories);
     this.globalStore.setCurrentReceipt(receipt);
