@@ -1,0 +1,27 @@
+:host {
+  display: inline-block;
+  --loader-width: var(--size-s);
+  --loader-animation-width: 5rem;
+
+  .loader-wrapper {
+    --loader-animation-needed-space: calc(var(--loader-width) + var(--loader-animation-width));
+    width: var(--loader-animation-needed-space);
+
+    .loader {
+      width: var(--loader-width);
+      height: var(--loader-width);
+      background-color: var(--primary);
+
+      animation-name: bounce;
+      animation-timing-function: cubic-bezier(0.56, 0.06, 0.05, 0.95);
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes bounce {
+      from, 0% { transform: translateX(0rem); }
+      50% { transform: translateX(var(--loader-animation-width)); }
+      100%, to { transform: translateX(0rem); }
+    }
+  }
+}

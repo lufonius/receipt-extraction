@@ -50,6 +50,8 @@ html {
   --size-xxl: 6rem;
 }
 
+p { font-size: var(--body-font-size); }
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

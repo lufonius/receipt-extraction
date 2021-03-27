@@ -1,4 +1,4 @@
-import {Component, h, Host, State} from '@stencil/core';
+import {Component, h, Host, Prop, State} from '@stencil/core';
 import {Inject} from "../../../global/di/inject";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../../model/client";
@@ -9,6 +9,8 @@ import {MaterialIcons} from "../../../global/material-icons-enum";
 import {waitFor} from "../../../global/waitFor";
 import {Mapper} from "../../model/mapper";
 import {cloneDeep} from "../../model/cloneDeep";
+import {ReceiptService} from "../receipt.service";
+import {RouterHistory} from "@stencil/router";
 
 @Component({
   tag: 'app-receipt-extraction',
@@ -19,6 +21,9 @@ export class AppReceiptExtraction {
   @Inject(GlobalStore) private globalStore: GlobalStore;
   @Inject(ReceiptItemService) private receiptItemService: ReceiptItemService;
   @Inject(Mapper) private mapper: Mapper;
+  @Inject(ReceiptService) private receiptService: ReceiptService;
+
+  @Prop() history: RouterHistory;
 
   @State() public total: ReceiptItem;
   @State() public date: ReceiptItem;
@@ -94,13 +99,13 @@ export class AppReceiptExtraction {
   }
 
   async update(receiptItem: ReceiptItem) {
-    // open add items with prefilled texts of inputs ... easy peasy
+    // clonedeep, as we would mutate the state directly, and immer.js does not like that
+    // (it's also bad practice)
     this.receiptItemBeforeUpdate = cloneDeep(receiptItem);
     this.currentReceiptItem = cloneDeep(receiptItem);
     await this.hideOverviewAndShowAddItems();
   }
 
-  // TODO: consider renamings
   async hideOverviewAndShowAddItems() {
     this.showDropup = false;
     await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
@@ -152,7 +157,11 @@ export class AppReceiptExtraction {
 
   private updateLinesColor(receiptItem: ReceiptItem, color: number = null) {
     if (!color) {
-      color = this.categories.find(it => it.id === receiptItem.categoryId).color;
+      color = this.categories.find(it => it.id === receiptItem.categoryId)?.color;
+
+      if(!color) {
+        color = 0x696969;
+      }
     }
 
     if (receiptItem.labelLineId) {
@@ -181,6 +190,18 @@ export class AppReceiptExtraction {
       || this.currentReceiptItem.type === ReceiptItemType.Category;
   }
 
+  async endExtraction() {
+    try {
+      this.showDropup = false;
+      await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
+
+      await this.receiptService.endExtraction(this.currentReceipt.id);
+      this.history.push("/list-receipts");
+    } catch (error) {
+      // woooot?
+    }
+  }
+
   render() {
     return (
       <Host>
@@ -189,7 +210,7 @@ export class AppReceiptExtraction {
           onContainerShownAnimationEnd={({ detail: show }) => this.dropUpAnimationEnd = show}
         >
           {this.showEditItems && <div class="controls" slot="controls">
-            <app-button-round size={Size.xxl}>
+            <app-button-round size={Size.xxl} onPress={() => this.endExtraction()}>
               <app-icon>{ MaterialIcons.DONE_ALL }</app-icon>
               <span>done</span>
             </app-button-round>
@@ -203,7 +224,7 @@ export class AppReceiptExtraction {
           {this.showAddItem && <div class="controls" slot="controls">
             <app-button-round size={Size.xxl} onPress={() => this.hideAddItem()}>
               <app-icon>{ MaterialIcons.CLOSE }</app-icon>
-              <span>cancel</span>
+              <span>close</span>
             </app-button-round>
             <div class="fill" />
             {this.isTaxOrCategory() && <app-button-round size={Size.xxl} onPress={async () => { await this.saveItem(); await this.resetCurrentReceiptItem(); }}>

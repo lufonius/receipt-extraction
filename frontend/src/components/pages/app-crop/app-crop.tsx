@@ -1,7 +1,6 @@
 import {Component, h, Prop, State} from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import {Inject} from "../../../global/di/inject";
-import flyd from 'flyd';
 import {CropCanvasFactory} from "./crop-canvas-factory";
 import {CropCanvas} from "./crop-canvas";
 import {MaterialIcons} from "../../../global/material-icons-enum";
@@ -9,6 +8,8 @@ import {InitReceiptService} from "./init-receipt.service";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";
 import {CategoryService} from "../category.service";
+import {ReceiptService} from "../receipt.service";
+import {Receipt} from "../../model/client";
 
 @Component({
   tag: 'app-crop',
@@ -16,12 +17,12 @@ import {CategoryService} from "../category.service";
   shadow: false,
 })
 export class AppCrop {
-
   @Inject(CropCanvasFactory) private cropCanvasFactory: CropCanvasFactory;
   @Inject(InitReceiptService) private initReceiptService: InitReceiptService;
   @Inject(CategoryService) private categoryService: CategoryService;
   @Inject(GlobalStore) private globalStore: GlobalStore;
-  @Inject(Mapper) private mapper: Mapper
+  @Inject(Mapper) private mapper: Mapper;
+  @Inject(ReceiptService) private receiptService: ReceiptService;
 
   @Prop() history: RouterHistory;
 
@@ -39,6 +40,10 @@ export class AppCrop {
   @State() rotateShown: boolean = false;
   @State() uploadShown: boolean = false;
   @State() alreadyTookPhotograph: boolean = false;
+  @State() dialog: HTMLAppDialogElement;
+  @State() isUploading: boolean = false;
+
+  private currentReceipt: Receipt;
 
   private async setupCanvas() {
     this.cropCanvas = await this.cropCanvasFactory.createCanvas({
@@ -74,14 +79,36 @@ export class AppCrop {
     }
   }
 
-  async initReceiptAndRedirect() {
-    const jpegAsBlob = await this.cropCanvas.imageAsPngBlob
-    const receiptDto = await this.initReceiptService.initReceipt(jpegAsBlob)
-    const categories = await this.categoryService.getCategories();
-    const receipt = this.mapper.receiptFromDto(receiptDto, categories);
-    this.globalStore.setCurrentReceipt(receipt);
-    this.globalStore.setCategories(categories);
-    this.history.push('/receipt-extraction');
+  async initReceiptAndShowDialog() {
+    this.dialog.isVisible(true);
+    try {
+      this.isUploading = true;
+      const jpegAsBlob = await this.cropCanvas.imageAsPngBlob
+      const receiptDto = await this.initReceiptService.initReceipt(jpegAsBlob)
+      const categories = await this.categoryService.getCategories();
+      const receipt = this.mapper.receiptFromDto(receiptDto, categories);
+      this.isUploading = false;
+      this.currentReceipt = receipt;
+      this.globalStore.setCurrentReceipt(receipt);
+      this.globalStore.setCategories(categories);
+    } catch (error) {
+      // retry?
+      this.dialog.isVisible(false);
+      this.isUploading = false;
+    }
+  }
+
+  async reset() {
+
+  }
+
+  async startExtraction() {
+    try {
+      await this.receiptService.startExtraction(this.currentReceipt.id);
+      this.history.push('/receipt-extraction');
+    } catch (error) {
+      // wat do? wen hop?
+    }
   }
 
   render() {
@@ -120,9 +147,26 @@ export class AppCrop {
 
           <div class="grow" />
           {this.cropShown && <app-button onPress={() => this.cropByDragableRectangle()} primary>Crop</app-button>}
-          {this.uploadShown && <app-button onPress={() => this.initReceiptAndRedirect()} primary>Upload</app-button>}
+          {this.uploadShown && <app-button onPress={() => this.initReceiptAndShowDialog()} primary>Upload</app-button>}
         </div>
         <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.drawImageAndDetectedRectangle()} ref={(el) => this.photoInput = el} />
+
+        <app-dialog ref={(el) => this.dialog = el} manuallyClosable={false}>
+          <div class="dialog-body">
+            {this.isUploading && <div>
+              <app-loader />
+              <p>Uploading image and extracting text</p>
+            </div>}
+            {!this.isUploading && <div>
+              <app-icon>{MaterialIcons.DONE}</app-icon>
+              <p>Upload done!</p>
+            </div>}
+          </div>
+          <div class="dialog-footer">
+            <app-button primary onPress={() => this.reset()}>Meanwhile, upload next</app-button>
+            <app-button primary disabled={this.isUploading} onPress={() => this.startExtraction()}>Extract values</app-button>
+          </div>
+        </app-dialog>
       </div>
     );
   }

@@ -6,22 +6,22 @@ import {Component, Host, h, Prop, Method} from '@stencil/core';
   shadow: true,
 })
 export class AppDialog {
-
-  @Prop() public show: boolean = false;
+  @Prop() manuallyClosable: boolean = true;
   backdrop: HTMLAppBackdropElement;
 
-  @Method() async showChange(show: boolean) {
-    this.show = show;
+  @Method() async isVisible(show: boolean) {
     await this.backdrop.componentOnReady();
-    this.backdrop.showChange(this.show);
+    await this.backdrop.showChange(show);
   }
 
   componentDidLoad() {
-    document.addEventListener('keyup', (event: KeyboardEvent) => {
-      if (event.code === 'Escape') {
-        this.showChange(false);
-      }
-    });
+    if (this.manuallyClosable) {
+      document.addEventListener('keyup', (event: KeyboardEvent) => {
+        if (event.code === 'Escape') {
+          this.isVisible(false);
+        }
+      });
+    }
   }
 
   render() {

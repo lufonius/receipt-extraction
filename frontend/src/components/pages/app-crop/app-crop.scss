@@ -32,3 +32,20 @@
   right: 16px;
   bottom: 66px;
 }
+
+.dialog-body > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: var(--size-m);
+}
+
+.dialog-footer {
+  display: flex;
+
+  button {
+    flex: 1 1 0;
+  }
+}

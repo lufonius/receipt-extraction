@@ -14,7 +14,7 @@ export class AppComponents {
 
   async showDialog() {
     await this.dialog.componentOnReady();
-    this.dialog.showChange(true);
+    this.dialog.isVisible(true);
   }
 
   render() {
@@ -55,6 +55,10 @@ export class AppComponents {
           <input type="text" />
         </app-input>
 
+        <br />
+
+        Loading some stuff: <app-loader />
+
         <app-dialog ref={(e) => this.dialog = e}>
           <div class="dialog-title">
             <h1>HOI!</h1>
@@ -64,7 +68,7 @@ export class AppComponents {
               <input type="text" />
             </app-input>
           </div>
-          <app-button onPress={(e) => this.dialog.showChange(false)} primary>close this annoying thing</app-button>
+          <app-button onPress={(e) => this.dialog.isVisible(false)} primary>close this annoying thing</app-button>
         </app-dialog>
       </Host>
     );

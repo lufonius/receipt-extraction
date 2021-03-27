@@ -26,14 +26,14 @@ export class SelectCategoryDialog {
   }
 
   @Method() async show() {
-    this.dialog.showChange(true);
+    this.dialog.isVisible(true);
     setTimeout(() => {
       this.input.focus();
     }, 300);
   }
 
   @Method() async hide() {
-    this.dialog.showChange(false);
+    this.dialog.isVisible(false);
   }
 
   matchesSearchText(category: Category): boolean {

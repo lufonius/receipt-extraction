@@ -28,6 +28,8 @@
   font-family: var(--heading-font-family);
   font-weight: var(--font-weight-regular);
 
+  white-space: nowrap;
+
   padding: var(--padding-top-bottom) var(--padding-left-right);
 
   outline: none;
@@ -54,5 +56,14 @@
 
   &:active {
     transform: scale(1.05);
+  }
+
+  &[disabled] {
+    filter: brightness(0.3);
+    cursor: initial;
+
+    &:active {
+      transform: initial;
+    }
   }
 }

@@ -15,6 +15,7 @@ export namespace Components {
         "withAnimation": boolean;
     }
     interface AppButton {
+        "disabled": boolean;
         "fullWidth": boolean;
         "inverted": boolean;
         "primary": boolean;
@@ -28,8 +29,8 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface AppDialog {
-        "show": boolean;
-        "showChange": (show: boolean) => Promise<void>;
+        "isVisible": (show: boolean) => Promise<void>;
+        "manuallyClosable": boolean;
     }
     interface AppHome {
     }
@@ -38,6 +39,8 @@ export namespace Components {
     interface AppInput {
     }
     interface AppLayoutVerticalSplit {
+    }
+    interface AppLoader {
     }
     interface AppLogo {
     }
@@ -49,6 +52,7 @@ export namespace Components {
     interface AppQrScan {
     }
     interface AppReceiptExtraction {
+        "history": RouterHistory;
     }
     interface AppReceiptLists {
         "history": RouterHistory;
@@ -141,6 +145,12 @@ declare global {
         prototype: HTMLAppLayoutVerticalSplitElement;
         new (): HTMLAppLayoutVerticalSplitElement;
     };
+    interface HTMLAppLoaderElement extends Components.AppLoader, HTMLStencilElement {
+    }
+    var HTMLAppLoaderElement: {
+        prototype: HTMLAppLoaderElement;
+        new (): HTMLAppLoaderElement;
+    };
     interface HTMLAppLogoElement extends Components.AppLogo, HTMLStencilElement {
     }
     var HTMLAppLogoElement: {
@@ -230,6 +240,7 @@ declare global {
         "app-icon": HTMLAppIconElement;
         "app-input": HTMLAppInputElement;
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
+        "app-loader": HTMLAppLoaderElement;
         "app-logo": HTMLAppLogoElement;
         "app-profile": HTMLAppProfileElement;
         "app-qr-generation": HTMLAppQrGenerationElement;
@@ -251,6 +262,7 @@ declare namespace LocalJSX {
         "withAnimation"?: boolean;
     }
     interface AppButton {
+        "disabled"?: boolean;
         "fullWidth"?: boolean;
         "inverted"?: boolean;
         "onPress"?: (event: CustomEvent<MouseEvent>) => void;
@@ -266,7 +278,7 @@ declare namespace LocalJSX {
         "history"?: RouterHistory;
     }
     interface AppDialog {
-        "show"?: boolean;
+        "manuallyClosable"?: boolean;
     }
     interface AppHome {
     }
@@ -275,6 +287,8 @@ declare namespace LocalJSX {
     interface AppInput {
     }
     interface AppLayoutVerticalSplit {
+    }
+    interface AppLoader {
     }
     interface AppLogo {
     }
@@ -286,6 +300,7 @@ declare namespace LocalJSX {
     interface AppQrScan {
     }
     interface AppReceiptExtraction {
+        "history"?: RouterHistory;
     }
     interface AppReceiptLists {
         "history"?: RouterHistory;
@@ -332,6 +347,7 @@ declare namespace LocalJSX {
         "app-icon": AppIcon;
         "app-input": AppInput;
         "app-layout-vertical-split": AppLayoutVerticalSplit;
+        "app-loader": AppLoader;
         "app-logo": AppLogo;
         "app-profile": AppProfile;
         "app-qr-generation": AppQrGeneration;
@@ -361,6 +377,7 @@ declare module "@stencil/core" {
             "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
             "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
+            "app-loader": LocalJSX.AppLoader & JSXBase.HTMLAttributes<HTMLAppLoaderElement>;
             "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-qr-generation": LocalJSX.AppQrGeneration & JSXBase.HTMLAttributes<HTMLAppQrGenerationElement>;
