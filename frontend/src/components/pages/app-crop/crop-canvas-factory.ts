@@ -14,12 +14,11 @@ export class CropCanvasFactory {
     width: number,
     height: number,
     controlsHeight: number,
-    canvas: HTMLDivElement,
-    magnifiedCanvas: HTMLDivElement
+    canvas: HTMLDivElement
   }) {
     await this.openCvService.load();
 
-    const { width, height, controlsHeight, canvas, magnifiedCanvas } = config;
+    const { width, height, controlsHeight, canvas } = config;
     return new CropCanvas(
       this.openCvService,
       width,

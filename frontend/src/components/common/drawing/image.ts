@@ -13,9 +13,9 @@ export class Image implements Shape {
     y: number,
     id: string
   }) {
-    this.setImage(params.image);
     this._x = params.x;
     this._y = params.y;
+    this.setImage(params.image);
   }
 
   crateFromUrl(params: {
@@ -34,6 +34,9 @@ export class Image implements Shape {
     } else {
       this.pixiImage = new PIXI.Sprite(texture);
     }
+
+    this.pixiImage.x = this._x;
+    this.pixiImage.y = this._y;
   }
 
   setPosition(p: { x: number, y: number }) {

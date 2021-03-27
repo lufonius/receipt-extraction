@@ -50,8 +50,7 @@ export class AppCrop {
       width: innerWidth - this.canvasMarginX * 2,
       height: innerHeight - this.controlsHeight,
       canvas: this.canvas,
-      controlsHeight: this.controlsHeight,
-      magnifiedCanvas: this.magnifiedCanvas
+      controlsHeight: this.controlsHeight
     });
   }
 
