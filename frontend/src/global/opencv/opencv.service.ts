@@ -10,8 +10,17 @@ export interface RotatedRect { corners: Array<{ x: number, y: number }> };
 
 @Injectable
 export class OpenCvService {
-  async load(): Promise<void> {
-    return _load();
+  private hasBeenLoaded: boolean = false;
+  private loading: Promise<void>;
+
+  private async loadIfNotLoadedAlready() {
+    if (!this.hasBeenLoaded && !this.loading) {
+      this.loading = _load();
+      await this.loading;
+      this.hasBeenLoaded = true;
+    } else if(!this.hasBeenLoaded && this.loading) {
+      await this.loading;
+    }
   }
 
   async detectRectangleAroundDocument(
@@ -20,6 +29,7 @@ export class OpenCvService {
     height: number,
     left: number
   ): Promise<{ imageWithRectangle: ImageData, rect: RotatedRect }> {
+    await this.loadIfNotLoadedAlready();
     return _detectRectangleAroundDocument(image, width, height, left);
   }
 
@@ -30,12 +40,14 @@ export class OpenCvService {
     height: number,
     ratio: number
   ): Promise<ImageData> {
+    await this.loadIfNotLoadedAlready();
     return _cropAndWarpByPoints(inputImage, rect, width, height, ratio);
   }
 
   async rotate90DegClockwise(
     inputImage: ImageData
   ): Promise<ImageData> {
+    await this.loadIfNotLoadedAlready();
     return _rotate90DegClockwise(inputImage);
   }
 }

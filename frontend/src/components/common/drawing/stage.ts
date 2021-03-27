@@ -57,6 +57,11 @@ export class Stage extends Drag {
     this.container.removeChildren();
   }
 
+  destroy() {
+    this.app.destroy(true);
+    this.removeAllChildren();
+  }
+
   isDragStartPreconditionMet(): boolean {
     return this.shiftPressing;
   }

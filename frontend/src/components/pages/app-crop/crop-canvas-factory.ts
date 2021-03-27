@@ -16,8 +16,6 @@ export class CropCanvasFactory {
     controlsHeight: number,
     canvas: HTMLDivElement
   }) {
-    await this.openCvService.load();
-
     const { width, height, controlsHeight, canvas } = config;
     return new CropCanvas(
       this.openCvService,

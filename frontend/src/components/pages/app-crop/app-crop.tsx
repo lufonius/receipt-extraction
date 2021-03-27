@@ -34,7 +34,6 @@ export class AppCrop {
 
   private cropCanvas: CropCanvas;
 
-  @State() controlsShown: boolean = true;
   @State() takePhotoShown: boolean = true;
   @State() cropShown: boolean = true;
   @State() rotateShown: boolean = false;
@@ -66,6 +65,10 @@ export class AppCrop {
   }
 
   async drawImageAndDetectedRectangle() {
+    if (this.alreadyTookPhotograph) {
+      this.cropCanvas.destroy();
+    }
+
     await this.setupCanvas();
 
     const file: File = this.photoInput.files[0];
@@ -98,7 +101,15 @@ export class AppCrop {
   }
 
   async reset() {
+    this.cropCanvas.destroy();
+    await this.dialog.isVisible(false);
 
+    this.takePhotoShown = true;
+    this.cropShown = true;
+    this.alreadyTookPhotograph = false;
+    this.rotateShown = false;
+    this.uploadShown = false;
+    this.isUploading = false;
   }
 
   async startExtraction() {
@@ -118,11 +129,6 @@ export class AppCrop {
           style={({ height: `${innerHeight - this.controlsHeight}px`, "margin-left": `${this.canvasMarginX}px`, })}
           ref={(el) => this.canvas = el}
         />
-        <div
-          class="magnified-canvas"
-          style={({ height: `${this.controlsHeight}px`, display: this.controlsShown ? "none" : "block" })}
-          ref={(el) => this.magnifiedCanvas = el}
-        />
 
         {this.rotateShown &&
           <app-button-round
@@ -136,7 +142,7 @@ export class AppCrop {
         }
 
         <div
-          style={({ display: !this.controlsShown ? "none" : "flex", height: `${this.controlsHeight}px` })}
+          style={({ height: `${this.controlsHeight}px` })}
           class="controls"
         >
           {this.takePhotoShown && <app-button onPress={() => this.photoInput.click()} primary>

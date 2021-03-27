@@ -42,6 +42,10 @@ export class CropCanvas {
     })
   }
 
+  destroy() {
+    this.stage.destroy();
+  }
+
   private setupCanvas() {
     this.canvasWidth = innerWidth - this.canvasMarginX * 2;
     this.canvasHeight = innerHeight - this.controlsHeight;
