@@ -42,3 +42,6 @@ jobs:
       - name: run mysql database from docker
         run: docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:8
         
+      - name: cache docker layer
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        
