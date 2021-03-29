@@ -35,7 +35,7 @@ fun createTestLineDbo(
 fun createTestCategoryDbo(
         id: Int = 0,
         name: String = "test",
-        color: String = "#000000",
+        color: Int = 0x000000,
         avatarUrl: String = "dummyAvatarUrl"
 ) = CategoryDbo(
         id = id,
