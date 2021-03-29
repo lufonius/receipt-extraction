@@ -1,6 +1,7 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.BaseIntegrationTest
+import ch.lucfonjallaz.drezip.DatabaseIntegrationTest
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus.*
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +9,7 @@ import javax.persistence.EntityManager
 import org.junit.jupiter.api.Test
 import javax.transaction.Transactional
 
-class ReceiptDboRepositoryUnitIntegrationTest  : BaseIntegrationTest() {
+class ReceiptDboRepositoryUnitIntegrationTest  : DatabaseIntegrationTest() {
     @Autowired
     private lateinit var receiptDboRepository: ReceiptDboRepository
 
@@ -25,9 +26,16 @@ class ReceiptDboRepositoryUnitIntegrationTest  : BaseIntegrationTest() {
         entityManager.persist(uploadedReceiptDbo)
         entityManager.persist(doneReceiptDbo)
 
+
         val foundReceipts = receiptDboRepository.findByStatusInOrderByUploadedAtDesc(listOf(Open, Uploaded))
 
-        assertThat(foundReceipts.map { it.status })
-                .containsExactlyInAnyOrder(Open, Uploaded)
+        assertThat(foundReceipts.map { it.status }.distinct())
+                .containsOnly(Open, Uploaded)
+
+        assertThat(foundReceipts)
+                .contains(openReceiptDbo, uploadedReceiptDbo)
+
+        assertThat(foundReceipts)
+                .doesNotContain(doneReceiptDbo)
     }
 }

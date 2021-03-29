@@ -27,7 +27,7 @@ import javax.transaction.Transactional
 
 @Transactional
 @Commit
-class DrezipIntegrationTests : BaseIntegrationTest() {
+class DrezipIntegrationTests : DatabaseIntegrationTest() {
 
 	@Value("\${app.test.test-image-classpath-path}") private lateinit var image: Resource
 
@@ -44,7 +44,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		// is only in a controlled way possible
 		val receiptDto = ReceiptDto(
 				id = receiptDbo.id,
-				imgUrl = "upated",
+				imgUrl = "updated",
 				status = ReceiptStatus.Done,
 				angle = 50.5F,
 				uploadedAt = currentDate
@@ -115,7 +115,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		// fileSystemResource contains more information like file name, file location etc. which is all
 		// needed to build a request
 		val body: MultiValueMap<String, FileSystemResource> = LinkedMultiValueMap()
-		body.add("file", FileSystemResource(image.file))
+		body.add("image", FileSystemResource(image.file))
 
 		val restTemplate = TestRestTemplate()
 		val receiptDtoResponse = restTemplate.exchange("$apiBaseUrl/api/receipt/init", HttpMethod.POST, HttpEntity(body, headers), ReceiptDto::class.java)
@@ -124,6 +124,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		assertThat(receiptDto.status).isEqualTo(ReceiptStatus.Open)
 		assertThat(receiptDto.angle).isNotNull
+
 		assertThat(receiptDto.imgUrl).isNotNull
 
 		return receiptDto
@@ -176,9 +177,9 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		val updateddateReceiptItemDto = dateUpdateResponse.body ?: throw Exception("did not update receipt item dto")
 		assertThat(updateddateReceiptItemDto.value).isEqualTo("26.04.1997")
-		assertThat(updateddateReceiptItemDto.valueLineId).isEqualTo(totalLineId)
+		assertThat(updateddateReceiptItemDto.valueLineId).isEqualTo(dateLineId)
 		assertThat(updateddateReceiptItemDto.label).isEqualTo("Datum")
-		assertThat(updateddateReceiptItemDto.labelLineId).isEqualTo(dateLineId)
+		assertThat(updateddateReceiptItemDto.labelLineId).isEqualTo(totalLineId)
 	}
 
 	private fun addReceiptItemWithCategory(labelLineId: Int, amountLineId: Int, receiptId: Int): ReceiptItemDto {
@@ -297,7 +298,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 	}
 
 	private fun createAndSaveDummyReceiptDbo(): ReceiptDbo {
-		val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.Open)
+		val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.InProgress)
 		entityManager.persist(receiptDbo)
 
 		return receiptDbo
