@@ -40,4 +40,4 @@ jobs:
           java-version: '14'
           
       - name: Backend tests
-        run: ./backend/gradlew test
+        run: ./backend/gradlew test --project-dir ./backend
