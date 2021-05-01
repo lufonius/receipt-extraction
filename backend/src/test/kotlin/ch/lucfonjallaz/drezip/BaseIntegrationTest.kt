@@ -20,7 +20,7 @@ abstract class BaseIntegrationTest {
 
     companion object {
         @Container
-        val mySqlContainer = MySQLContainer<Nothing>("mysql:8.0").apply {
+        val mySqlContainer = CustomMySqlContainer().apply {
             withDatabaseName("test")
             withUsername("test")
             withPassword("test")
@@ -33,6 +33,7 @@ abstract class BaseIntegrationTest {
         fun beforeAll() {
             logger.debug("connecting to mysql database in docker container using JDBC URL: ${mySqlContainer.jdbcUrl}")
             logger.debug("mysql database in docker container host: ${mySqlContainer.host}")
+            logger.debug("mysql database container name: ${mySqlContainer.containerName}")
         }
     }
 }
