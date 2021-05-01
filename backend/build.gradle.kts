@@ -59,4 +59,5 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	maxParallelForks = 1
+	testLogging.showStandardStreams = true
 }

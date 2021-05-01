@@ -9,7 +9,7 @@ import javax.persistence.EntityManager
 import org.junit.jupiter.api.Test
 import javax.transaction.Transactional
 
-class ReceiptDboRepositoryUnitIntegrationTest  : DatabaseIntegrationTest() {
+class ReceiptDboRepositoryUnitIntegrationTest  : BaseIntegrationTest() {
     @Autowired
     private lateinit var receiptDboRepository: ReceiptDboRepository
 
