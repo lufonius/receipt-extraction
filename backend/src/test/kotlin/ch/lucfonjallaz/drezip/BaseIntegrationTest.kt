@@ -20,6 +20,8 @@ abstract class BaseIntegrationTest {
 
     companion object {
 
+        // when using withReuse, the container cannot be used with the @Containers annotation
+        // we have to start the container manually
         val mySqlContainer = CustomMySqlContainer().apply {
             withDatabaseName("test")
             withUsername("test")
