@@ -19,21 +19,16 @@ abstract class BaseIntegrationTest {
             get() = "http://localhost:$port"
 
     companion object {
-        @Container
+
         val mySqlContainer = CustomMySqlContainer().apply {
             withDatabaseName("test")
             withUsername("test")
             withPassword("test")
+            withReuse(true)
         }
 
-        private val logger: Logger = LoggerFactory.getLogger(BaseIntegrationTest::class.java)
-
-        @JvmStatic
-        @BeforeAll
-        fun beforeAll() {
-            logger.debug("connecting to mysql database in docker container using JDBC URL: ${mySqlContainer.jdbcUrl}")
-            logger.debug("mysql database in docker container host: ${mySqlContainer.host}")
-            logger.debug("mysql database container name: ${mySqlContainer.containerName}")
+        init {
+            mySqlContainer.start()
         }
     }
 }

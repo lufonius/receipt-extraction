@@ -8,6 +8,7 @@ import javax.persistence.EntityManager
 import org.junit.jupiter.api.Test
 import javax.transaction.Transactional
 
+@Transactional
 class ReceiptDboRepositoryUnitIntegrationTest  : BaseIntegrationTest() {
     @Autowired
     private lateinit var receiptDboRepository: ReceiptDboRepository
@@ -16,7 +17,6 @@ class ReceiptDboRepositoryUnitIntegrationTest  : BaseIntegrationTest() {
     private lateinit var entityManager: EntityManager
 
     @Test
-    @Transactional
     fun `should find receipts with status`() {
         val openReceiptDbo = createTestReceiptDbo(status = Open)
         val uploadedReceiptDbo = createTestReceiptDbo(status = Uploaded)
