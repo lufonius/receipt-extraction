@@ -47,4 +47,4 @@ jobs:
         run: chmod +x ./backend/gradlew
         
       - name: Backend tests
-        run: ./backend/gradlew test --project-dir ./backend --no-daemon --scan --debug --stacktrace
+        run: ./backend/gradlew test --project-dir ./backend --no-daemon --scan
