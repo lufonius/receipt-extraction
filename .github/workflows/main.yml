@@ -39,12 +39,8 @@ jobs:
           # The Java version to make available on the path. Takes a whole or semver Java version, or 1.x syntax (e.g. 1.8 => Java 8.x). Early access versions can be specified in the form of e.g. 14-ea, 14.0.0-ea, or 14.0.0-ea.28
           java-version: '14'
           
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-          
       - name: give gradlew execute rights
         run: chmod +x ./backend/gradlew
         
       - name: Backend tests
-        run: ./backend/gradlew test --project-dir ./backend --no-daemon --scan
+        run: ./backend/gradlew test --project-dir ./backend
