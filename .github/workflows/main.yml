@@ -48,5 +48,8 @@ jobs:
       - name: Backend build
         run: ./backend/gradlew build --project-dir ./backend
         
+      - name: npm clean install
+        run: npm ci --prefix frontend
+        
       - name: Frontend tests
         run: npm run unit-test --prefix frontend
