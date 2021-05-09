@@ -8,9 +8,6 @@ on:
   push:
     branches:
     - "**"
-  pull_request:
-    branches:
-    - "**"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch: 
@@ -46,10 +43,25 @@ jobs:
         run: ./backend/gradlew test --project-dir ./backend
         
       - name: Backend build
-        run: ./backend/gradlew build --project-dir ./backend
+        run: ./backend/gradlew bootJar --project-dir ./backend
+        
+      - name: Build docker image
+        run: docker build -t drezip.azurecr.io/drezip-backend:drezip-0.0.1-SNAPSHOT -f ./backend/app.Dockerfile ./backend
+        
+      - name: Azure Container Registry Login
+        uses: Azure/docker-login@v1
+        with:
+          username: drezip
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+          login-server: drezip.azurecr.io
+          
+      - name: Push docker image
+        run: docker push drezip.azurecr.io/drezip-backend:drezip-0.0.1-SNAPSHOT
+      
         
       - name: npm clean install
         run: npm ci --prefix frontend
         
       - name: Frontend tests
         run: npm run unit-test --prefix frontend
+      
