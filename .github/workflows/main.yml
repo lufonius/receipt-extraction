@@ -24,11 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
-        with:
-          node-version: '12'
           
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.3
@@ -79,6 +74,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '12'
+          
+      - uses: actions/checkout@v2
+          
       - name: npm clean install
         run: npm ci --prefix frontend
         
