@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.4.21"
 	kotlin("plugin.spring") version "1.4.21"
 	kotlin("plugin.jpa") version "1.4.21"
+	war
 }
 
 group = "ch.lucfonjallaz"
@@ -58,6 +59,6 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-	maxParallelForks = 1
+	maxParallelForks = 2
 	testLogging.showStandardStreams = true
 }
