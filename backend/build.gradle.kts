@@ -62,3 +62,8 @@ tasks.withType<Test> {
 	maxParallelForks = 2
 	testLogging.showStandardStreams = true
 }
+
+// we exclude the app properties from the Jar, as this might be a security risk
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	exclude("**/application-*.properties")
+}
