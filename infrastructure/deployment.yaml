@@ -54,6 +54,11 @@ spec:
         app: drezip
         type: backend
     spec:
+      securityContext:
+        # mysql user
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
       - image: aignn.azurecr.io/drezip/backend:0.0.1-SNAPSHOT
         imagePullPolicy: Always
@@ -153,7 +158,6 @@ metadata:
   labels:
     app: drezip
     type: db
-
 spec:
   replicas: 1
   selector:
@@ -168,6 +172,10 @@ spec:
         app: drezip
         type: db
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
       containers:
         - name: mysql
           image: library/mysql:8
@@ -217,7 +225,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: drezip-frontend-nginx-config
+  name: drezip-frontend-nginx-webserver-config
   namespace: test
   labels:
     app: drezip
@@ -225,7 +233,8 @@ metadata:
 data:
   default.conf: |
     server {
-      listen       80;
+      # if you use a port above 1024, nginx cannot be run as non-root
+      listen       8080;
       server_name  localhost;
 
       # redirect api calls to the backend
@@ -270,23 +279,28 @@ spec:
         app: drezip
         type: frontend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        # running with the predefined nginx user
+        runAsUser: 101
+        runAsGroup: 101
       containers:
         - image: aignn.azurecr.io/drezip/frontend:0.0.1-SNAPSHOT
           imagePullPolicy: Always
           name: frontend
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           volumeMounts:
             - mountPath: /etc/nginx/conf.d
-              name: nginx-conf
+              name: nginx-webserver-conf
       imagePullSecrets:
         - name: aignn-registry
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
-        - name: nginx-conf
+        - name: nginx-webserver-conf
           configMap:
-            name: drezip-frontend-nginx-config
+            name: drezip-frontend-nginx-webserver-config
 ---
 apiVersion: v1
 kind: Service
@@ -306,7 +320,7 @@ spec:
     - nodePort: 31217
       port: 80
       protocol: TCP
-      targetPort: 80
+      targetPort: 8080
   sessionAffinity: None
   type: LoadBalancer
 
