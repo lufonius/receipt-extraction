@@ -28,6 +28,16 @@ data:
     # optical character recognition service
     app.ocr-url=https://thelab.cognitiveservices.azure.com/vision/v3.1/read/analyze?language=de
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drezip-backend-sa
+  namespace: test
+  labels:
+    app: drezip
+    type: backend
+automountServiceAccountToken: false
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,7 +64,7 @@ spec:
         app: drezip
         type: backend
     spec:
-      serviceAccountName: drezip-serviceaccount
+      serviceAccountName: drezip-backend-sa
       securityContext:
         # mysql user
         runAsNonRoot: true
@@ -115,15 +125,7 @@ spec:
       targetPort: 8080
   sessionAffinity: None
   type: ClusterIP
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: drezip-serviceaccount
-  namespace: test
-  labels:
-    app: drezip
-automountServiceAccountToken: false
+
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -150,6 +152,16 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drezip-db-serviceaccount
+  namespace: test
+  labels:
+    app: drezip
+    type: db
+automountServiceAccountToken: false
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -254,6 +266,16 @@ data:
       }
     }
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drezip-frontend-sa
+  namespace: test
+  labels:
+    app: drezip
+    type: frontend
+automountServiceAccountToken: false
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -280,7 +302,7 @@ spec:
         app: drezip
         type: frontend
     spec:
-      serviceAccountName: drezip-serviceaccount
+      serviceAccountName: drezip-frontend-sa
       securityContext:
         runAsNonRoot: true
         # running with the predefined nginx user
@@ -325,8 +347,3 @@ spec:
       targetPort: 8080
   sessionAffinity: None
   type: LoadBalancer
-
-
-
-
-
