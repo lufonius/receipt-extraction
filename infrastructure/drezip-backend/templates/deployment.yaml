@@ -77,11 +77,11 @@ spec:
         args: [
             'java', '-jar', 'drezip-{{ .Values.appVersion }}.jar',
             '--spring.config.location=/drezip/config/,classpath:/application.properties',
-            '--app.azure-blob-storage-key=$(app.azure-blob-storage-key)',
-            '--app.ocr-key=$(app.ocr-key)',
-            '--spring.datasource.hikari.password=$(spring.datasource.hikari.password)',
-            '--spring.datasource.password=$(spring.datasource.password)',
-            '--spring.flyway.password=$(spring.flyway.password)'
+            '--app.azure-blob-storage-key=$(BLOB_STORAGE_KEY)',
+            '--app.ocr-key=$(OCR_KEY)',
+            '--spring.datasource.hikari.password=$(DREZIP_DB_APP_USER_PW)',
+            '--spring.datasource.password=$(DREZIP_DB_APP_USER_PW)',
+            '--spring.flyway.password=$(DREZIP_DB_FLYWAY_USER_PW)'
         ]
         ports:
           - containerPort: 8080
@@ -94,6 +94,16 @@ spec:
               configMapKeyRef:
                 key: SPRING_PROFILES_ACTIVE
                 name: drezip-backend-config
+          - name: DREZIP_DB_APP_USER_PW
+            valueFrom:
+              secretKeyRef:
+                key: DREZIP_DB_APP_USER_PW
+                name: drezip-db-users-secrets
+          - name: DREZIP_DB_FLYWAY_USER_PW
+            valueFrom:
+              secretKeyRef:
+                key: DREZIP_DB_FLYWAY_USER_PW
+                name: drezip-db-users-secrets
         volumeMounts:
           - mountPath: /drezip/config
             name: drezip-config-volume

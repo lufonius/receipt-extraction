@@ -108,7 +108,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_ROOT_PASSWORD
-                  name: drezip-db-secret
+                  name: drezip-db-users-secrets
             - name: DREZIP_DB_APP_USER_PW
               valueFrom:
                 secretKeyRef:
