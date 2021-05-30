@@ -54,6 +54,7 @@ spec:
         app: drezip
         type: backend
     spec:
+      serviceAccountName: drezip-serviceaccount
       securityContext:
         # mysql user
         runAsNonRoot: true
@@ -118,11 +119,11 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: drezip-db-account
+  name: drezip-serviceaccount
+  namespace: test
   labels:
     app: drezip
-    type: db
-  namespace: test
+automountServiceAccountToken: false
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -193,7 +194,7 @@ spec:
               name: init-schema
             - mountPath: /var/lib/mysql
               name: storage
-      serviceAccountName: drezip-db-account
+      serviceAccountName: drezip-serviceaccount
       volumes:
         - name: init-schema
           secret:
@@ -279,6 +280,7 @@ spec:
         app: drezip
         type: frontend
     spec:
+      serviceAccountName: drezip-serviceaccount
       securityContext:
         runAsNonRoot: true
         # running with the predefined nginx user
