@@ -26,16 +26,16 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
+    steps:  
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
       - name: Cache
         uses: actions/cache@v2.1.6
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: ./backend/gradle/wrapper/dists
-          key: ${{ env.GITHUB_REF }}-${{ hashFiles('./backend/gradle/wrapper/gradle-wrapper.properties') }}
-            
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+          key: ${{ github.ref }}-${{ hashFiles('./backend/gradle/wrapper/gradle-wrapper.properties') }}
           
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.3
