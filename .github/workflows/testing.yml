@@ -42,6 +42,10 @@ jobs:
       - name: give gradlew execute rights
         run: chmod +x ./backend/gradlew
         
+      - name: get gradle properties
+        run: |
+          cd ./backend && ./gradlew properties
+        
       - name: set to current version of not set by user
         run: |
           VERSION="${{ github.event.inputs.version }}"
