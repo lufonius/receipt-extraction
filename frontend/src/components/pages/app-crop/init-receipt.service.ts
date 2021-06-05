@@ -3,7 +3,7 @@ import { ReceiptDto } from "../../model/dto";
 
 @Injectable
 export class InitReceiptService {
-  private baseApiUrl: string = "http://localhost:8080/api"
+  private baseApiUrl: string = "/api"
 
   async initReceipt(image: Blob): Promise<ReceiptDto> {
     const formData = new FormData();
