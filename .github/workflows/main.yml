@@ -16,10 +16,6 @@ on:
           description: 'enforce deployment?'
           required: false
           default: 'False'
-        version:
-          description: 'version to deploy. if empty, current version is taken.'
-          required: false
-          default: ''
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -45,8 +41,7 @@ jobs:
         
       - name: set to current version of not set by user
         run: |
-          VERSION="${{ github.event.inputs.version }}"
-          VERSION=$([ -z $VERSION ] && cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}' || echo $VERSION)
+          VERSION=$(cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Using the following version for tagging and deployment: $VERSION"
         
@@ -86,8 +81,7 @@ jobs:
         
       - name: set to current version of not set by user
         run: |
-          VERSION="${{ github.event.inputs.version }}"
-          VERSION=$([ -z $VERSION ] && cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}' || echo $VERSION)
+          VERSION=$(cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Using the following version for tagging and deployment: $VERSION"
           
