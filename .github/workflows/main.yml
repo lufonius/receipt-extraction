@@ -10,7 +10,16 @@ on:
     - "**"
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch: 
+  workflow_dispatch:
+    inputs:
+        forceDeploy:
+          description: 'enforce deployment?'
+          required: false
+          default: 'False'
+        version:
+          description: 'version to deploy. if empty, current version is taken.'
+          required: false
+          default: ''
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -34,6 +43,13 @@ jobs:
       - name: give gradlew execute rights
         run: chmod +x ./backend/gradlew
         
+      - name: set to current version of not set by user
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION=$([ -z $VERSION ] && cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}' || echo $VERSION)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Using the following version for tagging and deployment: $VERSION"
+        
       - name: Backend tests
         run: ./backend/gradlew test --project-dir ./backend
         
@@ -41,34 +57,18 @@ jobs:
         run: ./backend/gradlew bootJar --project-dir ./backend
         
       - name: Build docker image
-        run: docker build -t drezip.azurecr.io/drezip-backend:drezip-0.0.1-SNAPSHOT -f ./backend/app.Dockerfile ./backend
+        run: docker build -t aignn.azurecr.io/drezip/backend:${{ env.VERSION }} -f ./backend/app.Dockerfile ./backend
         
       - name: Azure Container Registry Login
         uses: Azure/docker-login@v1
         with:
-          username: drezip
+          username: aignn
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
-          login-server: drezip.azurecr.io
+          login-server: aignn.azurecr.io
           
       - name: Push docker image
-        run: docker push drezip.azurecr.io/drezip-backend:drezip-0.0.1-SNAPSHOT
-      
-  deploy-backend:
-    runs-on: ubuntu-latest
-    needs: build-backend
-    
-    steps:
-    - name: Azure Login
-      uses: Azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Azure WebApp
-      uses: Azure/webapps-deploy@v2
-      with:
-        app-name: test-drezip
-        publish-profile: ${{ secrets.TEST_WEBAPP_PUBLISH_PROFILE }}
-        # Applies to Web App Containers only: Specify the fully qualified container image(s) name. For example, 'myregistry.azurecr.io/nginx:latest' or 'python:3.7.2-alpine/'. For multi-container scenario multiple container image names can be provided (multi-line separated)
-        images: drezip.azurecr.io/drezip-backend:drezip-0.0.1-SNAPSHOT
+        run: docker push aignn.azurecr.io/drezip/backend:${{ env.VERSION }}
+
   
   build-frontend:
     runs-on: ubuntu-latest
@@ -80,9 +80,32 @@ jobs:
           node-version: '12'
           
       - uses: actions/checkout@v2
+      
+      - name: give gradlew execute rights
+        run: chmod +x ./backend/gradlew
+        
+      - name: set to current version of not set by user
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION=$([ -z $VERSION ] && cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}' || echo $VERSION)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Using the following version for tagging and deployment: $VERSION"
           
       - name: npm clean install
         run: npm ci --prefix frontend
         
       - name: Frontend tests
         run: npm run unit-test --prefix frontend
+        
+      - name: Build docker image
+        run: docker build -t aignn.azurecr.io/drezip/frontend:${{ env.VERSION }} -f ./frontend/app.Dockerfile ./frontend
+        
+      - name: Azure Container Registry Login
+        uses: Azure/docker-login@v1
+        with:
+          username: aignn
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+          login-server: aignn.azurecr.io
+          
+      - name: Push docker image
+        run: docker push aignn.azurecr.io/drezip/frontend:${{ env.VERSION }}
