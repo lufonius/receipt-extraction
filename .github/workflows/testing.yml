@@ -42,15 +42,13 @@ jobs:
       - name: give gradlew execute rights
         run: chmod +x ./backend/gradlew
         
-      - name: get gradle properties
-        run: |
-          cd ./backend && ./gradlew properties
-        
       - name: set to current version of not set by user
         run: |
           VERSION="${{ github.event.inputs.version }}"
           VERSION=$([ -z $VERSION ] && cd ./backend && ./gradlew --no-daemon properties -q | grep "^version:" | awk '{print $2}' || echo $VERSION)
           echo "Using the following version for tagging and deployment: $VERSION"
+        env:
+          VERSION: echo $VERSION
           
       - name: print current version
         run: |
