@@ -45,7 +45,7 @@ jobs:
       - name: set to current version of not set by user
         run: |
           VERSION="${{ github.event.inputs.version }}"
-          [ -z $VERSION ] && ./gradlew properties -q | grep "^version:" | awk '{print $2}' >> $VERSION
+          VERSION=$([ -z $VERSION ] && ./gradlew properties -q | grep "^version:" | awk '{print $2}' || echo $VERSION)
           
       - name: print version
         run: |
