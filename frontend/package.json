@@ -4,15 +4,15 @@
   "version": "0.0.1",
   "description": "Stencil App Starter",
   "scripts": {
-    "build:www": "stencil build --serve",
-    "build": "stencil build",
-    "start": "stencil build --dev --watch --serve",
+    "build:prod:www": "stencil build --serve",
+    "start": "concurrently \"npm:start:proxy\" \"npm:start:dev\"",
+    "start:dev": "stencil build --dev --watch --serve",
     "start:prod": "stencil build --watch --serve",
     "test": "stencil test --spec --e2e",
     "unit-test": "stencil test --spec",
-    "test.watch": "stencil test --spec --e2e --watchAll",
+    "test:watch": "stencil test --spec --e2e --watchAll",
     "generate": "stencil generate",
-    "start:proxy": "node dev-http-https-redirect.proxy.js"
+    "start:proxy": "node proxy.js"
   },
   "devDependencies": {
     "@stencil/core": "^2.0.0",
@@ -20,8 +20,10 @@
     "@stencil/sass": "^1.4.1",
     "@types/jest": "^26.0.15",
     "@types/w3c-image-capture": "^1.0.2",
+    "express": "^4.17.1",
+    "concurrently": "^6.2.0",
     "fs": "0.0.1-security",
-    "http-proxy": "^1.18.1",
+    "http-proxy-middleware": "^2.0.0",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
     "workbox-build": "^4.3.1"
