@@ -42,6 +42,11 @@ jobs:
       - name: give gradlew execute rights
         run: chmod +x ./backend/gradlew
         
+      - name: get home dir
+        run: |
+          cd ~
+          pwd
+        
       - name: set to current version of not set by user
         run: |
           VERSION="${{ github.event.inputs.version }}"
