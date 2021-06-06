@@ -51,6 +51,9 @@ jobs:
           path: build
           key: ${{ github.ref }}
           
+      - name: List project dir content
+        run: ls -al
+          
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.3
         with:
