@@ -13,7 +13,7 @@ export const config: Config = {
       type: 'www',
       // comment the following line to disable service workers in production
       serviceWorker: {},
-      baseUrl: 'https://myapp.local/',
+      baseUrl: '/',
       copy: [
         {
           src: '../node_modules/reflect-metadata/Reflect.js',
