@@ -62,8 +62,6 @@ jobs:
   deploy-test:
     runs-on: ubuntu-latest
     
-    needs: [build-backend, build-frontend]
-    
     steps:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v1
