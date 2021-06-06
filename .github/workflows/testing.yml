@@ -79,3 +79,9 @@ jobs:
           cluster-name: aignn
       - name: Helm tool installer
         uses: Azure/setup-helm@v1
+      
+      - name: check helm version
+        run: helm version
+      
+      - name: get kubernetes pods
+        run: kubectl get pods -n kube-system
