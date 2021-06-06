@@ -41,18 +41,18 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: .gradle
+          path: ./backend/.gradle
           key: ${{ github.ref }}-${{ hashFiles('**/gradle-wrapper.properties', '**/build.gradle.kts') }}
           
       - name: Cache build in project dir
         uses: actions/cache@v2.1.6
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: build
+          path: .backend/build
           key: ${{ github.ref }}
           
       - name: List project dir content
-        run: ls -al
+        run: cd backend && ls -al
           
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.3
