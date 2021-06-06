@@ -134,7 +134,7 @@ jobs:
         run: npm run unit-test --prefix frontend
       
       - name: Build frontend webcomponents
-        run: npm run build:www --prefix frontend
+        run: npm run build:prod:www --prefix frontend
         
       - name: Build docker image
         run: docker build -t aignn.azurecr.io/drezip/frontend:${{ env.VERSION }} -f ./frontend/app.Dockerfile ./frontend
