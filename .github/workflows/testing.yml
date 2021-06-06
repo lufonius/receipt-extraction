@@ -67,7 +67,7 @@ jobs:
         uses: Azure/setup-kubectl@v1
         with:
           # Version of kubectl
-          version: 1.19.0
+          version: "v1.19.7"
       - name: Azure Kubernetes set context
         uses: Azure/aks-set-context@v1.1
         with:
