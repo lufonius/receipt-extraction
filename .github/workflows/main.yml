@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.3
         with:
           # Artifact name
-          name: artifact-drezip-backend-${{ github.run.id }}
+          name: artifact-drezip-backend-${{ github.run_id }}
           # A file, directory or wildcard pattern that describes what to upload
           path: |
             ./infrastructure/drezip-backend
@@ -159,7 +159,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.3
         with:
           # Artifact name
-          name: artifact-drezip-frontend-${{ github.run.id }}
+          name: artifact-drezip-frontend-${{ github.run_id }}
           # A file, directory or wildcard pattern that describes what to upload
           path: |
             ./infrastructure/drezip-frontend
@@ -199,14 +199,20 @@ jobs:
       - name: Download frontend build artifact
         uses: actions/download-artifact@v2.0.9
         with:
-          name: artifact-drezip-frontend-${{ github.run.id }}
+          name: artifact-drezip-frontend-${{ github.run_id }}
       
       - name: Download backend build artifact
         uses: actions/download-artifact@v2.0.9
         with:
-          name: artifact-drezip-backend-${{ github.run.id }}
+          name: artifact-drezip-backend-${{ github.run_id }}
           
-      - name: list directory content
-        run: ls -al
+      - name: helm upgrade or install drezip-db in test namespace
+        run: helm upgrade --set environment=test ./infrastructure/drezip-db -n test --install --wait
+        
+      - name: helm upgrade or install drezip-backend in test namespace
+        run: helm upgrade -f deploy-backend-params.yaml --set environment=test ./infrastructure/drezip-backend -n test --install --wait
+        
+      - name: helm upgrade or install drezip-frontend in test namespace
+        run: helm upgrade -f deploy-frontend-params.yaml --set environment=test ./infrastructure/drezip-frontend -n test --install --wait
       
         
