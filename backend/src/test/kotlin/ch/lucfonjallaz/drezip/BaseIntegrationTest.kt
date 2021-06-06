@@ -21,6 +21,8 @@ abstract class BaseIntegrationTest {
             withDatabaseName("test")
             withUsername("test")
             withPassword("test")
+            // important line! with this, the container is reused accross integration tests
+            // this makes them much faster!
             withReuse(true)
         }
 
