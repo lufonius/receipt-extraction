@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "description": "Stencil App Starter",
   "scripts": {
+    "build:www": "stencil build --serve",
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
     "start:prod": "stencil build --watch --serve",
