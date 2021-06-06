@@ -8,3 +8,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ROOT_HOST=%
+    volumes:
+      - mysql-local-data:/var/lib/mysql
+      - .:/root/
+volumes:
+  mysql-local-data:
