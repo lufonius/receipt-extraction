@@ -30,12 +30,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Cache
+      - name: Cache gradle for incremental building
         uses: actions/cache@v2.1.6
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: ./backend/gradle/wrapper/dists
-          key: ${{ github.ref }}-${{ hashFiles('./backend/gradle/wrapper/gradle-wrapper.properties') }}
+          path: ~/.gradle
+          key: ${{ github.ref }}-${{ hashFiles('**/gradle-wrapper.properties', '**/build.gradle.kts') }}
           
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.3
