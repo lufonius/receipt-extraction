@@ -72,7 +72,7 @@ spec:
         runAsUser: 101
         runAsGroup: 101
       containers:
-        - image: {{ .Values.images.frontend }}
+        - image: {{ .Values.image }}
           imagePullPolicy: Always
           name: frontend
           ports:
@@ -101,11 +101,9 @@ spec:
   selector:
     app: drezip
     type: frontend
-  clusterIP: 10.0.174.154
   externalTrafficPolicy: Cluster
   ports:
-    - nodePort: 31217
-      port: 80
+    - port: 80
       protocol: TCP
       targetPort: 8080
   sessionAffinity: None

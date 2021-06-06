@@ -153,7 +153,6 @@ spec:
   selector:
     app: drezip
     type: db
-  clusterIP: 10.0.94.253
   ports:
     - port: 3306
       protocol: TCP

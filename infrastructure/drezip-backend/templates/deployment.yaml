@@ -71,7 +71,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-      - image: {{ .Values.images.backend }}
+      - image: {{ .Values.image }}
         imagePullPolicy: Always
         name: backend
         args: [
@@ -128,7 +128,6 @@ spec:
   selector:
     app: drezip
     type: backend
-  clusterIP: 10.0.175.145
   ports:
     - port: 80
       protocol: TCP

@@ -1,4 +1,3 @@
 environment: test
 appVersion: 0.0.1-SNAPSHOT
-images:
-  frontend: aignn.azurecr.io/drezip/frontend:0.0.1-SNAPSHOT
+image: aignn.azurecr.io/drezip/frontend:0.0.1-SNAPSHOT
