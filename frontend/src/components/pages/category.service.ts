@@ -3,7 +3,7 @@ import {CategoryDto} from "../model/dto";
 
 @Injectable
 export class CategoryService {
-  private baseApiUrl: string = "http://localhost:8080/api"
+  private baseApiUrl: string = "/api"
 
   async getCategories(): Promise<CategoryDto[]> {
     return await fetch(`${this.baseApiUrl}/category`, {

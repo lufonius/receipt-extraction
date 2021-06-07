@@ -27,7 +27,7 @@ import javax.transaction.Transactional
 
 @Transactional
 @Commit
-class DrezipIntegrationTests : DatabaseIntegrationTest() {
+class DrezipIntegrationTests : BaseIntegrationTest() {
 
 	@Value("\${app.test.test-image-classpath-path}") private lateinit var image: Resource
 

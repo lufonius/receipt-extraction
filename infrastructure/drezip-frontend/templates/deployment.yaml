@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drezip-frontend-nginx-webserver-config
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: frontend
+data:
+  default.conf: |
+    server {
+      # if you use a port above 1024, nginx cannot be run as non-root
+      listen       8080;
+      server_name  localhost;
+
+      # redirect api calls to the backend
+      location /api/ {
+          proxy_pass http://drezip-backend/api/;
+      }
+
+      location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+      }
+
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+        root   /usr/share/nginx/html;
+      }
+    }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drezip-frontend-sa
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: frontend
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drezip-frontend
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: frontend
+spec:
+  progressDeadlineSeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drezip
+      type: frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: drezip
+        type: frontend
+    spec:
+      serviceAccountName: drezip-frontend-sa
+      securityContext:
+        runAsNonRoot: true
+        # running with the predefined nginx user
+        runAsUser: 101
+        runAsGroup: 101
+      containers:
+        - image: {{ .Values.image }}
+          imagePullPolicy: Always
+          name: frontend
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-webserver-conf
+      imagePullSecrets:
+        - name: aignn-registry
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      volumes:
+        - name: nginx-webserver-conf
+          configMap:
+            name: drezip-frontend-nginx-webserver-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drezip-frontend
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: frontend
+spec:
+  selector:
+    app: drezip
+    type: frontend
+  externalTrafficPolicy: Cluster
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  sessionAffinity: None
+  type: LoadBalancer

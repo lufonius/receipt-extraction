@@ -10,7 +10,7 @@ plugins {
 
 group = "ch.lucfonjallaz"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_14
 
 configurations {
 	compileOnly {
@@ -52,11 +52,17 @@ dependencyManagement {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "11"
+		jvmTarget = "14"
 	}
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-	maxParallelForks = 1
+	maxParallelForks = 2
+	testLogging.showStandardStreams = true
+}
+
+// we exclude the app properties from the Jar, as this might be a security risk
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+	exclude("**/application-*.properties")
 }

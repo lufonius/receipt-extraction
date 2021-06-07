@@ -3,7 +3,7 @@ import {ReceiptItemDto} from "../../model/dto";
 
 @Injectable
 export class ReceiptItemService {
-  private baseApiUrl: string = "http://localhost:8080/api"
+  private baseApiUrl: string = "/api"
 
   async deleteReceiptItem(id: number): Promise<void> {
     const response = await fetch(`${this.baseApiUrl}/receipt/item/${id}`, {

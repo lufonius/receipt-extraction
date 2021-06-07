@@ -1,0 +1,3 @@
+environment: test
+appVersion: 0.0.1-SNAPSHOT
+image: aignn.azurecr.io/drezip/backend:0.0.1-SNAPSHOT

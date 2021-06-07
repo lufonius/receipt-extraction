@@ -5,9 +5,12 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
 
 @SpringBootApplication
-@Import(SwaggerConfiguration::class)
-class Application
-
-fun main(args: Array<String>) {
-	runApplication<Application>(*args)
+@Import(SwaggerConfiguration::class, RequestLoggingConfiguration::class)
+class Application () {
+	companion object {
+		@JvmStatic
+		fun main(args: Array<String>) {
+			runApplication<Application>(*args)
+		}
+	}
 }

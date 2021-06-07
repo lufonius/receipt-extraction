@@ -1,0 +1,151 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: drezip-db-pvc
+  labels:
+    app: drezip
+    type: db
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drezip-db-serviceaccount
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: db
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drezip-db-init-schema
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: db
+data:
+  init-db-and-users.sh: |
+    #!/bin/bash
+    mysql --user=root --password=$MYSQL_ROOT_PASSWORD --database=mysql <<EOF
+    CREATE SCHEMA IF NOT EXISTS drezip;
+
+    CREATE USER IF NOT EXISTS 'drezip_app'@'%' IDENTIFIED BY "$DREZIP_DB_APP_USER_PW";
+    CREATE USER IF NOT EXISTS 'drezip_flyway'@'%' IDENTIFIED BY "$DREZIP_DB_FLYWAY_USER_PW";
+
+    CREATE ROLE IF NOT EXISTS ddl;
+    GRANT DROP, CREATE, ALTER, REFERENCES ON drezip.* TO ddl;
+
+    CREATE ROLE IF NOT EXISTS dml;
+    GRANT INSERT, UPDATE, DELETE ON drezip.* TO dml;
+
+    CREATE ROLE IF NOT EXISTS dql;
+    GRANT SELECT ON drezip.* TO dql;
+
+    GRANT ddl TO 'drezip_flyway'@'%';
+    GRANT dml TO 'drezip_flyway'@'%';
+    GRANT dql TO 'drezip_flyway'@'%';
+
+    GRANT dml TO 'drezip_app'@'%';
+    GRANT dql TO 'drezip_app'@'%';
+    -- roles need to be activated when the user logs in
+    -- with this statement, all assigned roles are activated by default
+    SET DEFAULT ROLE ALL TO 'drezip_flyway'@'%','drezip_app'@'%';
+    EOF
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drezip-db
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drezip
+      type: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: drezip
+        type: db
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        # kubernetes automatically chown's all files in a volume fot the given UID
+        fsGroup: 999
+      containers:
+        - name: mysql
+          image: library/mysql:8
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ROOT_PASSWORD
+                  name: drezip-db-users-secrets
+            - name: DREZIP_DB_APP_USER_PW
+              valueFrom:
+                secretKeyRef:
+                  key: DREZIP_DB_APP_USER_PW
+                  name: drezip-db-users-secrets
+            - name: DREZIP_DB_FLYWAY_USER_PW
+              valueFrom:
+                secretKeyRef:
+                  key: DREZIP_DB_FLYWAY_USER_PW
+                  name: drezip-db-users-secrets
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            # using the exact path and subpath somehow avoids of symlinks
+            # being created https://stackoverflow.com/questions/50685385/kubernetes-config-map-symlinks-data-is-there-a-way-to-avoid-them
+            - mountPath: /docker-entrypoint-initdb.d/init-db-and-users.sh
+              name: init-schema
+              subPath: init-db-and-users.sh
+            - mountPath: /var/lib/mysql
+              name: storage
+      serviceAccountName: drezip-db-serviceaccount
+      volumes:
+        - name: init-schema
+          configMap:
+            name: drezip-db-init-schema
+            # we set this so that our init script has execute rights
+            # by default, files are not mounted with executKe rights
+            defaultMode: 0550
+        - name: storage
+          persistentVolumeClaim:
+            claimName: drezip-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drezip-db
+  namespace: {{ .Values.environment }}
+  labels:
+    app: drezip
+    type: db
+spec:
+  selector:
+    app: drezip
+    type: db
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  sessionAffinity: None
+  type: ClusterIP

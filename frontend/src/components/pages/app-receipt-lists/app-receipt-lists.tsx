@@ -23,7 +23,7 @@ export class AppReceiptLists {
   @Prop() history: RouterHistory;
   @State() receiptListHasBeenLoaded: boolean = false;
 
-  private baseApiUrl: string = "http://localhost:8080/api"
+  private baseApiUrl: string = "/api"
   private receiptsNotDone: {[status: string]: ReceiptListElementDto[]} = {};
 
   async componentDidLoad() {

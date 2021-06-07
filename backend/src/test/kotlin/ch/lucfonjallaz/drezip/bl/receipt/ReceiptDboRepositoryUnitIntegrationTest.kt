@@ -1,7 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.BaseIntegrationTest
-import ch.lucfonjallaz.drezip.DatabaseIntegrationTest
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus.*
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,7 +8,8 @@ import javax.persistence.EntityManager
 import org.junit.jupiter.api.Test
 import javax.transaction.Transactional
 
-class ReceiptDboRepositoryUnitIntegrationTest  : DatabaseIntegrationTest() {
+@Transactional
+class ReceiptDboRepositoryUnitIntegrationTest  : BaseIntegrationTest() {
     @Autowired
     private lateinit var receiptDboRepository: ReceiptDboRepository
 
@@ -17,7 +17,6 @@ class ReceiptDboRepositoryUnitIntegrationTest  : DatabaseIntegrationTest() {
     private lateinit var entityManager: EntityManager
 
     @Test
-    @Transactional
     fun `should find receipts with status`() {
         val openReceiptDbo = createTestReceiptDbo(status = Open)
         val uploadedReceiptDbo = createTestReceiptDbo(status = Uploaded)
