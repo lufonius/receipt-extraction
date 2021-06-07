@@ -63,6 +63,8 @@ spec:
       labels:
         app: drezip
         type: backend
+      annotations:
+        git-commit: {{ .Values.gitCommit }}
     spec:
       serviceAccountName: drezip-backend-sa
       securityContext:

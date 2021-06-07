@@ -82,6 +82,8 @@ spec:
       labels:
         app: drezip
         type: db
+      annotations:
+        git-commit: {{ .Values.gitCommit }}
     spec:
       securityContext:
         runAsNonRoot: true
