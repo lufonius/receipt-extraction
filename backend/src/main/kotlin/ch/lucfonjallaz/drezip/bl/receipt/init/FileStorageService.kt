@@ -3,6 +3,8 @@ package ch.lucfonjallaz.drezip.bl.receipt.init
 import com.azure.storage.blob.BlobServiceClientBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.web.util.UriComponentsBuilder
+import java.net.URL
 
 @Component
 class FileStorageService(
@@ -19,6 +21,8 @@ class FileStorageService(
         val client = container.getBlobClient(filename)
         client.upload(image.inputStream(), image.size.toLong())
 
-        return client.blobUrl
+        val path = URL(client.blobUrl).path
+
+        return "/images$path"
     }
 }

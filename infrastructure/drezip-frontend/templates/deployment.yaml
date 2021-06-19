@@ -18,6 +18,11 @@ data:
           proxy_pass http://drezip-backend/api/;
       }
 
+      # redirect images calls to the azure blob storage
+      location /images/ {
+          proxy_pass https://drezip.blob.core.windows.net/;
+      }
+
       location / {
         root   /usr/share/nginx/html;
         index  index.html index.htm;
