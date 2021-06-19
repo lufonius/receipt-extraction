@@ -22,6 +22,7 @@ data:
     spring.flyway.locations=classpath:db/migration
 
     # file storage
+    app.azure-blob-storage.host=https://drezip.blob.core.windows.net
     app.azure-blob-storage-connection-string=DefaultEndpointsProtocol=https;AccountName=drezip;AccountKey=${app.azure-blob-storage-key};EndpointSuffix=core.windows.net
     app.azure-blob-storage-container-name={{ .Values.environment }}
 
