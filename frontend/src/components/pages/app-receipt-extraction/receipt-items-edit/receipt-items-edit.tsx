@@ -1,9 +1,10 @@
-import {Component, Event, EventEmitter, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Component, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
 import {MaterialIcons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
-import {ReceiptItem, ReceiptItemType} from "../../../model/client";
+import {Category, ReceiptItem, ReceiptItemType} from "../../../model/client";
 import {Inject} from "../../../../global/di/inject";
 import {GlobalStore} from "../../../../global/global-store.service";
+import flyd from 'flyd';
 
 @Component({
   tag: 'receipt-items-edit',
@@ -22,6 +23,12 @@ export class ReceiptItemsEdit {
   @Event() public update: EventEmitter<ReceiptItem>;
   @Event() public delete: EventEmitter<ReceiptItem>;
   @Event() public resetEmpty: EventEmitter<ReceiptItem>;
+
+  @State() categoriesById: Map<number, Category>;
+
+  componentWillLoad() {
+    flyd.on(categories => this.categoriesById = categories, this.globalStore.selectCategoriesById());
+  }
 
   render() {
     return (
@@ -80,7 +87,7 @@ export class ReceiptItemsEdit {
 
         {this.categoryItems
           .map(it =>
-            <list-item label={`${it.label}`} amount={`${it.value}`}>
+            <list-item label={`${it.label}`} amount={`${it.value}`} category={this.categoriesById.get(it.categoryId)}>
               <div slot="controls">
                 <app-button-round size={Size.l} onPress={() => this.delete.emit(it)}>
                   <app-icon>{MaterialIcons.DELETE}</app-icon>

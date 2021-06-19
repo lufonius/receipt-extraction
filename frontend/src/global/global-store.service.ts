@@ -80,6 +80,7 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
   };
 
   selectCategories = () => this.select(state => state.categories);
+  selectCategoriesById = () => this.select(state => new Map<number, Category>(state.categories.map(it => [it.id, it])));
 }
 
 

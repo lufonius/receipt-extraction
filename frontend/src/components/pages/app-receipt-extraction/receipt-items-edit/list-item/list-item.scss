@@ -1,6 +1,8 @@
 :host {
   ::slotted([slot="controls"]) {
     display: flex;
+    height: 100%;
+    align-items: center;
   }
 
   .edit-item {
@@ -24,6 +26,20 @@
         display: flex;
         font-size: var(--body-font-size);
       }
+    }
+
+    .category {
+      display: flex;
+      align-items: center;
+      font-size: var(--small-font-size);
+      margin-bottom: var(--size-xs);
+
+       &-circle {
+         height: var(--size-s);
+         width: var(--size-s);
+         margin-right: var(--size-xs);
+         border-radius: 50%;
+       }
     }
   }
 
