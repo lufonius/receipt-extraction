@@ -85,6 +85,14 @@ spec:
             '--spring.datasource.password=$(DREZIP_DB_APP_USER_PW)',
             '--spring.flyway.password=$(DREZIP_DB_FLYWAY_USER_PW)'
         ]
+        livenessProbe:
+          httpGet:
+            port: 9000
+            path: /actuator/health/liveness
+        readinessProbe:
+          httpGet:
+            port: 9000
+            path: /actuator/health/readiness
         ports:
           - containerPort: 8080
         envFrom:
