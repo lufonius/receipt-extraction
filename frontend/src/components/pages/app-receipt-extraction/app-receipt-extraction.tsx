@@ -243,6 +243,7 @@ export class AppReceiptExtraction {
             {this.showAddItem && <receipt-item-add
               receiptItem={this.currentReceiptItem}
               onReceiptItemChange={({ detail }) => this.currentReceiptItem = detail}
+              categories={this.categories}
               ref={(el) => this.receiptItemAdd = el} />}
 
             {this.showEditItems && <receipt-items-edit

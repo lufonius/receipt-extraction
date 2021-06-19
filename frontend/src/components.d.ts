@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Size } from "./components/common/size";
 import { MatchResults, RouterHistory } from "@stencil/router";
-import { Line, ReceiptItem, ReceiptItemType } from "./components/model/client";
+import { Category, Line, ReceiptItem, ReceiptItemType } from "./components/model/client";
 export namespace Components {
     interface AppBackdrop {
         "show": boolean;
@@ -37,6 +37,9 @@ export namespace Components {
     interface AppIcon {
     }
     interface AppInput {
+        "focused": boolean;
+        "label": string;
+        "value": string;
     }
     interface AppLayoutVerticalSplit {
     }
@@ -67,6 +70,7 @@ export namespace Components {
         "label": string;
     }
     interface ReceiptItemAdd {
+        "categories": Category[];
         "receiptItem": ReceiptItem;
         "selectLine": (line: Line) => Promise<void>;
     }
@@ -285,6 +289,12 @@ declare namespace LocalJSX {
     interface AppIcon {
     }
     interface AppInput {
+        "focused"?: boolean;
+        "label"?: string;
+        "onInputBlur"?: (event: CustomEvent<void>) => void;
+        "onInputChange"?: (event: CustomEvent<string>) => void;
+        "onInputFocus"?: (event: CustomEvent<void>) => void;
+        "value"?: string;
     }
     interface AppLayoutVerticalSplit {
     }
@@ -316,6 +326,7 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     interface ReceiptItemAdd {
+        "categories"?: Category[];
         "onReceiptItemChange"?: (event: CustomEvent<ReceiptItem>) => void;
         "receiptItem"?: ReceiptItem;
     }
