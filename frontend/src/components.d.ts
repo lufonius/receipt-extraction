@@ -39,6 +39,7 @@ export namespace Components {
     interface AppInput {
         "focused": boolean;
         "label": string;
+        "placeholder": string;
         "value": string;
     }
     interface AppLayoutVerticalSplit {
@@ -294,6 +295,7 @@ declare namespace LocalJSX {
         "onInputBlur"?: (event: CustomEvent<void>) => void;
         "onInputChange"?: (event: CustomEvent<string>) => void;
         "onInputFocus"?: (event: CustomEvent<void>) => void;
+        "placeholder"?: string;
         "value"?: string;
     }
     interface AppLayoutVerticalSplit {

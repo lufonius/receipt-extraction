@@ -17,7 +17,7 @@ export class SelectCategoryDialog {
   @Event() selectedCategoryIdChange: EventEmitter<number>;
   @State() public categories: Category[] = [];
   @State() searchText: string;
-  private input: HTMLInputElement;
+
 
   public dialog: HTMLAppDialogElement;
 
@@ -26,14 +26,11 @@ export class SelectCategoryDialog {
   }
 
   @Method() async show() {
-    this.dialog.isVisible(true);
-    setTimeout(() => {
-      this.input.focus();
-    }, 300);
+    await this.dialog.isVisible(true);
   }
 
   @Method() async hide() {
-    this.dialog.isVisible(false);
+    await this.dialog.isVisible(false);
   }
 
   matchesSearchText(category: Category): boolean {
@@ -43,8 +40,8 @@ export class SelectCategoryDialog {
     return lowerCaseCategoryName.includes(this.searchText);
   }
 
-  setSearchText(event) {
-    this.searchText = event.target.value.toLowerCase();
+  setSearchText(text) {
+    this.searchText = text.toLowerCase();
   }
 
   setSelectedCategoryAndClose() {
@@ -65,15 +62,11 @@ export class SelectCategoryDialog {
             <div class="dialog-header">
               <div>
                 <h1>Set a category for the receipt item</h1>
-                <app-input>
-                  <input
-                    type="text"
-                    ref={(e) => this.input = e}
-                    class="full-width"
-                    placeholder="Search for categories"
-                    onInput={(e) => this.setSearchText(e)}
-                  />
-                </app-input>
+                <app-input
+                  focused={true}
+                  placeholder="Search for categories"
+                  onInputChange={({ detail: text }) => this.setSearchText(text)}
+                />
               </div>
             </div>
             <div class="dialog-body">

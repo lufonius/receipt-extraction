@@ -12,6 +12,7 @@ export class AppInput {
   @Event() inputChange: EventEmitter<string>;
 
   @Prop() label: string;
+  @Prop() placeholder: string;
   @Prop() value: string;
   @Prop() focused: boolean = false;
   @Watch("focused") onFocusedChange(focus: boolean) {
@@ -24,7 +25,7 @@ export class AppInput {
 
   setFocus(focus: boolean) {
     if (focus) {
-      this.valueInput.focus();
+      this.valueInput.focus()
     } else {
       this.valueInput.blur();
     }
@@ -44,6 +45,7 @@ export class AppInput {
           id="value"
           type="text"
           value={this.value}
+          placeholder={this.placeholder}
           onInput={(e: InputEvent) => this.inputChange.emit(this.valueInput.value)}
           onFocus={(e) => this.inputFocus.emit()}
           onBlur={() => this.inputBlur.emit()}
