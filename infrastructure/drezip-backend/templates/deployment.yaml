@@ -66,6 +66,8 @@ spec:
       annotations:
         git-commit: {{ .Values.gitCommit }}
     spec:
+      nodeSelector:
+        agentpool: apps
       serviceAccountName: drezip-backend-sa
       securityContext:
         # any user

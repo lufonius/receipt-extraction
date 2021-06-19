@@ -72,6 +72,8 @@ spec:
       annotations:
         git-commit: {{ .Values.gitCommit }}
     spec:
+      nodeSelector:
+        agentpool: apps
       serviceAccountName: drezip-frontend-sa
       securityContext:
         runAsNonRoot: true
