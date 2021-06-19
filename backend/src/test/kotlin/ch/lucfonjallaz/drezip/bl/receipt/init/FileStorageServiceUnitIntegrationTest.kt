@@ -32,7 +32,7 @@ internal class FileStorageServiceUnitIntegrationTest : BaseIntegrationTest() {
         uploadedFile = filename
 
         // then
-        assertThat(url).isEqualTo("/images/test/$filename")
+        assertThat(url).isEqualTo("/test/$filename")
         val uploadedBytes = URL("https://drezip.blob.core.windows.net/test/$filename").readBytes()
         assertThat(uploadedBytes).isEqualTo(imageBytes)
     }

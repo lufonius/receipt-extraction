@@ -16,7 +16,7 @@ class OcrServiceUnitIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `should extract text from an image`() {
-        val imageUrl = "https://drezip.blob.core.windows.net/test/receipt.jpg"
+        val imageUrl = "/test/receipt.jpg"
 
         val extractedText = ocrService.extractText(imageUrl)
 

@@ -24,10 +24,11 @@ class OcrServiceTest {
     private val ocrUrl = "ocrUrl"
     private val ocrRetryCount = 2
     private val ocrRetrySleepMs = 50L
+    private val blobStorageHost = "blob-storage-host/"
 
     @BeforeEach
     fun beforeEach() {
-        ocrService = OcrService(ocrKey, ocrUrl, ocrRetryCount, ocrRetrySleepMs, httpRequestService)
+        ocrService = OcrService(blobStorageHost, ocrKey, ocrUrl, ocrRetryCount, ocrRetrySleepMs, httpRequestService)
     }
 
     @Test
@@ -37,7 +38,7 @@ class OcrServiceTest {
         headers.add("Operation-Location", operationLocationUrl)
         val response = ResponseEntity<Unit>(null, headers, HttpStatus.OK)
 
-        every { httpRequestService.post(url = eq(ocrUrl), headers = any(), body = match<Map<String, String>> { it["url"] == "imageUrl" }, returnType = Unit::class) }
+        every { httpRequestService.post(url = eq(ocrUrl), headers = any(), body = match<Map<String, String>> { it["url"] == "blob-storage-host/imageUrl" }, returnType = Unit::class) }
                 .returns(response)
 
         val readResult = AzureReadResultDto(angle = 90.0F, lines = listOf())
@@ -63,7 +64,7 @@ class OcrServiceTest {
         headers.add("Operation-Location", operationLocationUrl)
         val response = ResponseEntity<Unit>(null, headers, HttpStatus.OK)
 
-        every { httpRequestService.post(url = eq(ocrUrl), headers = any(), body = match<Map<String, String>> { it["url"] == "imageUrl" }, returnType = Unit::class) }
+        every { httpRequestService.post(url = eq(ocrUrl), headers = any(), body = match<Map<String, String>> { it["url"] == "blob-storage-host/imageUrl" }, returnType = Unit::class) }
                 .returns(response)
 
         val azureResponse = AzureRequestResultsDto(
@@ -88,7 +89,7 @@ class OcrServiceTest {
         headers.add("Operation-Location", operationLocationUrl)
         val response = ResponseEntity<Unit>(null, headers, HttpStatus.OK)
 
-        every { httpRequestService.post(url = eq(ocrUrl), headers = any(), body = match<Map<String, String>> { it["url"] == "imageUrl" }, returnType = Unit::class) }
+        every { httpRequestService.post(url = eq(ocrUrl), headers = any(), body = match<Map<String, String>> { it["url"] == "blob-storage-host/imageUrl" }, returnType = Unit::class) }
                 .returns(response)
 
         val azureResponse = AzureRequestResultsDto(
@@ -115,7 +116,7 @@ class OcrServiceTest {
             httpRequestService.post(
                     url = eq(ocrUrl),
                     headers = any(),
-                    body = match<Map<String, String>> { it["url"] == "imageUrl" },
+                    body = match<Map<String, String>> { it["url"] == "blob-storage-host/imageUrl" },
                     returnType = Unit::class
             )
         }.returns(response)

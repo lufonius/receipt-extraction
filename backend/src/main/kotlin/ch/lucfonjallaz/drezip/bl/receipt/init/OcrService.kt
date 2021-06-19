@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class OcrService(
+        @Value("\${app.azure-blob-storage.host}") val blobStorageHost: String,
         @Value("\${app.ocr-key}") val ocrKey: String,
         @Value("\${app.ocr-url}") val ocrUrl: String,
         @Value("\${app.ocr-retry-count:50}") val ocrRetryCount: Int,
@@ -14,7 +15,7 @@ class OcrService(
         val httpRequestService: HttpRequestService
 ) {
     fun extractText(imageUrl: String): AzureReadResultDto? {
-        val operationLocationUrl = getOperationLocationUrl(imageUrl)
+        val operationLocationUrl = getOperationLocationUrl("$blobStorageHost$imageUrl")
 
         for (i in 1..ocrRetryCount) {
             val result = getOperationResult(operationLocationUrl)
