@@ -113,6 +113,12 @@ spec:
                   name: drezip-db-users-secrets
           ports:
             - containerPort: 3306
+          readinessProbe:
+            exec:
+              command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+          livenessProbe:
+            exec:
+              command: ["mysqladmin", "ping"]
           volumeMounts:
             # using the exact path and subpath somehow avoids of symlinks
             # being created https://stackoverflow.com/questions/50685385/kubernetes-config-map-symlinks-data-is-there-a-way-to-avoid-them
