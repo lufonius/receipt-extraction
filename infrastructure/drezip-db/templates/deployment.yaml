@@ -115,7 +115,11 @@ spec:
             - containerPort: 3306
           readinessProbe:
             exec:
-              command: ["mysql", "--user=drezip_app", "--password=$DREZIP_DB_APP_USER_PW", "-h", "127.0.0.1", "-e", "SELECT 1"]
+              command:
+              - bash
+              - "-c"
+              - |
+                mysql --user=drezip_app --password=$DREZIP_DB_APP_USER_PW -h 127.0.0.1 -e "SELECT 1"
           livenessProbe:
             exec:
               command: ["mysqladmin", "ping"]
