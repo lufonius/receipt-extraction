@@ -14,5 +14,19 @@
 
   label {
     display: block;
+    font-size: var(--small-font-size);
+    margin-bottom: var(--size-xs);
+  }
+
+  .error-label {
+    color: var(--error);
+    font-size: var(--small-font-size);
+    display: block;
+    margin-top: var(--size-xs);
+  }
+
+  .error-input {
+    border-color: var(--error);
+    color: var(--error);
   }
 }

@@ -34,6 +34,8 @@ export class AppReceiptExtraction {
   @State() public showAddItem: boolean = false;
   public receiptItemBeforeUpdate: ReceiptItem;
   @State() public currentReceiptItem: ReceiptItem;
+  @State() submitted: boolean = false;
+  @State() valid: boolean = false;
   private currentReceiptItemType: ReceiptItemType;
   private currentReceipt: Receipt;
   public receiptItemAdd: HTMLReceiptItemAddElement;
@@ -115,13 +117,16 @@ export class AppReceiptExtraction {
     this.showDropup = true;
   }
 
-  async hideAddItem() {
-    this.showDropup = false;
-    await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
+  async hideAddItem(ignoreValidity: boolean) {
+    if (this.valid || ignoreValidity) {
+      this.showDropup = false;
+      await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
 
-    this.showEditItems = true;
-    this.showAddItem = false;
-    this.showDropup = true;
+      this.showEditItems = true;
+      this.showAddItem = false;
+      this.showDropup = true;
+      this.submitted = false;
+    }
   }
 
   async saveItem() {
@@ -174,15 +179,35 @@ export class AppReceiptExtraction {
   }
 
   resetCurrentReceiptItem() {
-    this.currentReceiptItem = {
-      id: 0,
-      label: null,
-      labelLineId: null,
-      value: null,
-      valueLineId: null,
-      receiptId: this.currentReceipt.id,
-      type: this.currentReceiptItemType
-    };
+      this.currentReceiptItem = {
+        id: 0,
+        label: null,
+        labelLineId: null,
+        value: null,
+        valueLineId: null,
+        receiptId: this.currentReceipt.id,
+        type: this.currentReceiptItemType
+      };
+  }
+
+  async saveAndNext() {
+    this.submitted = true;
+
+    if (this.valid) {
+      await this.saveItem();
+      this.resetCurrentReceiptItem();
+      this.submitted = false;
+    }
+  }
+
+  async saveAndClose() {
+    this.submitted = true;
+
+    if (this.valid) {
+      await this.saveItem();
+      await this.hideAddItem(false);
+      this.submitted = false;
+    }
   }
 
   isTaxOrCategory() {
@@ -222,18 +247,18 @@ export class AppReceiptExtraction {
           </div>}
 
           {this.showAddItem && <div class="controls" slot="controls">
-            <app-button-round size={Size.xxl} onPress={() => this.hideAddItem()}>
+            <app-button-round size={Size.xxl} onPress={() => this.hideAddItem(true)}>
               <app-icon>{ MaterialIcons.CLOSE }</app-icon>
               <span>close</span>
             </app-button-round>
             <div class="fill" />
-            {this.isTaxOrCategory() && <app-button-round size={Size.xxl} onPress={async () => { await this.saveItem(); await this.resetCurrentReceiptItem(); }}>
+            {this.isTaxOrCategory() && <app-button-round size={Size.xxl} onPress={async () => { await this.saveAndNext(); }}>
               <app-icon>{ MaterialIcons.NEXT_PLAN }</app-icon>
               <span>save and</span><br />
               <span>next</span>
             </app-button-round>}
             <div class="spacer-xs" />
-            <app-button-round size={Size.xxl} onPress={async () => { await this.saveItem(); await this.hideAddItem();}}>
+            <app-button-round size={Size.xxl} onPress={async () => { await this.saveAndClose(); }}>
               <app-icon>{ MaterialIcons.DONE }</app-icon>
               <span>save</span>
             </app-button-round>
@@ -242,6 +267,8 @@ export class AppReceiptExtraction {
           <div slot="dropup">
             {this.showAddItem && <receipt-item-add
               receiptItem={this.currentReceiptItem}
+              submitted={this.submitted}
+              onFormValidChange={({ detail: valid }) => this.valid = valid}
               onReceiptItemChange={({ detail }) => this.currentReceiptItem = detail}
               categories={this.categories}
               ref={(el) => this.receiptItemAdd = el} />}

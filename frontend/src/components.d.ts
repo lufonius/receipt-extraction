@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Size } from "./components/common/size";
 import { MatchResults, RouterHistory } from "@stencil/router";
+import { Validator } from "./components/common/validator";
 import { Category, Line, ReceiptItem, ReceiptItemType } from "./components/model/client";
 export namespace Components {
     interface AppBackdrop {
@@ -39,7 +40,10 @@ export namespace Components {
     interface AppInput {
         "focused": boolean;
         "label": string;
+        "messagePerError": { [error: string]: string };
         "placeholder": string;
+        "showErrors": boolean;
+        "validators": Validator[];
         "value": string;
     }
     interface AppLayoutVerticalSplit {
@@ -75,6 +79,7 @@ export namespace Components {
         "categories": Category[];
         "receiptItem": ReceiptItem;
         "selectLine": (line: Line) => Promise<void>;
+        "submitted": boolean;
     }
     interface ReceiptItemsEdit {
         "categoryItems": ReceiptItem[];
@@ -293,10 +298,14 @@ declare namespace LocalJSX {
     interface AppInput {
         "focused"?: boolean;
         "label"?: string;
+        "messagePerError"?: { [error: string]: string };
         "onInputBlur"?: (event: CustomEvent<void>) => void;
-        "onInputChange"?: (event: CustomEvent<string>) => void;
         "onInputFocus"?: (event: CustomEvent<void>) => void;
+        "onInputValueChange"?: (event: CustomEvent<string>) => void;
+        "onValidChange"?: (event: CustomEvent<boolean>) => void;
         "placeholder"?: string;
+        "showErrors"?: boolean;
+        "validators"?: Validator[];
         "value"?: string;
     }
     interface AppLayoutVerticalSplit {
@@ -331,8 +340,10 @@ declare namespace LocalJSX {
     }
     interface ReceiptItemAdd {
         "categories"?: Category[];
+        "onFormValidChange"?: (event: CustomEvent<boolean>) => void;
         "onReceiptItemChange"?: (event: CustomEvent<ReceiptItem>) => void;
         "receiptItem"?: ReceiptItem;
+        "submitted"?: boolean;
     }
     interface ReceiptItemsEdit {
         "categoryItems"?: ReceiptItem[];

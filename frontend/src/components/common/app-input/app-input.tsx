@@ -1,4 +1,5 @@
-import {Component, Host, h, Event, EventEmitter, Prop, Method, Watch} from '@stencil/core';
+import {Component, Host, h, Event, EventEmitter, Prop, Watch, State} from '@stencil/core';
+import {Validator} from "../validator";
 
 @Component({
   tag: 'app-input',
@@ -9,18 +10,30 @@ export class AppInput {
 
   @Event() inputFocus: EventEmitter<void>;
   @Event() inputBlur: EventEmitter<void>;
-  @Event() inputChange: EventEmitter<string>;
+  @Event() inputValueChange: EventEmitter<string>;
+  @Event() validChange: EventEmitter<boolean>;
+  @State() errors: string[] = [];
 
   @Prop() label: string;
   @Prop() placeholder: string;
   @Prop() value: string;
+  @Watch("value") onValueChange(value: string) {
+    this.runValidators(value);
+  }
+  @Prop() validators: Validator[] = [];
   @Prop() focused: boolean = false;
+  @Prop() showErrors: boolean = true;
+  @Prop() messagePerError: { [error: string]: string } = {
+    "required-error": "You must fill out this field",
+    "number-format-error": "This is not a valid number. Valid numbers are for example: 7 / 6.98 / 77,43"
+  };
   @Watch("focused") onFocusedChange(focus: boolean) {
     this.setFocus(focus);
   }
 
   componentDidLoad() {
     this.setFocus(this.focused);
+    this.runValidators(this.valueInput.value);
   }
 
   setFocus(focus: boolean) {
@@ -37,6 +50,20 @@ export class AppInput {
     this.valueInput = el;
   }
 
+  private onInput(input: string) {
+    this.runValidators(input);
+
+    if (this.errors.length === 0) {
+      this.inputValueChange.emit(input);
+      this.value = input;
+    }
+  }
+
+  public runValidators(input: string) {
+    this.errors = [...this.validators.map(validator => validator(input)).filter(it => it !== null)];
+    this.validChange.emit(this.errors.length === 0);
+  }
+
   render() {
     return (
       <Host>
@@ -45,12 +72,14 @@ export class AppInput {
           id="value"
           type="text"
           value={this.value}
+          class={({ "error-input": this.showErrors && this.errors.length > 0 })}
           placeholder={this.placeholder}
-          onInput={(e: InputEvent) => this.inputChange.emit(this.valueInput.value)}
+          onInput={(e: InputEvent) => this.onInput(this.valueInput.value)}
           onFocus={(e) => this.inputFocus.emit()}
           onBlur={() => this.inputBlur.emit()}
           ref={(el) => this.valueInput = el}
         />
+        {this.showErrors && this.errors.map(it => <span class="error-label"><b>{this.messagePerError[it]}</b></span>)}
       </Host>
     );
   }

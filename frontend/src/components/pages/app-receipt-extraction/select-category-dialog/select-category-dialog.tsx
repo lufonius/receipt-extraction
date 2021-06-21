@@ -65,7 +65,7 @@ export class SelectCategoryDialog {
                 <app-input
                   focused={true}
                   placeholder="Search for categories"
-                  onInputChange={({ detail: text }) => this.setSearchText(text)}
+                  onInputValueChange={({ detail: text }) => this.setSearchText(text)}
                 />
               </div>
             </div>

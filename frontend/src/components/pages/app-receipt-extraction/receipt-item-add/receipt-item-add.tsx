@@ -3,6 +3,7 @@ import {Category, Line, ReceiptItem, ReceiptItemType} from "../../../model/clien
 import {MaterialIcons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
 import {cloneDeep} from "../../../model/cloneDeep";
+import {numberValidator, requiredValidator} from "../../../common/validator";
 
 @Component({
   tag: 'receipt-item-add',
@@ -11,14 +12,18 @@ import {cloneDeep} from "../../../model/cloneDeep";
 })
 export class ReceiptItemAdd {
   @Event() receiptItemChange: EventEmitter<ReceiptItem>;
+  @Event() formValidChange: EventEmitter<boolean>;
   @Prop() receiptItem: ReceiptItem;
 
+  @Prop() submitted: boolean = false;
   @Prop() categories: Category[] = [];
   @State() categoryOfReceiptItem: Category;
   private selectCategoryDialog: HTMLSelectCategoryDialogElement;
 
   @State() valueInputFocused: boolean = false;
+  private valueInputValid: boolean = false;
   @State() labelInputFocused: boolean = true;
+  private labelInputValid: boolean = false;
 
   @Method() async selectLine(line: Line) {
     if (this.valueInputFocused) {
@@ -28,6 +33,10 @@ export class ReceiptItemAdd {
       this.labelInputFocused = false;
       this.valueInputFocused = true;
     }
+  }
+
+  private onValidityChange() {
+    this.formValidChange.emit(this.valueInputValid && this.labelInputValid);
   }
 
   private setValue(value: string, valueLineId?: number) {
@@ -54,7 +63,6 @@ export class ReceiptItemAdd {
     return (
       <Host>
         <div class="divider">
-          Select receipt item label and amount
           <div class="fill" />
           {this.categoryOfReceiptItem && <div class="selected-category">
             <div class="circle" style={({ "background-color": "#" + this.categoryOfReceiptItem.color.toString(16) })} />
@@ -75,7 +83,10 @@ export class ReceiptItemAdd {
               label="Select an items label on the receipt"
               value={this.receiptItem.label}
               focused={this.labelInputFocused}
-              onInputChange={({ detail: text }) => this.setLabel(text, this.receiptItem.labelLineId)}
+              validators={[requiredValidator]}
+              showErrors={this.submitted}
+              onValidChange={({ detail: valid }) => { this.labelInputValid = valid; this.onValidityChange(); }}
+              onInputValueChange={({ detail: text }) => this.setLabel(text, this.receiptItem.labelLineId)}
               onInputFocus={() => this.labelInputFocused = true}
               onInputBlur={() => this.labelInputFocused = false}
             />
@@ -90,7 +101,10 @@ export class ReceiptItemAdd {
               label="Select an items amount on the receipt"
               value={this.receiptItem.value}
               focused={this.valueInputFocused}
-              onInputChange={({ detail: text }) => this.setValue(text, this.receiptItem.valueLineId)}
+              validators={[requiredValidator, numberValidator]}
+              showErrors={this.submitted}
+              onValidChange={({ detail: valid }) => { this.valueInputValid = valid; this.onValidityChange(); }}
+              onInputValueChange={({ detail: text }) => this.setValue(text, this.receiptItem.valueLineId)}
               onInputFocus={() => this.valueInputFocused = true}
               onInputBlur={() => this.valueInputFocused = false}
             />
@@ -99,7 +113,6 @@ export class ReceiptItemAdd {
             <app-icon>{ MaterialIcons.DELETE }</app-icon>
           </app-button-round>
         </div>
-
         {this.receiptItem && <select-category-dialog
           ref={(e) => this.selectCategoryDialog = e}
           selectedCategoryId={this.receiptItem.categoryId}
