@@ -1,4 +1,4 @@
-import {numberValidator, requiredValidator} from "./validator";
+import {dateValidator, numberValidator, requiredValidator} from "./validator";
 
 describe("validator", () => {
   it("required validator should return error if no value set", () => {
@@ -20,5 +20,21 @@ describe("validator", () => {
 
   it("number validator should return error if value is not a valid number", () => {
     expect(numberValidator("hey babo")).toEqual("number-format-error");
+  });
+
+  it("number validator should return no error if value is empty or null", () => {
+    expect(numberValidator("")).toEqual(null);
+  });
+
+  it("date validator should return error if value is not in correct date format", () => {
+    expect(dateValidator("26.04.1997")).toEqual("date-format-error");
+  });
+
+  it("date validator should return NO error if value is in correct date format", () => {
+    expect(dateValidator("04-26-1997")).toEqual(null);
+  });
+
+  it("date validator should return NO error if value is empty", () => {
+    expect(dateValidator("")).toEqual(null);
   });
 });

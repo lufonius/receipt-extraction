@@ -1,9 +1,9 @@
-import {Component, Host, h, Prop, Watch, Method, State, EventEmitter, Event} from '@stencil/core';
+import {Component, Event, EventEmitter, h, Host, Method, Prop, State} from '@stencil/core';
 import {Category, Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
 import {MaterialIcons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
 import {cloneDeep} from "../../../model/cloneDeep";
-import {numberValidator, requiredValidator} from "../../../common/validator";
+import {dateValidator, numberValidator, requiredValidator} from "../../../common/validator";
 
 @Component({
   tag: 'receipt-item-add',
@@ -59,6 +59,14 @@ export class ReceiptItemAdd {
     this.receiptItemChange.emit(this.receiptItem);
   }
 
+  private getValueValidator() {
+    if (this.receiptItem.type === ReceiptItemType.Date) {
+      return [requiredValidator, dateValidator];
+    } else {
+      return [requiredValidator, numberValidator];
+    }
+  }
+
   render() {
     return (
       <Host>
@@ -80,10 +88,9 @@ export class ReceiptItemAdd {
         <div class="input">
           <div class="fill">
             <app-input
-              label="Select an items label on the receipt"
+              label="Select the label on the receipt"
               value={this.receiptItem.label}
               focused={this.labelInputFocused}
-              validators={[requiredValidator]}
               showErrors={this.submitted}
               onValidChange={({ detail: valid }) => { this.labelInputValid = valid; this.onValidityChange(); }}
               onInputValueChange={({ detail: text }) => this.setLabel(text, this.receiptItem.labelLineId)}
@@ -98,10 +105,10 @@ export class ReceiptItemAdd {
         <div class="input">
           <div class="fill">
             <app-input
-              label="Select an items amount on the receipt"
+              label={`Select the ${this.receiptItem.type === ReceiptItemType.Date ? "date" : "value"} on the receipt`}
               value={this.receiptItem.value}
               focused={this.valueInputFocused}
-              validators={[requiredValidator, numberValidator]}
+              validators={this.getValueValidator()}
               showErrors={this.submitted}
               onValidChange={({ detail: valid }) => { this.valueInputValid = valid; this.onValidityChange(); }}
               onInputValueChange={({ detail: text }) => this.setValue(text, this.receiptItem.valueLineId)}

@@ -1,5 +1,4 @@
 import {Component, Host, h, Prop} from '@stencil/core';
-import {MaterialIcons} from "../../../../../global/material-icons-enum";
 import {Category} from "../../../../model/client";
 
 @Component({
@@ -32,7 +31,7 @@ export class ListItem {
           </div>}
 
           {!this.hasAnyValueSet() && <div class="edit-item-label">
-            <span class="edit-item-label-novalue">Please select the total</span>
+            <span class="edit-item-label-novalue">Please select the values on the receipt</span>
           </div>}
           <div class="fill" />
           <div class="edit-item-controls">
