@@ -6,6 +6,7 @@ export class Image implements Shape {
   private _y: number;
 
   private pixiImage: PIXI.Sprite;
+  private texture: PIXI.Texture;
 
   createManually(params: {
     image: OffscreenCanvas,
@@ -18,21 +19,35 @@ export class Image implements Shape {
     this.setImage(params.image);
   }
 
-  crateFromUrl(params: {
+  async createFromUrl(params: {
     url: string,
     id: string
   }) {
-    const texture = PIXI.Texture.from(params.url);
-    this.pixiImage = new PIXI.Sprite(texture);
+    this.texture = PIXI.Texture.from(params.url);
+    console.log(PIXI.Texture.from("kp").textureCacheIds);
+
+    return new Promise<void>((resolve) => {
+      console.log(this.texture.textureCacheIds);
+      const isCached = this.texture.textureCacheIds.includes(params.url);
+      if (isCached) {
+        this.pixiImage = new PIXI.Sprite(this.texture);
+        resolve();
+      } else {
+        this.texture.baseTexture.on("loaded", () => { // not being called when opened the second time
+          this.pixiImage = new PIXI.Sprite(this.texture);
+          resolve();
+        });
+      }
+    });
   }
 
   setImage(image: OffscreenCanvas) {
-    const texture = PIXI.Texture.from(image.transferToImageBitmap());
+    this.texture = PIXI.Texture.from(image.transferToImageBitmap());
 
     if (this.pixiImage) {
-      this.pixiImage.texture = texture;
+      this.pixiImage.texture = this.texture;
     } else {
-      this.pixiImage = new PIXI.Sprite(texture);
+      this.pixiImage = new PIXI.Sprite(this.texture);
     }
 
     this.pixiImage.x = this._x;

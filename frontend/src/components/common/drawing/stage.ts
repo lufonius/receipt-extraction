@@ -1,10 +1,11 @@
 import {Shape} from "./shape";
 import * as PIXI from 'pixi.js'
 import {Drag} from "./drag";
+import {Viewport} from "pixi-viewport";
 
 export class Stage extends Drag {
   private app: PIXI.Application;
-  private container: PIXI.Container;
+  private container: Viewport;
   private shiftPressing: boolean;
 
   constructor(params: {
@@ -23,26 +24,42 @@ export class Stage extends Drag {
       antialias: true
     });
 
-    params.hostElement.appendChild(this.app.view);
-    this.container = new PIXI.Container();
-    this.container.interactive = true;
-    this.setupZoom();
+    params.hostElement.appendChild(this.app.renderer.view);
+
+    this.container = new Viewport({
+      screenWidth: params.width,
+      screenHeight: params.height,
+      worldWidth: 838,
+      worldHeight: 1674,
+      passiveWheel: true,
+      stopPropagation: true,
+      // using this, the zooming started to work! Otherwise no events (like "mouse") were thrown
+      divWheel: params.hostElement,
+      interaction: this.app.renderer.plugins.interaction
+    });
+
+    this.container
+      .drag({
+        keyToPress: ["ShiftLeft", "ShiftRight"]
+      })
+      .decelerate({})
+      .wheel({
+        percent: 0.1,                // smooth the zooming by providing the number of frames to zoom between wheel spins
+        interrupt: true,             // stop smoothing with any user input on the viewport
+        reverse: false,              // reverse the direction of the scroll
+        center: null,                // place this point at center during zoom instead of current mouse position
+        lineHeight: 20,	            // scaling factor for non-DOM_DELTA_PIXEL scrolling events
+        axis: 'all',                 // axis to zoom
+      })
+      .pinch()
+      .fitWorld(true);
+
     this.app.stage.addChild(this.container);
+  }
 
-    this.setupDrag();
-
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        this.shiftPressing = true;
-      }
-    });
-
-    document.addEventListener('keyup', (e) => {
-      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        this.shiftPressing = false;
-        this.onDragEnd();
-      }
-    });
+  update() {
+    this.app.renderer.render(this.container);
+    requestAnimationFrame(() => this.update());
   }
 
   addShape(shape: Shape) {
@@ -54,12 +71,12 @@ export class Stage extends Drag {
   }
 
   removeAllChildren() {
-    this.container.removeChildren();
+    this.app.stage.removeChildren();
   }
 
   destroy() {
-    this.app.destroy(true);
     this.removeAllChildren();
+    this.app.destroy(true);
   }
 
   isDragStartPreconditionMet(): boolean {
@@ -70,32 +87,13 @@ export class Stage extends Drag {
     return this.container;
   }
 
-  private setupZoom() {
-    const scaleBy = 1.05;
-    this.app.view.addEventListener("mousewheel", (e: WheelEvent) => {
-      var oldScale = this.app.stage.scale.x;
+  setContentSize(width: number, height: number) {
+    this.container.worldHeight = height;
+    this.container.worldWidth = width;
+  }
 
-      var pointer = this.app.renderer.plugins.interaction.mouse.global;
-
-      var mousePointTo = {
-        x: (pointer.x - this.app.stage.x) / oldScale,
-        y: (pointer.y - this.app.stage.y) / oldScale,
-      };
-
-      var newScale =
-        e.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
-      this.app.stage.scale.x = newScale;
-      this.app.stage.scale.y = newScale;
-
-      var newPos = {
-        x: pointer.x - mousePointTo.x * newScale,
-        y: pointer.y - mousePointTo.y * newScale,
-      };
-
-      this.app.stage.x = newPos.x;
-      this.app.stage.y = newPos.y;
-    });
+  fitContent() {
+    this.container.fitWorld(true);
   }
 }
 

@@ -34,6 +34,7 @@
     "deepmerge": "^4.2.2",
     "flyd": "^0.2.8",
     "immer": "^8.0.0",
+    "pixi-viewport": "^4.32.0",
     "pixi.js": "^6.0.0",
     "qr-scanner": "^1.2.0",
     "qrcode": "^1.4.4",
