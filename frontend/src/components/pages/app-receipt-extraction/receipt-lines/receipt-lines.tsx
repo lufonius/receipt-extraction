@@ -47,7 +47,7 @@ export class ReceiptLines {
 
   drawImage() {
     const image = new Image();
-    image.crateFromUrl({
+    image.createFromUrl({
       url: `/images${this.currentReceiptImgUrl}`,
       id: ""
     });

@@ -19,26 +19,12 @@ export class Image implements Shape {
     this.setImage(params.image);
   }
 
-  async createFromUrl(params: {
+  createFromUrl(params: {
     url: string,
     id: string
   }) {
     this.texture = PIXI.Texture.from(params.url);
-    console.log(PIXI.Texture.from("kp").textureCacheIds);
-
-    return new Promise<void>((resolve) => {
-      console.log(this.texture.textureCacheIds);
-      const isCached = this.texture.textureCacheIds.includes(params.url);
-      if (isCached) {
-        this.pixiImage = new PIXI.Sprite(this.texture);
-        resolve();
-      } else {
-        this.texture.baseTexture.on("loaded", () => { // not being called when opened the second time
-          this.pixiImage = new PIXI.Sprite(this.texture);
-          resolve();
-        });
-      }
-    });
+    this.pixiImage = new PIXI.Sprite(this.texture);
   }
 
   setImage(image: OffscreenCanvas) {
