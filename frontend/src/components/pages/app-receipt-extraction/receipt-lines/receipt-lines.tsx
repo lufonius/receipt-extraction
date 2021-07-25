@@ -56,14 +56,14 @@ export class ReceiptLines {
 
   private setupStage() {
     if (this.stage) {
-      this.stage.removeAllChildren();
-    } else {
-      this.stage = new Stage({
-        hostElement: this.canvas,
-        width: innerWidth,
-        height: innerHeight
-      });
+      this.stage.destroy();
     }
+
+    this.stage = new Stage({
+      hostElement: this.canvas,
+      width: innerWidth,
+      height: innerHeight
+    });
   }
 
   private drawLinesOntoImage() {
