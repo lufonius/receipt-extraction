@@ -47,6 +47,7 @@ export class Rectangle implements Shape {
 
   onClickOrTap(fn: (rect: Rectangle) => void) {
     this.pixiRectangle.on('mousedown', () => fn(this));
+    this.pixiRectangle.on('touchstart', () => fn(this));
   }
 
   getImpl(): PIXI.DisplayObject {

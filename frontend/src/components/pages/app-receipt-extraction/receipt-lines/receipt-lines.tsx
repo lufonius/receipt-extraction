@@ -19,6 +19,7 @@ export class ReceiptLines {
   @Inject(GlobalStore) private globalStore: GlobalStore;
   @State() public currentReceiptLines: Line[];
   @State() public currentReceiptImgUrl: string;
+  private hasNotBeenDrawn: boolean = true;
 
   componentDidLoad() {
     const lines$ = this.globalStore.selectCurrentReceiptLines();
@@ -28,16 +29,16 @@ export class ReceiptLines {
     );
 
     flyd.on(([lines, imgUrl]: [Line[], string]) => {
-      this.currentReceiptLines = lines;
-      this.currentReceiptImgUrl = imgUrl;
-      this.receiptChanged();
-    }, both$);
-  }
+      if (this.currentReceiptImgUrl !== imgUrl || this.hasNotBeenDrawn) {
+        this.currentReceiptImgUrl = imgUrl;
 
-  receiptChanged() {
-    this.setupStage();
-    this.drawImage();
-    this.drawLinesOntoImage();
+        this.setupStage();
+        this.drawImage();
+      }
+
+      this.currentReceiptLines = lines;
+      this.drawLinesOntoImage();
+    }, both$);
   }
 
   private canvas: HTMLDivElement;
@@ -51,7 +52,8 @@ export class ReceiptLines {
       url: `/images${this.currentReceiptImgUrl}`,
       id: ""
     });
-    this.stage.addShape(image);
+    this.stage.addImage(image);
+    this.hasNotBeenDrawn = false;
   }
 
   private setupStage() {
@@ -67,6 +69,8 @@ export class ReceiptLines {
   }
 
   private drawLinesOntoImage() {
+    this.stage.removeAllLines();
+
     this.currentReceiptLines.forEach(line => {
       const width = line.topRight.x - line.topLeft.x;
       const height = line.bottomLeft.y - line.topLeft.y;
@@ -88,7 +92,7 @@ export class ReceiptLines {
 
       box.onClickOrTap(clickOrTapCallback)
 
-      this.stage.addShape(box);
+      this.stage.addLine(box);
     });
   }
 

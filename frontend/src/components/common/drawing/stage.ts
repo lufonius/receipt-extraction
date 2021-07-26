@@ -5,7 +5,9 @@ import {Viewport} from "pixi-viewport";
 
 export class Stage extends Drag {
   private app: PIXI.Application;
-  private container: Viewport;
+  private viewport: Viewport;
+  private linesContainer: PIXI.Container;
+  private imageContainer: PIXI.Container;
   private shiftPressing: boolean;
 
   constructor(params: {
@@ -26,7 +28,7 @@ export class Stage extends Drag {
 
     params.hostElement.appendChild(this.app.renderer.view);
 
-    this.container = new Viewport({
+    this.viewport = new Viewport({
       screenWidth: params.width,
       screenHeight: params.height,
       worldWidth: 838,
@@ -38,10 +40,8 @@ export class Stage extends Drag {
       interaction: this.app.renderer.plugins.interaction
     });
 
-    this.container
-      .drag({
-        keyToPress: ["ShiftLeft", "ShiftRight"]
-      })
+    this.viewport
+      .drag({ keyToPress: ["ShiftLeft", "ShiftRight"] })
       .decelerate({})
       .wheel({
         percent: 0.1,                // smooth the zooming by providing the number of frames to zoom between wheel spins
@@ -54,24 +54,40 @@ export class Stage extends Drag {
       .pinch()
       .fitWorld(true);
 
-    this.app.stage.addChild(this.container);
+    this.linesContainer = new PIXI.Container();
+    this.imageContainer = new PIXI.Container();
+
+    this.viewport.addChild(this.linesContainer,this.imageContainer);
+    this.viewport.sortableChildren = true;
+    this.linesContainer.zIndex = 5;
+    this.imageContainer.zIndex = 4;
+    this.viewport.sortChildren();
+    this.app.stage.addChild(this.viewport);
   }
 
   update() {
-    this.app.renderer.render(this.container);
+    this.app.renderer.render(this.viewport);
     requestAnimationFrame(() => this.update());
   }
 
-  addShape(shape: Shape) {
-    this.container.addChild(shape.getImpl());
+  addLine(line: Shape) {
+    this.linesContainer.addChild(line.getImpl());
   }
 
-  addShapes(shapes: Shape[]) {
-    shapes.forEach((it) => this.addShape(it));
+  addImage(line: Shape) {
+    this.viewport.addChild(line.getImpl());
+  }
+
+  addLines(shapes: Shape[]) {
+    shapes.forEach((it) => this.addLine(it));
   }
 
   removeAllChildren() {
     this.app.stage.removeChildren();
+  }
+
+  removeAllLines() {
+    this.linesContainer.removeChildren();
   }
 
   destroy() {
@@ -84,16 +100,16 @@ export class Stage extends Drag {
   }
 
   shapeToDrag(): PIXI.DisplayObject {
-    return this.container;
+    return this.viewport;
   }
 
   setContentSize(width: number, height: number) {
-    this.container.worldHeight = height;
-    this.container.worldWidth = width;
+    this.viewport.worldHeight = height;
+    this.viewport.worldWidth = width;
   }
 
   fitContent() {
-    this.container.fitWorld(true);
+    this.viewport.fitWorld(true);
   }
 }
 

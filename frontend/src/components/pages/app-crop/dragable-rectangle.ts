@@ -25,8 +25,8 @@ export class DragableRectangle {
       new Side(vertice3, vertice0, color)
     ];
 
-    this.stage.addShapes(this.corners.map(v => v.shape));
-    this.stage.addShapes(this.sides.map(e => e.shape));
+    this.stage.addLines(this.corners.map(v => v.shape));
+    this.stage.addLines(this.sides.map(e => e.shape));
   }
 
   getRectangle(): { x: number, y: number }[] {

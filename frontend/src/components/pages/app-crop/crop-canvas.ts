@@ -156,7 +156,7 @@ export class CropCanvas {
         id: "image"
       });
 
-      this.stage.addShape(this.image);
+      this.stage.addLine(this.image);
     } else {
       this.image.setImage(smallCanvas);
       this.image.setPosition(this.imageMarginXY);
