@@ -66,7 +66,7 @@ jobs:
         run: ./backend/gradlew test --project-dir ./backend
         
       - name: Backend build
-        run: ./backend/gradlew bootJar --project-dir ./backend
+        run: ./backend/gradlew bootJar --project-dir ./backend --debug
         
       - name: Build docker image
         run: docker build -t aignn.azurecr.io/drezip/backend:${{ env.VERSION }} -f ./backend/app.Dockerfile ./backend
