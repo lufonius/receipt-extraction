@@ -63,10 +63,10 @@ jobs:
           echo "Using the following version for tagging and deployment: $VERSION"
         
       - name: Backend tests
-        run: ./backend/gradlew test --project-dir ./backend
+        run: ./backend/gradlew test --project-dir ./backend --debug
         
       - name: Backend build
-        run: ./backend/gradlew bootJar --project-dir ./backend --debug
+        run: ./backend/gradlew bootJar --project-dir ./backend
         
       - name: Build docker image
         run: docker build -t aignn.azurecr.io/drezip/backend:${{ env.VERSION }} -f ./backend/app.Dockerfile ./backend
