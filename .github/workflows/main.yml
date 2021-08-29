@@ -63,7 +63,7 @@ jobs:
           echo "Using the following version for tagging and deployment: $VERSION"
         
       - name: Backend tests
-        run: ./backend/gradlew test --project-dir ./backend --debug
+        run: ./backend/gradlew test --project-dir ./backend --info
         
       - name: Backend build
         run: ./backend/gradlew bootJar --project-dir ./backend
