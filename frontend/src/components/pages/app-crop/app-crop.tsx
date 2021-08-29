@@ -168,8 +168,8 @@ export class AppCrop {
             </div>}
           </div>
           <div class="dialog-footer">
-            <app-button primary onPress={() => this.reset()}>Meanwhile, upload next</app-button>
-            <app-button primary disabled={this.isUploading} onPress={() => this.startExtraction()}>Extract values</app-button>
+            <app-button primary fullWidth onPress={() => this.reset()}>Meanwhile, upload next</app-button>
+            <app-button primary fullWidth disabled={this.isUploading} onPress={() => this.startExtraction()}>Extract values</app-button>
           </div>
         </app-dialog>
       </div>
