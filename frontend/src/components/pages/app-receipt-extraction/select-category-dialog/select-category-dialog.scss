@@ -5,7 +5,7 @@
     position: relative;
     max-height: 95vh;
     overflow-y: scroll;
-    min-width: 50rem;
+    max-width: 50rem;
 
     &-header {
       position: sticky;
