@@ -269,6 +269,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppBackdrop {
+        "onClicked"?: (event: CustomEvent<void>) => void;
         "show"?: boolean;
         "withAnimation"?: boolean;
     }

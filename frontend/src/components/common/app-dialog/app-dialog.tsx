@@ -24,10 +24,18 @@ export class AppDialog {
     }
   }
 
+  private closeOnOutsideClick(kp: any) {
+    console.log("close", kp);
+
+    if (this.manuallyClosable) {
+      this.isVisible(false);
+    }
+  }
+
   render() {
     return (
       <Host>
-        <app-backdrop ref={(el) => this.backdrop = el} withAnimation={true}>
+        <app-backdrop ref={(el) => this.backdrop = el} withAnimation={true} onClicked={(e) => this.closeOnOutsideClick(e)}>
           <div class="flex-container">
             <div class="content">
               <slot />

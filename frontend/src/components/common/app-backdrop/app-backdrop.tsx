@@ -1,4 +1,4 @@
-import {Component, Host, h, Prop, State, Watch, Method} from '@stencil/core';
+import {Component, Host, h, Prop, State, Watch, Method, Event, EventEmitter} from '@stencil/core';
 
 @Component({
   tag: 'app-backdrop',
@@ -10,12 +10,12 @@ export class AppBackdrop {
   @Prop() public show: boolean;
   @Prop() public withAnimation: boolean = true;
   @State() public classes: string = "backdrop closed";
+  @Event() public clicked: EventEmitter<void>;
 
   @Method() async showChange(show: boolean) {
     this.show = show;
     this.buildClasses();
   }
-
   @Watch("withAnimation")
   withAnimationChange() {
     this.buildClasses();
@@ -32,9 +32,8 @@ export class AppBackdrop {
   render() {
     return (
       <Host>
-        <div class={this.classes}>
-          {this.show && <slot />}
-        </div>
+        <div class={this.classes} onClick={() => this.clicked.emit()} />
+        {this.show && <div class="content"><slot /></div>}
       </Host>
     );
   }
