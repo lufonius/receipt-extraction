@@ -21,7 +21,6 @@ export const dateValidator: Validator = (input: string) => {
     return null;
   }
 
-  // usa uses mm-dd-yyyy
-  var date_regex = /^\d{2}-\d{2}-\d{4}$/ ;
+  var date_regex = /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/;
   return date_regex.test(input) ? null : "date-format-error";
 };

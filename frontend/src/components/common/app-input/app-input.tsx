@@ -26,7 +26,7 @@ export class AppInput {
   @Prop() messagePerError: { [error: string]: string } = {
     "required-error": "You must fill out this field",
     "number-format-error": "This is not a valid number. Valid numbers are for example: 7 / 6.98 / 77,43",
-    "date-format-error": "This date is not in a valid format. A valid example is: 2011-04-30"
+    "date-format-error": "This date is not in a valid format. A valid example is: 30.5.2009"
   };
   @Watch("focused") onFocusedChange(focus: boolean) {
     this.setFocus(focus);

@@ -27,11 +27,11 @@ describe("validator", () => {
   });
 
   it("date validator should return error if value is not in correct date format", () => {
-    expect(dateValidator("26.04.1997")).toEqual("date-format-error");
+    expect(dateValidator("04-26-1997")).toEqual("date-format-error");
   });
 
   it("date validator should return NO error if value is in correct date format", () => {
-    expect(dateValidator("04-26-1997")).toEqual(null);
+    expect(dateValidator("04.5.1997")).toEqual(null);
   });
 
   it("date validator should return NO error if value is empty", () => {
