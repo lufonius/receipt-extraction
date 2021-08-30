@@ -30,8 +30,8 @@ export class AppReceiptExtraction {
   @State() public taxes: ReceiptItem[] = [];
   @State() public categoryItems: ReceiptItem[] = [];
   @State() public showDropup: boolean = false;
-  @State() public showEditItems: boolean = true;
-  @State() public showAddItem: boolean = false;
+  @State() public showEditItemsPanel: boolean = true;
+  @State() public showAddItemPanel: boolean = false;
   public receiptItemBeforeUpdate: ReceiptItem;
   @State() public currentReceiptItem: ReceiptItem;
   @State() submitted: boolean = false;
@@ -57,8 +57,10 @@ export class AppReceiptExtraction {
   }
 
   async lineClicked(line: Line) {
-    await this.receiptItemAdd.componentOnReady();
-    await this.receiptItemAdd.selectLine(line);
+    if (this.showAddItemPanel) {
+      await this.receiptItemAdd.componentOnReady();
+      await this.receiptItemAdd.selectLine(line);
+    }
   }
 
   async reset(receiptItem: ReceiptItem) {
@@ -112,8 +114,8 @@ export class AppReceiptExtraction {
     this.showDropup = false;
     await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
 
-    this.showEditItems = false;
-    this.showAddItem = true;
+    this.showEditItemsPanel = false;
+    this.showAddItemPanel = true;
     this.showDropup = true;
   }
 
@@ -122,8 +124,8 @@ export class AppReceiptExtraction {
       this.showDropup = false;
       await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
 
-      this.showEditItems = true;
-      this.showAddItem = false;
+      this.showEditItemsPanel = true;
+      this.showAddItemPanel = false;
       this.showDropup = true;
       this.submitted = false;
     }
@@ -234,7 +236,7 @@ export class AppReceiptExtraction {
           show={this.showDropup}
           onContainerShownAnimationEnd={({ detail: show }) => this.dropUpAnimationEnd = show}
         >
-          {this.showEditItems && <div class="controls" slot="controls">
+          {this.showEditItemsPanel && <div class="controls" slot="controls">
             <app-button-round size={Size.xxl} onPress={() => this.endExtraction()}>
               <app-icon>{ MaterialIcons.DONE_ALL }</app-icon>
               <span>done</span>
@@ -246,7 +248,7 @@ export class AppReceiptExtraction {
             </app-button-round>
           </div>}
 
-          {this.showAddItem && <div class="controls" slot="controls">
+          {this.showAddItemPanel && <div class="controls" slot="controls">
             <app-button-round size={Size.xxl} onPress={() => this.hideAddItem(true)}>
               <app-icon>{ MaterialIcons.CLOSE }</app-icon>
               <span>close</span>
@@ -265,7 +267,7 @@ export class AppReceiptExtraction {
           </div>}
 
           <div slot="dropup">
-            {this.showAddItem && <receipt-item-add
+            {this.showAddItemPanel && <receipt-item-add
               receiptItem={this.currentReceiptItem}
               submitted={this.submitted}
               onFormValidChange={({ detail: valid }) => this.valid = valid}
@@ -273,7 +275,7 @@ export class AppReceiptExtraction {
               categories={this.categories}
               ref={(el) => this.receiptItemAdd = el} />}
 
-            {this.showEditItems && <receipt-items-edit
+            {this.showEditItemsPanel && <receipt-items-edit
               total={this.total}
               date={this.date}
               taxes={this.taxes}
