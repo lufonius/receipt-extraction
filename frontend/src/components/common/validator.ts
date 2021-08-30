@@ -13,7 +13,9 @@ export const numberValidator: Validator = (input: string) => {
     return null;
   }
 
-  return isNaN(parseFloat(input)) ? "number-format-error" : null;
+  const regexp = /^\d+(\.\d{0,2})?$/;
+
+  return regexp.test(input) ? null : "number-format-error";
 };
 
 export const dateValidator: Validator = (input: string) => {

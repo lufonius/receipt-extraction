@@ -15,11 +15,11 @@ describe("validator", () => {
   it("number validator should return null if value is a valid number", () => {
     expect(numberValidator("1")).toEqual(null);
     expect(numberValidator("1.23")).toEqual(null);
-    expect(numberValidator("1,23")).toEqual(null);
   });
 
   it("number validator should return error if value is not a valid number", () => {
     expect(numberValidator("hey babo")).toEqual("number-format-error");
+    expect(numberValidator("8+")).toEqual("number-format-error");
   });
 
   it("number validator should return no error if value is empty or null", () => {
