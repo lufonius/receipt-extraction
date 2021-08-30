@@ -33,8 +33,6 @@ export class ReceiptItemAdd {
       this.setValue(line.text, line.id);
     } else if (this.labelInputFocused) {
       this.setLabel(line.text, line.id);
-      this.labelInputFocused = false;
-      this.valueInputFocused = true;
     }
   }
 
@@ -47,6 +45,8 @@ export class ReceiptItemAdd {
     this.receiptItem.value = value;
     this.receiptItem.valueLineId = valueLineId;
     this.receiptItemChange.emit(this.receiptItem);
+    this.valueInputFocused = true;
+    this.labelInputFocused = false;
   }
 
   private setLabel(value: string, labelLineId?: number) {
@@ -54,6 +54,8 @@ export class ReceiptItemAdd {
     this.receiptItem.label = value;
     this.receiptItem.labelLineId = labelLineId;
     this.receiptItemChange.emit(this.receiptItem);
+    this.labelInputFocused = true;
+    this.valueInputFocused = false;
   }
 
   private setSelectedCategory(categoryId: number) {
