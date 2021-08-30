@@ -1,4 +1,4 @@
-import { Component, Host, h } from '@stencil/core';
+import {Component, Host, h, State} from '@stencil/core';
 import {MaterialIcons} from "../../../global/material-icons-enum";
 import {Size} from "../../common/size";
 
@@ -11,6 +11,9 @@ export class AppComponents {
 
   size = Size;
   dialog: HTMLAppDialogElement;
+
+  @State() showMobileKeyboard: boolean = false;
+  @State() isFocused: boolean = false;
 
   async showDialog() {
     await this.dialog.componentOnReady();
@@ -51,9 +54,26 @@ export class AppComponents {
 
         <br />
 
-        <app-input>
-          <input type="text" />
-        </app-input>
+        <app-input />
+
+        <br />
+
+        <app-input
+          focused={this.isFocused}
+          placeholder="manually triggering the mobile keyboard"
+          showMobileKeyboard={this.showMobileKeyboard}
+        />
+        <app-button
+          primary
+          onPress={() => this.showMobileKeyboard = !this.showMobileKeyboard}>
+            Toggle keyboard
+        </app-button>
+
+        <app-button
+          primary
+          onPress={() => this.isFocused = !this.isFocused}>
+          toggle focus
+        </app-button>
 
         <br />
 

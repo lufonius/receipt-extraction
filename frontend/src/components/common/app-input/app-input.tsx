@@ -32,17 +32,47 @@ export class AppInput {
     this.setFocus(focus);
   }
 
-  componentDidLoad() {
+  @Prop() mobileKeyboardType: string = "text";
+  private latestUsedMobileKeyboardType: string = this.mobileKeyboardType;
+
+  @Prop() showMobileKeyboard: boolean = true;
+  @Watch("showMobileKeyboard") onShowMobileKeyboardChange(show: boolean) {
+    this.setShowMobileKeyboard(show);
+  }
+
+  async componentDidLoad() {
+    await this.setShowMobileKeyboard(this.showMobileKeyboard);
     this.setFocus(this.focused);
     this.runValidators(this.valueInput.value);
   }
 
   setFocus(focus: boolean) {
     if (focus) {
-      this.valueInput.focus()
+      this.valueInput.focus();
     } else {
       this.valueInput.blur();
     }
+  }
+
+  async setShowMobileKeyboard(show: boolean): Promise<void> {
+
+    return new Promise((resolve) => {
+      if (show) {
+        this.mobileKeyboardType = this.latestUsedMobileKeyboardType;
+
+        // set focus again, as only changing the attribute "inputmode" alone won't trigger the keyboard
+        this.valueInput.blur();
+
+        // don't ask me why this works ...
+        setTimeout(() => {
+          this.valueInput.focus();
+          resolve();
+        }, 0);
+      } else {
+        this.mobileKeyboardType = "none";
+        resolve();
+      }
+    });
   }
 
   private valueInput: HTMLInputElement;
@@ -79,6 +109,7 @@ export class AppInput {
           onFocus={(e) => this.inputFocus.emit()}
           onBlur={() => this.inputBlur.emit()}
           ref={(el) => this.valueInput = el}
+          inputmode={this.mobileKeyboardType}
         />
         {this.showErrors && this.errors.map(it => <span class="error-label"><b>{this.messagePerError[it]}</b></span>)}
       </Host>

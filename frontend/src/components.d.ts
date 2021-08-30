@@ -41,8 +41,10 @@ export namespace Components {
         "focused": boolean;
         "label": string;
         "messagePerError": { [error: string]: string };
+        "mobileKeyboardType": string;
         "placeholder": string;
         "showErrors": boolean;
+        "showMobileKeyboard": boolean;
         "validators": Validator[];
         "value": string;
     }
@@ -300,12 +302,14 @@ declare namespace LocalJSX {
         "focused"?: boolean;
         "label"?: string;
         "messagePerError"?: { [error: string]: string };
+        "mobileKeyboardType"?: string;
         "onInputBlur"?: (event: CustomEvent<void>) => void;
         "onInputFocus"?: (event: CustomEvent<void>) => void;
         "onInputValueChange"?: (event: CustomEvent<string>) => void;
         "onValidChange"?: (event: CustomEvent<boolean>) => void;
         "placeholder"?: string;
         "showErrors"?: boolean;
+        "showMobileKeyboard"?: boolean;
         "validators"?: Validator[];
         "value"?: string;
     }

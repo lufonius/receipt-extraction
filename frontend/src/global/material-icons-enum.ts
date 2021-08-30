@@ -9,5 +9,7 @@ export enum MaterialIcons {
   CLOSE = "close",
   DONE = "done",
   NEXT_PLAN = "next_plan",
-  ARROW_RIGHT_ALT = "arrow_right_alt"
+  ARROW_RIGHT_ALT = "arrow_right_alt",
+  KEYBOARD = "keyboard",
+  KEYBOARD_HIDE = "keyboard_hide"
 }

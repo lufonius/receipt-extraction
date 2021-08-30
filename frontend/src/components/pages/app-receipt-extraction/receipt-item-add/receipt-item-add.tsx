@@ -22,8 +22,11 @@ export class ReceiptItemAdd {
 
   @State() valueInputFocused: boolean = false;
   private valueInputValid: boolean = false;
+  @State() valueInputShowKeyboard: boolean = false;
+
   @State() labelInputFocused: boolean = true;
   private labelInputValid: boolean = false;
+  @State() labelInputShowKeyboard: boolean = false;
 
   @Method() async selectLine(line: Line) {
     if (this.valueInputFocused) {
@@ -96,8 +99,23 @@ export class ReceiptItemAdd {
               onInputValueChange={({ detail: text }) => this.setLabel(text, this.receiptItem.labelLineId)}
               onInputFocus={() => this.labelInputFocused = true}
               onInputBlur={() => this.labelInputFocused = false}
+              showMobileKeyboard={this.valueInputShowKeyboard}
             />
           </div>
+          {this.valueInputShowKeyboard && <app-button-round
+            class="margin-left-s"
+            size={Size.l}
+            onPress={() => this.valueInputShowKeyboard = false}
+          >
+            <app-icon>{MaterialIcons.KEYBOARD_HIDE}</app-icon>
+          </app-button-round>}
+          {!this.valueInputShowKeyboard && <app-button-round
+            class="margin-left-s"
+            size={Size.l}
+            onPress={() => this.valueInputShowKeyboard = true}
+          >
+            <app-icon>{MaterialIcons.KEYBOARD}</app-icon>
+          </app-button-round>}
           <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setLabel("", null)}>
             <app-icon>{ MaterialIcons.DELETE }</app-icon>
           </app-button-round>
@@ -114,8 +132,24 @@ export class ReceiptItemAdd {
               onInputValueChange={({ detail: text }) => this.setValue(text, this.receiptItem.valueLineId)}
               onInputFocus={() => this.valueInputFocused = true}
               onInputBlur={() => this.valueInputFocused = false}
+              showMobileKeyboard={this.labelInputShowKeyboard}
+              mobileKeyboardType="numeric"
             />
           </div>
+          {this.labelInputShowKeyboard && <app-button-round
+            class="margin-left-s"
+            size={Size.l}
+            onPress={() => this.labelInputShowKeyboard = false}
+          >
+            <app-icon>{MaterialIcons.KEYBOARD_HIDE}</app-icon>
+          </app-button-round>}
+          {!this.labelInputShowKeyboard && <app-button-round
+            class="margin-left-s"
+            size={Size.l}
+            onPress={() => this.labelInputShowKeyboard = true}
+          >
+            <app-icon>{MaterialIcons.KEYBOARD}</app-icon>
+          </app-button-round>}
           <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setValue("", null)}>
             <app-icon>{ MaterialIcons.DELETE }</app-icon>
           </app-button-round>
