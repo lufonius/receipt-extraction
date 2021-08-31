@@ -13,6 +13,28 @@ data:
       listen       8080;
       server_name  localhost;
 
+      root   /usr/share/nginx/html;
+      gzip on;
+      gzip_types text/css application/javascript application/json image/svg+xml;
+      gzip_comp_level 9;
+      etag on;
+
+      location / {
+        try_files $uri $uri/ /index.html;
+      }
+
+      location /assets/ {
+          add_header Cache-Control max-age=31536000;
+      }
+
+      location /index.html {
+          add_header Cache-Control no-cache;
+      }
+
+      location /host.config.json {
+          add_header Cache-Control no-cache;
+      }
+
       # redirect api calls to the backend
       location /api/ {
           proxy_pass http://drezip-backend/api/;
@@ -21,11 +43,6 @@ data:
       # redirect images calls to the azure blob storage
       location /images/ {
           proxy_pass https://drezip.blob.core.windows.net/;
-      }
-
-      location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
       }
 
       error_page   500 502 503 504  /50x.html;
