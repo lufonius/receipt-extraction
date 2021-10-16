@@ -18,6 +18,7 @@
   text-align: center;
   color: var(--foreground);
   border: none;
+  border-radius: 2px;
   font-size: var(--font-size);
   // if set to normal (default), we have a box around the letter, which itself can have some padding.
   // because we want to have full control of the size of the button, the line height is the same as the font-size.
@@ -34,14 +35,11 @@
 
   outline: none;
 
-  &--shadow {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-  }
-
   &--primary {
     background: var(--primary);
     color: var(--background);
     font-weight: var(--font-weight-bold);
+    box-shadow: -3px 3px 0px 0px var(--background-light);
   }
 
   &--inverted {
