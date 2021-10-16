@@ -9,10 +9,20 @@
 */
 
 body {
-  margin: 0px;
+  margin: 0;
   background: var(--background);
-  font-family: var(--heading-font-family);
+  font-family: var(--body-font-family);
   color: var(--foreground);
+
+  h1, h2, h3, h4 {
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-bold);
+  }
+
+  h1 { font-size: var(--font-size-xxl); }
+  h2 { font-size: var(--font-size-xl); }
+  h3 { font-size: var(--font-size-l); }
+  h4 { font-size: var(--font-size-m); }
 
   p {
     font-size: var(--body-font-size);
@@ -26,24 +36,33 @@ html {
 }
 
 :root {
-  --heading-font-family: 'Montserrat', sans-serif;
+  // fonts
+  --heading-font-family: sommet-rounded, sans-serif;
+  --body-font-family: 'PT Sans', sans-serif;
 
-  --body-font-family: Arial, sans-serif;
-  --body-font-size: 1.6rem;
+  --body-font-size: var(--font-size-s);
   --small-font-size: 1.2rem;
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
-  --font-weight-semi-bold: 600;
-  --font-weight-bold: 700;
+  --font-weight-semi-bold: 700;
+  --font-weight-bold: 900;
 
-  --primary: #000000;
-  --background: #D8D8D8;
-  --background-light: darken(var(--background), 20);
-  --error: #D03A3A;
+  --font-size-xxl: 3.2rem;
+  --font-size-xl: 2.6rem;
+  --font-size-l: 2.2rem;
+  --font-size-m: 1.8rem;
+  --font-size-s: 1.6rem;
 
-  --foreground: #000000;
+  // colors
+  --primary: #bf9577;
+  --background: #424366;
+  --background-light: #6b6da3;
+  --background-dark: #3a3b59;
+  --error: #FA6363;
+  --foreground: #E2E2E2;
 
+  // spacing
   --size-xs: 0.6rem;
   --size-s: 1.2rem;
   --size-m: 2.4rem;
@@ -51,8 +70,6 @@ html {
   --size-xl: 4.8rem;
   --size-xxl: 6rem;
 }
-
-p { font-size: var(--body-font-size); }
 
 @font-face {
   font-family: 'Material Icons';
