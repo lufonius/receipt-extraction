@@ -35,6 +35,8 @@ export namespace Components {
         "isVisible": (show: boolean) => Promise<void>;
         "manuallyClosable": boolean;
     }
+    interface AppDivider {
+    }
     interface AppHome {
     }
     interface AppIcon {
@@ -135,6 +137,12 @@ declare global {
     var HTMLAppDialogElement: {
         prototype: HTMLAppDialogElement;
         new (): HTMLAppDialogElement;
+    };
+    interface HTMLAppDividerElement extends Components.AppDivider, HTMLStencilElement {
+    }
+    var HTMLAppDividerElement: {
+        prototype: HTMLAppDividerElement;
+        new (): HTMLAppDividerElement;
     };
     interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
     }
@@ -251,6 +259,7 @@ declare global {
         "app-components": HTMLAppComponentsElement;
         "app-crop": HTMLAppCropElement;
         "app-dialog": HTMLAppDialogElement;
+        "app-divider": HTMLAppDividerElement;
         "app-home": HTMLAppHomeElement;
         "app-icon": HTMLAppIconElement;
         "app-input": HTMLAppInputElement;
@@ -297,6 +306,8 @@ declare namespace LocalJSX {
     }
     interface AppDialog {
         "manuallyClosable"?: boolean;
+    }
+    interface AppDivider {
     }
     interface AppHome {
     }
@@ -378,6 +389,7 @@ declare namespace LocalJSX {
         "app-components": AppComponents;
         "app-crop": AppCrop;
         "app-dialog": AppDialog;
+        "app-divider": AppDivider;
         "app-home": AppHome;
         "app-icon": AppIcon;
         "app-input": AppInput;
@@ -408,6 +420,7 @@ declare module "@stencil/core" {
             "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;
+            "app-divider": LocalJSX.AppDivider & JSXBase.HTMLAttributes<HTMLAppDividerElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
             "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
