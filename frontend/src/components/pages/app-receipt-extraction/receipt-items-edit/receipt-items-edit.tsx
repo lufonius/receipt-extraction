@@ -79,9 +79,9 @@ export class ReceiptItemsEdit {
           )
         }
 
-        <div class="no-entries-container">
-          {this.taxes.length === 0 && <span class="no-entries-text">Select taxes on the receipt</span>}
-        </div>
+        {this.taxes.length === 0 && <div class="no-entries-container">
+          <span class="no-entries-text">Select taxes on the receipt</span>
+        </div>}
 
         <div class="divider">
           Items
@@ -103,9 +103,9 @@ export class ReceiptItemsEdit {
           )
         }
 
-        <div class="no-entries-container">
-          {this.categoryItems.length === 0 && <span class="no-entries-text">Select items on the receipt</span>}
-        </div>
+        {this.categoryItems.length === 0 && <div class="no-entries-container">
+          <span class="no-entries-text">Select items on the receipt</span>
+        </div>}
       </Host>
     );
   }

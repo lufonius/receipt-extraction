@@ -14,6 +14,11 @@
     color: var(--foreground);
   }
 
+  input::placeholder {
+    color: var(--foreground);
+    opacity: 0.5;
+  }
+
   label {
     display: block;
     font-size: var(--body-font-size);

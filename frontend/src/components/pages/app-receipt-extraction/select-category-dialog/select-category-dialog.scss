@@ -6,6 +6,8 @@
     max-height: 75vh;
     overflow-y: scroll;
     max-width: 50rem;
+    border-radius: 19px;
+    background-color: var(--background);
 
     &-header {
       position: sticky;
@@ -14,10 +16,17 @@
       top: 0;
       // needed as otherwise on hover or select of an item it will overlap the header
       z-index: 100;
+      margin-bottom: var(--size-m);
 
       > div {
         position: relative;
         padding: var(--size-s);
+      }
+
+      h1 {
+        font-family: var(--heading-font-family);
+        text-transform: uppercase;
+        font-weight: var(--font-weight-bold);
       }
     }
 

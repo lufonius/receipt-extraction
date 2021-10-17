@@ -75,7 +75,7 @@ export class SelectCategoryDialog {
                 .map((category) => <div
                 class="category-item"
                 onClick={() => this.setSelectedCategory(category)}>
-                <div class="category-item-divider full-width" />
+                <app-divider />
                 <div class={{ "category-item-body": true, selected: this.selectedCategoryId === category.id }}>
                   <div class="category-item-body-circle" style={({ "background-color": "#" + category.color.toString(16) })}/>
                   <div class="category-item-body-name">{category.name}</div>

@@ -82,7 +82,7 @@ export class ReceiptItemAdd {
     return (
       <Host>
         <app-divider />
-        <div class="category-item">
+        {this.receiptItem.type === ReceiptItemType.Category && <div class="category-item">
           {this.categoryOfReceiptItem && <div class="category-item-circle" style={({ "background-color": "#" + this.categoryOfReceiptItem.color.toString(16) })} />}
 
           <div class="category-item-text-container">
@@ -93,21 +93,19 @@ export class ReceiptItemAdd {
 
           <div class="fill" />
 
-          {this.receiptItem.type === ReceiptItemType.Category && <app-button-round
-            size={Size.l}
-            onPress={() => this.selectCategoryDialog.show()}>
+         <app-button-round size={Size.l} onPress={() => this.selectCategoryDialog.show()}>
             <app-icon>{ MaterialIcons.EDIT }</app-icon>
-          </app-button-round>}
+          </app-button-round>
 
-          {this.receiptItem.type === ReceiptItemType.Category && this.categoryOfReceiptItem && <app-button-round
+          {this.categoryOfReceiptItem && <app-button-round
             size={Size.l}
             class="delete-button"
             onPress={() => this.unassignCurrentCategory()}>
             <app-icon>{ MaterialIcons.DELETE }</app-icon>
           </app-button-round>}
-        </div>
+        </div>}
 
-        <app-divider />
+        {this.receiptItem.type === ReceiptItemType.Category && <app-divider />}
 
         <div class="input">
           <div class="fill">
