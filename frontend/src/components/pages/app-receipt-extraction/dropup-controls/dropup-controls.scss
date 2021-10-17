@@ -10,6 +10,13 @@
 
     * { z-index: 2; }
 
+    .controls {
+      background: var(--background);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+      box-shadow: rgb(0 0 0) 0px -6px 38px -12px;
+    }
+
     .dropup {
       width: 100%;
       background-color: var(--background);
