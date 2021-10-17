@@ -80,7 +80,7 @@ export class ReceiptItemsEdit {
         }
 
         <div class="no-entries-container">
-          {this.taxes.length === 0 && <p class="no-entries-text">Select taxes on the receipt</p>}
+          {this.taxes.length === 0 && <span class="no-entries-text">Select taxes on the receipt</span>}
         </div>
 
         <div class="divider">
@@ -104,7 +104,7 @@ export class ReceiptItemsEdit {
         }
 
         <div class="no-entries-container">
-          {this.categoryItems.length === 0 && <p class="no-entries-text">Select items on the receipt</p>}
+          {this.categoryItems.length === 0 && <span class="no-entries-text">Select items on the receipt</span>}
         </div>
       </Host>
     );

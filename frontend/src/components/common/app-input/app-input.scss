@@ -3,18 +3,20 @@
 
   input {
     box-sizing: border-box;
-    border: 0.3rem solid var(--primary);
+    border: 0.3rem solid var(--foreground);
     height: var(--size-l);
+    border-radius: 2px;
     outline: none;
     background: transparent;
     padding-left: var(--size-xs);
     padding-right: var(--size-xs);
     width: 100%;
+    color: var(--foreground);
   }
 
   label {
     display: block;
-    font-size: var(--small-font-size);
+    font-size: var(--body-font-size);
     margin-bottom: var(--size-xs);
   }
 

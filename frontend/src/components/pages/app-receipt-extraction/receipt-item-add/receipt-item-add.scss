@@ -2,25 +2,42 @@
   display: flex;
   flex-direction: column;
 
-  .divider {
+  .category-item {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    background-color: var(--primary);
-    color: var(--background);
-    font-size: var(--body-font-size);
-    padding: var(--size-s);
+
+    padding: var(--size-m) var(--size-s);
+
+    &-label {
+      font-family: var(--heading-font-family);
+      font-size: var(--font-size-s);
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+    }
+
+    &-circle {
+      height: var(--size-m);
+      width: var(--size-m);
+      border-radius: 50%;
+      margin-right: var(--size-s);
+    }
+
+    &-text-container {
+      display: flex;
+      flex-direction: column;
+      font-size: var(--body-font-size);
+    }
+
+    .delete-button {
+      margin-left: var(--size-s);
+    }
   }
 
   .input {
     display: flex;
     padding: var(--size-s);
     align-items: flex-end;
-  }
-
-  .circle {
-    height: var(--size-m);
-    width: var(--size-m);
-    border-radius: 50%;
   }
 
   .selected-category {

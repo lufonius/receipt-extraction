@@ -64,6 +64,12 @@ export class ReceiptItemAdd {
     this.receiptItemChange.emit(this.receiptItem);
   }
 
+  private unassignCurrentCategory() {
+    this.receiptItem.categoryId = null;
+    this.categoryOfReceiptItem = null
+    this.receiptItemChange.emit(this.receiptItem);
+  }
+
   private getValueValidator() {
     if (this.receiptItem.type === ReceiptItemType.Date) {
       return [requiredValidator, dateValidator];
@@ -75,25 +81,38 @@ export class ReceiptItemAdd {
   render() {
     return (
       <Host>
-        <div class="divider">
+        <app-divider />
+        <div class="category-item">
+          {this.categoryOfReceiptItem && <div class="category-item-circle" style={({ "background-color": "#" + this.categoryOfReceiptItem.color.toString(16) })} />}
+
+          <div class="category-item-text-container">
+            <span class="category-item-label">Category</span>
+            {this.categoryOfReceiptItem && <span>{this.categoryOfReceiptItem.name}</span>}
+            {!this.categoryOfReceiptItem && <span>Select a category (optional)</span>}
+          </div>
+
           <div class="fill" />
-          {this.categoryOfReceiptItem && <div class="selected-category">
-            <div class="circle" style={({ "background-color": "#" + this.categoryOfReceiptItem.color.toString(16) })} />
-            <span class="margin-left-s">{this.categoryOfReceiptItem.name}</span>
-          </div>}
-          {this.receiptItem.type === ReceiptItemType.Category && <app-button
-            class="margin-left-s"
-            primary
-            inverted
+
+          {this.receiptItem.type === ReceiptItemType.Category && <app-button-round
+            size={Size.l}
             onPress={() => this.selectCategoryDialog.show()}>
-            {!this.categoryOfReceiptItem && <span>set category</span>}
-            {this.categoryOfReceiptItem && <span>change</span>}
-          </app-button>}
+            <app-icon>{ MaterialIcons.EDIT }</app-icon>
+          </app-button-round>}
+
+          {this.receiptItem.type === ReceiptItemType.Category && this.categoryOfReceiptItem && <app-button-round
+            size={Size.l}
+            class="delete-button"
+            onPress={() => this.unassignCurrentCategory()}>
+            <app-icon>{ MaterialIcons.DELETE }</app-icon>
+          </app-button-round>}
         </div>
+
+        <app-divider />
+
         <div class="input">
           <div class="fill">
             <app-input
-              label="Select the label on the receipt"
+              label="Select the label on the receipt (optional)"
               value={this.receiptItem.label}
               focused={this.labelInputFocused}
               showErrors={this.submitted}
