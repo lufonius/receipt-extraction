@@ -46,10 +46,8 @@ export class AppComponents {
           <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
         </app-button-round>
 
-        <app-button-round>
+        <app-button-round label="rotate image">
           <app-icon>{MaterialIcons.ROTATE_90_DEGREES_CCW}</app-icon>
-          <span>rotate</span><br />
-          <span>image</span>
         </app-button-round>
 
         <br />

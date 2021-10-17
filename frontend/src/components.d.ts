@@ -22,6 +22,8 @@ export namespace Components {
         "primary": boolean;
     }
     interface AppButtonRound {
+        "classes": string;
+        "label": string;
         "size": Size;
     }
     interface AppComponents {
@@ -283,6 +285,8 @@ declare namespace LocalJSX {
         "primary"?: boolean;
     }
     interface AppButtonRound {
+        "classes"?: string;
+        "label"?: string;
         "onPress"?: (event: CustomEvent<MouseEvent>) => void;
         "size"?: Size;
     }

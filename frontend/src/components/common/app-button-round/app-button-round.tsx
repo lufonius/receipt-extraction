@@ -10,7 +10,9 @@ export class AppButtonRound {
 
   @Event() press: EventEmitter<MouseEvent>;
   @Prop() size: Size = Size.xxl;
-  @State() classes: string = "btn-round xxl"
+  @Prop() classes: string = null;
+  @State() builtClasses: string = "button-round xxl"
+  @Prop() label: string = null;
 
   componentWillLoad() {
     this.buildClasses();
@@ -22,15 +24,16 @@ export class AppButtonRound {
   }
 
   private buildClasses() {
-    this.classes = "btn-round " + this.size.toString();
+    this.builtClasses = "button-round " + this.size.toString() + " " + this.classes;
   }
 
   render() {
     return (
       <Host>
-        <button class={this.classes} onClick={(e) => this.press.emit(e)}>
+        <button class={this.builtClasses} onClick={(e) => this.press.emit(e)}>
           <slot />
         </button>
+        {this.label && <span class={"label " + this.classes}>{ this.label }</span>}
       </Host>
     );
   }

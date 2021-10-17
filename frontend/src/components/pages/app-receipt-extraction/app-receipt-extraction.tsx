@@ -237,32 +237,26 @@ export class AppReceiptExtraction {
           onContainerShownAnimationEnd={({ detail: show }) => this.dropUpAnimationEnd = show}
         >
           {this.showEditItemsPanel && <div class="controls" slot="controls">
-            <app-button-round size={Size.xxl} onPress={() => this.endExtraction()}>
+            <app-button-round size={Size.xl} onPress={() => this.endExtraction()} classes="button-round--primary" label="done">
               <app-icon>{ MaterialIcons.DONE_ALL }</app-icon>
-              <span>done</span>
             </app-button-round>
             <div class="fill" />
-            <app-button-round size={Size.xxl} onPress={() => this.showDropup = !this.showDropup}>
+            <app-button-round size={Size.xl} onPress={() => this.showDropup = !this.showDropup} classes="button-round--primary" label="entries">
               <app-icon>{ MaterialIcons.VIEW_LIST }</app-icon>
-              <span>entries</span>
             </app-button-round>
           </div>}
 
           {this.showAddItemPanel && <div class="controls" slot="controls">
-            <app-button-round size={Size.xxl} onPress={() => this.hideAddItem(true)}>
+            <app-button-round size={Size.xl} onPress={() => this.hideAddItem(true)} classes="button-round--primary" label="close">
               <app-icon>{ MaterialIcons.CLOSE }</app-icon>
-              <span>close</span>
             </app-button-round>
             <div class="fill" />
-            {this.isTaxOrCategory() && <app-button-round size={Size.xxl} onPress={async () => { await this.saveAndNext(); }}>
+            {this.isTaxOrCategory() && <app-button-round size={Size.xl} onPress={async () => { await this.saveAndNext(); }} classes="button-round--primary" label="save & next">
               <app-icon>{ MaterialIcons.NEXT_PLAN }</app-icon>
-              <span>save and</span><br />
-              <span>next</span>
             </app-button-round>}
             <div class="spacer-xs" />
-            <app-button-round size={Size.xxl} onPress={async () => { await this.saveAndClose(); }}>
+            <app-button-round size={Size.xl} onPress={async () => { await this.saveAndClose(); }} classes="button-round--primary" label="save">
               <app-icon>{ MaterialIcons.DONE }</app-icon>
-              <span>save</span>
             </app-button-round>
           </div>}
 
