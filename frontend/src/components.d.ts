@@ -79,6 +79,7 @@ export namespace Components {
     interface ListItem {
         "amount": string;
         "category": Category;
+        "emptyLabel": string;
         "label": string;
     }
     interface ReceiptItemAdd {
@@ -356,6 +357,7 @@ declare namespace LocalJSX {
     interface ListItem {
         "amount"?: string;
         "category"?: Category;
+        "emptyLabel"?: string;
         "label"?: string;
     }
     interface ReceiptItemAdd {

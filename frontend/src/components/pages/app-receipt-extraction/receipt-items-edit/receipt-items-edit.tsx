@@ -33,8 +33,9 @@ export class ReceiptItemsEdit {
   render() {
     return (
       <Host>
-        <div class="divider">Total</div>
-        {this.total && <list-item label={`${this.total.label}`} amount={`${this.total.value}`}>
+
+        <app-divider />
+        {this.total && <list-item label={`${this.total.label}`} amount={`${this.total.value}`} emptyLabel="Select the total on the receipt">
           <div slot="controls">
             <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
               <app-icon>{MaterialIcons.EDIT}</app-icon>
@@ -45,8 +46,8 @@ export class ReceiptItemsEdit {
           </div>
         </list-item> }
 
-        <div class="divider">Date</div>
-        {this.date && <list-item label={`${this.date.label}`} amount={`${this.date.value}`}>
+        <app-divider />
+        {this.date && <list-item label={`${this.date.label}`} amount={`${this.date.value}`} emptyLabel="Select the date on the receipt">
           <div slot="controls">
             <app-button-round size={Size.l} onPress={() => this.update.emit(this.date)}>
               <app-icon>{MaterialIcons.EDIT}</app-icon>
@@ -57,6 +58,7 @@ export class ReceiptItemsEdit {
           </div>
         </list-item> }
 
+        <app-divider />
         <div class="divider">
           Taxes
           <div class="fill" />
@@ -77,6 +79,10 @@ export class ReceiptItemsEdit {
           )
         }
 
+        <div class="no-entries-container">
+          {this.taxes.length === 0 && <p class="no-entries-text">Select taxes on the receipt</p>}
+        </div>
+
         <div class="divider">
           Items
           <div class="fill" />
@@ -96,6 +102,10 @@ export class ReceiptItemsEdit {
             </list-item>
           )
         }
+
+        <div class="no-entries-container">
+          {this.categoryItems.length === 0 && <p class="no-entries-text">Select items on the receipt</p>}
+        </div>
       </Host>
     );
   }

@@ -21,4 +21,13 @@
   .margin-left-xs {
     margin-left: var(--size-xs);
   }
+
+  .no-entries-text {
+    font-size: var(--body-font-size);
+  }
+
+  .no-entries-container {
+    padding-left: var(--size-s);
+    padding-right: var(--size-s);
+  }
 }

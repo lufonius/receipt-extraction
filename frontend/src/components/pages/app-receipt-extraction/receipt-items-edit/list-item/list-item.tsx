@@ -10,6 +10,7 @@ export class ListItem {
 
   @Prop() label: string;
   @Prop() amount: string;
+  @Prop() emptyLabel: string = "Please select the values on the receipt";
   @Prop() category: Category;
 
   hasAnyValueSet() {
@@ -31,7 +32,7 @@ export class ListItem {
           </div>}
 
           {!this.hasAnyValueSet() && <div class="edit-item-label">
-            <span class="edit-item-label-novalue">Please select the values on the receipt</span>
+            <span class="edit-item-label-novalue">{ this.emptyLabel }</span>
           </div>}
           <div class="fill" />
           <div class="edit-item-controls">

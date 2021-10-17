@@ -9,9 +9,7 @@ export class AppDivider {
 
   render() {
     return (
-      <Host>
-        <slot></slot>
-      </Host>
+      <Host>< hr /></Host>
     );
   }
 

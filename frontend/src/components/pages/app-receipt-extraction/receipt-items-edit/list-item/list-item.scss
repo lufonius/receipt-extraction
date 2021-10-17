@@ -15,7 +15,8 @@
       justify-content: center;
 
       &-title {
-        font-size: var(--small-font-size);
+        font-size: var(--font-size-m);
+        font-family: var(--heading-font-family);
       }
 
       &-amount {
