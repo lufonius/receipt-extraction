@@ -24,6 +24,10 @@ export const config: Config = {
           dest: 'lib/qrcode.min.js'
         },
         {
+          src: '../node_modules/feather-icons/dist/feather-sprite.svg',
+          dest: 'lib/feather-sprite.svg'
+        },
+        {
           src: '../node_modules/qr-scanner/qr-scanner.umd.min.js',
           dest: 'lib/qr-scanner.umd.min.js'
         },

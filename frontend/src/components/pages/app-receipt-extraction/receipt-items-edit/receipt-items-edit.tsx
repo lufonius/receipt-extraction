@@ -1,5 +1,5 @@
 import {Component, Event, EventEmitter, h, Host, Prop, State} from '@stencil/core';
-import {MaterialIcons} from "../../../../global/material-icons-enum";
+import {Icons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
 import {Category, ReceiptItem, ReceiptItemType} from "../../../model/client";
 import {Inject} from "../../../../global/di/inject";
@@ -38,10 +38,10 @@ export class ReceiptItemsEdit {
         {this.total && <list-item label={`${this.total.label}`} amount={`${this.total.value}`} emptyLabel="Select the total on the receipt">
           <div slot="controls">
             <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
-              <app-icon>{MaterialIcons.EDIT}</app-icon>
+              <app-icon size={Size.sm} icon={Icons.EDIT} />
             </app-button-round>
             {this.total.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.total)}>
-              <app-icon>{MaterialIcons.DELETE}</app-icon>
+              <app-icon size={Size.sm} icon={Icons.DELETE} />
             </app-button-round>}
           </div>
         </list-item> }
@@ -50,10 +50,10 @@ export class ReceiptItemsEdit {
         {this.date && <list-item label={`${this.date.label}`} amount={`${this.date.value}`} emptyLabel="Select the date on the receipt">
           <div slot="controls">
             <app-button-round size={Size.l} onPress={() => this.update.emit(this.date)}>
-              <app-icon>{MaterialIcons.EDIT}</app-icon>
+              <app-icon size={Size.sm} icon={Icons.EDIT} />
             </app-button-round>
             {this.date.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.date)}>
-              <app-icon>{MaterialIcons.DELETE}</app-icon>
+              <app-icon size={Size.sm} icon={Icons.DELETE} />
             </app-button-round>}
           </div>
         </list-item> }
@@ -63,7 +63,7 @@ export class ReceiptItemsEdit {
           Taxes
           <div class="fill" />
           <app-button-round size={Size.l} onPress={() => this.add.emit(ReceiptItemType.Tax)}>
-            <app-icon>{MaterialIcons.ADD}</app-icon>
+            <app-icon size={Size.sm} icon={Icons.ADD} />
           </app-button-round>
         </div>
 
@@ -72,7 +72,7 @@ export class ReceiptItemsEdit {
             <list-item label={`${it.label}`} amount={`${it.value}`}>
               <div slot="controls">
                 <app-button-round size={Size.l} onPress={() => this.delete.emit(it)}>
-                  <app-icon>{MaterialIcons.DELETE}</app-icon>
+                  <app-icon size={Size.sm} icon={Icons.DELETE} />
                 </app-button-round>
               </div>
             </list-item>
@@ -87,7 +87,7 @@ export class ReceiptItemsEdit {
           Items
           <div class="fill" />
           <app-button-round size={Size.l} onPress={() => this.add.emit(ReceiptItemType.Category)}>
-            <app-icon>{MaterialIcons.ADD}</app-icon>
+            <app-icon size={Size.sm} icon={Icons.ADD} />
           </app-button-round>
         </div>
 
@@ -96,7 +96,7 @@ export class ReceiptItemsEdit {
             <list-item label={`${it.label}`} amount={`${it.value}`} category={this.categoriesById.get(it.categoryId)}>
               <div slot="controls">
                 <app-button-round size={Size.l} onPress={() => this.delete.emit(it)}>
-                  <app-icon>{MaterialIcons.DELETE}</app-icon>
+                  <app-icon size={Size.sm} icon={Icons.DELETE} />
                 </app-button-round>
               </div>
             </list-item>

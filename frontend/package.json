@@ -32,6 +32,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.168",
     "deepmerge": "^4.2.2",
+    "feather-icons": "^4.28.0",
     "flyd": "^0.2.8",
     "immer": "^8.0.0",
     "pixi-viewport": "^4.32.0",

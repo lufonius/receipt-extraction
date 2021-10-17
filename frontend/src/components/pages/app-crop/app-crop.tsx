@@ -3,7 +3,7 @@ import { RouterHistory } from '@stencil/router';
 import {Inject} from "../../../global/di/inject";
 import {CropCanvasFactory} from "./crop-canvas-factory";
 import {CropCanvas} from "./crop-canvas";
-import {MaterialIcons} from "../../../global/material-icons-enum";
+import {Icons} from "../../../global/material-icons-enum";
 import {InitReceiptService} from "./init-receipt.service";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";
@@ -135,7 +135,7 @@ export class AppCrop {
             id="rotateButton"
             onPress={() => this.rotate90DegClockwise()}
           >
-            <app-icon>{MaterialIcons.ROTATE_90_DEGREES_CCW}</app-icon>
+            <app-icon icon={Icons.ROTATE_90_DEGREES_CCW} />
             <span>rotate</span><br />
             <span>image</span>
           </app-button-round>
@@ -163,7 +163,7 @@ export class AppCrop {
               <p>Uploading image and extracting text</p>
             </div>}
             {!this.isUploading && <div>
-              <app-icon>{MaterialIcons.DONE}</app-icon>
+              <app-icon icon={Icons.DONE} />
               <p>Upload done!</p>
             </div>}
           </div>

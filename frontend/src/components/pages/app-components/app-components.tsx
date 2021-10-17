@@ -1,5 +1,5 @@
 import {Component, Host, h, State} from '@stencil/core';
-import {MaterialIcons} from "../../../global/material-icons-enum";
+import {Icons} from "../../../global/material-icons-enum";
 import {Size} from "../../common/size";
 
 @Component({
@@ -23,31 +23,33 @@ export class AppComponents {
   render() {
     return (
       <Host>
+        <app-icon icon="edit" />
+
         <app-button>Normal button</app-button><br />
         <app-button primary={true} onPress={() => this.showDialog()}>show dialog</app-button><br />
 
         <app-button-round size={Size.xs}>
-          <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
+          <app-icon icon={Icons.DONE_ALL} />
         </app-button-round>
 
         <app-button-round size={Size.s}>
-          <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
+          <app-icon icon={Icons.DONE_ALL} />
         </app-button-round>
 
         <app-button-round size={Size.m}>
-          <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
+          <app-icon icon={Icons.DONE_ALL} />
         </app-button-round>
 
         <app-button-round size={Size.l}>
-          <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
+          <app-icon icon={Icons.DONE_ALL} />
         </app-button-round>
 
         <app-button-round size={Size.xl}>
-          <app-icon>{MaterialIcons.DONE_ALL}</app-icon>
+          <app-icon icon={Icons.DONE_ALL} />
         </app-button-round>
 
         <app-button-round label="rotate image">
-          <app-icon>{MaterialIcons.ROTATE_90_DEGREES_CCW}</app-icon>
+          <app-icon icon={Icons.DONE_ALL} />
         </app-button-round>
 
         <br />

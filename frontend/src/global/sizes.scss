@@ -1,0 +1,71 @@
+@mixin sizes() {
+  &.xs {
+    min-height: var(--size-xs);
+    height: var(--size-xs);
+    max-height: var(--size-xs);
+
+    min-width: var(--size-xs);
+    width: var(--size-xs);
+    max-width: var(--size-xs);
+  }
+
+  &.s {
+    min-height: var(--size-s);
+    height: var(--size-s);
+    max-height: var(--size-s);
+
+    min-width: var(--size-s);
+    width: var(--size-s);
+    max-width: var(--size-s);
+  }
+
+  &.sm {
+    min-height: var(--size-sm);
+    height: var(--size-sm);
+    max-height: var(--size-sm);
+
+    min-width: var(--size-sm);
+    width: var(--size-sm);
+    max-width: var(--size-sm);
+  }
+
+  &.m {
+    min-height: var(--size-m);
+    height: var(--size-m);
+    max-height: var(--size-m);
+
+    min-width: var(--size-m);
+    width: var(--size-m);
+    max-width: var(--size-m);
+  }
+
+  &.l {
+    min-height: var(--size-l);
+    height: var(--size-l);
+    max-height: var(--size-l);
+
+    min-width: var(--size-l);
+    width: var(--size-l);
+    max-width: var(--size-l);
+  }
+
+  &.xl {
+    min-height: var(--size-xl);
+    height: var(--size-xl);
+    max-height: var(--size-xl);
+
+    min-width: var(--size-xl);
+    width: var(--size-xl);
+    max-width: var(--size-xl);
+  }
+
+  &.xxl {
+    min-height: var(--size-xxl);
+    height: var(--size-xxl);
+    max-height: var(--size-xxl);
+
+    min-width: var(--size-xxl);
+    width: var(--size-xxl);
+    max-width: var(--size-xxl);
+  }
+}

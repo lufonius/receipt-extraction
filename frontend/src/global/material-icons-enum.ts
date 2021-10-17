@@ -1,15 +1,19 @@
-export enum MaterialIcons {
+export enum Icons {
   ROTATE_90_DEGREES_CCW = "rotate_90_degrees_ccw",
   DONE_ALL = "done_all",
   EXPAND_LESS = "expand_less",
-  ADD = "add",
-  EDIT = "edit",
-  DELETE = "delete",
+  ADD = "plus",
+  EDIT = "edit-2",
+  DELETE = "trash",
   VIEW_LIST = "view_list",
-  CLOSE = "close",
+  CLOSE = "x",
   DONE = "done",
   NEXT_PLAN = "next_plan",
+  ARROW_RIGHT = "arrow-right",
   ARROW_RIGHT_ALT = "arrow_right_alt",
   KEYBOARD = "keyboard",
-  KEYBOARD_HIDE = "keyboard_hide"
+  KEYBOARD_HIDE = "keyboard_hide",
+  CHEVRONS_DOWN = "chevrons-down",
+  CHECK_CIRCLE = "check-circle",
+  SAVE = "save"
 }

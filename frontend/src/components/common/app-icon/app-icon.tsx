@@ -7,7 +7,14 @@ import {Size} from "../size";
   shadow: true,
 })
 export class AppIcon {
+  @Prop() icon: string;
+  @Prop() size: Size;
+
   render() {
-    return (<Host><i class="material-icons"><slot /></i></Host>);
+    return (<Host>
+      <svg class={"feather " + this.size}>
+        <use href={"lib/feather-sprite.svg#" + this.icon } />
+      </svg>
+    </Host>);
   }
 }

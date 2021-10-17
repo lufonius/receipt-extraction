@@ -1,6 +1,6 @@
 import {Component, Event, EventEmitter, h, Host, Method, Prop, State} from '@stencil/core';
 import {Category, Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
-import {MaterialIcons} from "../../../../global/material-icons-enum";
+import {Icons} from "../../../../global/material-icons-enum";
 import {Size} from "../../../common/size";
 import {cloneDeep} from "../../../model/cloneDeep";
 import {dateValidator, numberValidator, requiredValidator} from "../../../common/validator";
@@ -94,14 +94,14 @@ export class ReceiptItemAdd {
           <div class="fill" />
 
          <app-button-round size={Size.l} onPress={() => this.selectCategoryDialog.show()}>
-            <app-icon>{ MaterialIcons.EDIT }</app-icon>
+            <app-icon size={Size.sm} icon={Icons.EDIT} />
           </app-button-round>
 
           {this.categoryOfReceiptItem && <app-button-round
             size={Size.l}
             class="delete-button"
             onPress={() => this.unassignCurrentCategory()}>
-            <app-icon>{ MaterialIcons.DELETE }</app-icon>
+            <app-icon size={Size.sm} icon={Icons.DELETE} />
           </app-button-round>}
         </div>}
 
@@ -126,17 +126,17 @@ export class ReceiptItemAdd {
             size={Size.l}
             onPress={() => this.valueInputShowKeyboard = false}
           >
-            <app-icon>{MaterialIcons.KEYBOARD_HIDE}</app-icon>
+            <app-icon size={Size.sm} icon={Icons.KEYBOARD_HIDE} />
           </app-button-round>}
           {!this.valueInputShowKeyboard && <app-button-round
             class="margin-left-s"
             size={Size.l}
             onPress={() => this.valueInputShowKeyboard = true}
           >
-            <app-icon>{MaterialIcons.KEYBOARD}</app-icon>
+            <app-icon icon={Icons.KEYBOARD} />
           </app-button-round>}
           <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setLabel("", null)}>
-            <app-icon>{ MaterialIcons.DELETE }</app-icon>
+            <app-icon size={Size.sm} icon={Icons.DELETE} />
           </app-button-round>
         </div>
         <div class="input">
@@ -160,17 +160,17 @@ export class ReceiptItemAdd {
             size={Size.l}
             onPress={() => this.labelInputShowKeyboard = false}
           >
-            <app-icon>{MaterialIcons.KEYBOARD_HIDE}</app-icon>
+            <app-icon size={Size.sm} icon={Icons.KEYBOARD_HIDE} />
           </app-button-round>}
           {!this.labelInputShowKeyboard && <app-button-round
             class="margin-left-s"
             size={Size.l}
             onPress={() => this.labelInputShowKeyboard = true}
           >
-            <app-icon>{MaterialIcons.KEYBOARD}</app-icon>
+            <app-icon size={Size.sm} icon={Icons.KEYBOARD} />
           </app-button-round>}
           <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setValue("", null)}>
-            <app-icon>{ MaterialIcons.DELETE }</app-icon>
+            <app-icon size={Size.sm} icon={Icons.DELETE} />
           </app-button-round>
         </div>
         {this.receiptItem && <select-category-dialog
@@ -181,5 +181,4 @@ export class ReceiptItemAdd {
       </Host>
     );
   }
-
 }

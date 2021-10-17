@@ -1,3 +1,5 @@
+@import "../../../global/sizes";
+
 :host {
   display: flex;
   flex-direction: column;
@@ -20,35 +22,7 @@
       transform: scale(1.05);
     }
 
-    &.xs {
-      min-height: var(--size-xs);
-      min-width: var(--size-xs);
-    }
-
-    &.s {
-      min-height: var(--size-s);
-      min-width: var(--size-s);
-    }
-
-    &.m {
-      min-height: var(--size-m);
-      min-width: var(--size-m);
-    }
-
-    &.l {
-      min-height: var(--size-l);
-      min-width: var(--size-l);
-    }
-
-    &.xl {
-      min-height: var(--size-xl);
-      min-width: var(--size-xl);
-    }
-
-    &.xxl {
-      min-height: var(--size-xxl);
-      min-width: var(--size-xxl);
-    }
+    @include sizes();
 
     &--primary {
       border-color: var(--primary);
