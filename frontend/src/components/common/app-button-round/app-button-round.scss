@@ -67,6 +67,7 @@
     color: var(--foreground);
     background: none;
     margin-top: var(--size-xs);
+    font-weight: var(--font-weight-bold);
 
     &.button-round--primary, &.button-round--primary-outline {
       color: var(--primary);

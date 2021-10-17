@@ -2,9 +2,11 @@
   .divider {
     display: flex;
     align-items: center;
-    background-color: var(--primary);
-    color: var(--background);
-    font-size: var(--body-font-size);
+    background-color: var(--background-dark);
+    color: var(--foreground);
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-m);
     padding: var(--size-s);
   }
 
