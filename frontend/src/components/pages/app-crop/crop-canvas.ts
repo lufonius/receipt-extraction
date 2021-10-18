@@ -59,7 +59,19 @@ export class CropCanvas {
     });
   }
 
-  async drawImageAndDetectedRectangle(imageBlob: File) {
+  async detectRectangle() {
+    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(this.imageData, this.imageData.width, this.imageData.height, 0);
+
+    // we have to adjust the rectangle to the drawing on the canvas.
+    const points = detectedRectangle.rect.corners.map((corner) => ({
+      x: (corner.x * this.imageScaleRatio) + this.imageMarginXY.x,
+      y: (corner.y * this.imageScaleRatio) + this.imageMarginXY.y
+    }));
+
+    this.rectangle = new DragableRectangle(this.stage, points, this.primaryColor);
+  }
+
+  async fitAndDrawImageBlob(imageBlob: File) {
     const imageBitmap = await createImageBitmap(imageBlob);
     this.imageData = this.convertBitmapToImageData(imageBitmap);
 
@@ -71,17 +83,6 @@ export class CropCanvas {
 
     await this.fitOnScreen();
     this.drawImage();
-
-    const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(this.imageData, this.imageData.width, this.imageData.height, 0);
-
-    // we have to adjust the rectangle to the drawing on the canvas.
-
-    const points = detectedRectangle.rect.corners.map((corner) => ({
-      x: (corner.x * this.imageScaleRatio) + this.imageMarginXY.x,
-      y: (corner.y * this.imageScaleRatio) + this.imageMarginXY.y
-    }));
-
-    this.rectangle = new DragableRectangle(this.stage, points, this.primaryColor);
   }
 
   private determineOrientation(width: number, height: number): Orientation {

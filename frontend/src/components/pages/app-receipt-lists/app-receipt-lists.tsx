@@ -113,7 +113,7 @@ export class AppReceiptLists {
             </div>
           </div>
 
-        <app-navbar activeUrl="/" />
+        <app-navbar activeUrl="/" history={this.history} />
       </Host>
     );
   }

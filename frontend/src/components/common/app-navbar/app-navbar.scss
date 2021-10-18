@@ -21,7 +21,7 @@
       color: var(--primary)!important;
     }
 
-    .navbar-item a {
+    .navbar-item a, a {
       display: flex;
       flex-direction: column;
       align-items: center;

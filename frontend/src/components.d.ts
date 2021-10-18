@@ -60,6 +60,7 @@ export namespace Components {
     }
     interface AppNavbar {
         "activeUrl": string;
+        "history": RouterHistory;
     }
     interface AppProfile {
         "match": MatchResults;
@@ -340,6 +341,7 @@ declare namespace LocalJSX {
     }
     interface AppNavbar {
         "activeUrl"?: string;
+        "history"?: RouterHistory;
     }
     interface AppProfile {
         "match"?: MatchResults;

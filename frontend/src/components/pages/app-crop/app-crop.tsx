@@ -44,6 +44,15 @@ export class AppCrop {
 
   private currentReceipt: Receipt;
 
+  async componentDidLoad() {
+    if (this.history.location.state.image instanceof File) {
+      const file: File = this.history.location.state.image;
+      await this.drawImage(file);
+    } else {
+      this.history.push('/');
+    }
+  }
+
   private async setupCanvas() {
     this.cropCanvas = await this.cropCanvasFactory.createCanvas({
       width: innerWidth - this.canvasMarginX * 2,
@@ -74,7 +83,18 @@ export class AppCrop {
     const file: File = this.photoInput.files[0];
 
     if (!!file) {
-      await this.cropCanvas.drawImageAndDetectedRectangle(file);
+      await this.cropCanvas.fitAndDrawImageBlob(file);
+
+      this.alreadyTookPhotograph = true;
+      this.cropShown = true;
+    }
+  }
+
+  async drawImage(file: File) {
+    await this.setupCanvas();
+
+    if (!!file) {
+      await this.cropCanvas.fitAndDrawImageBlob(file);
 
       this.alreadyTookPhotograph = true;
       this.cropShown = true;
