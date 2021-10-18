@@ -37,8 +37,6 @@ export namespace Components {
     }
     interface AppDivider {
     }
-    interface AppHome {
-    }
     interface AppIcon {
         "icon": string;
         "size": Size;
@@ -149,12 +147,6 @@ declare global {
     var HTMLAppDividerElement: {
         prototype: HTMLAppDividerElement;
         new (): HTMLAppDividerElement;
-    };
-    interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
-    }
-    var HTMLAppHomeElement: {
-        prototype: HTMLAppHomeElement;
-        new (): HTMLAppHomeElement;
     };
     interface HTMLAppIconElement extends Components.AppIcon, HTMLStencilElement {
     }
@@ -272,7 +264,6 @@ declare global {
         "app-crop": HTMLAppCropElement;
         "app-dialog": HTMLAppDialogElement;
         "app-divider": HTMLAppDividerElement;
-        "app-home": HTMLAppHomeElement;
         "app-icon": HTMLAppIconElement;
         "app-input": HTMLAppInputElement;
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
@@ -321,8 +312,6 @@ declare namespace LocalJSX {
         "manuallyClosable"?: boolean;
     }
     interface AppDivider {
-    }
-    interface AppHome {
     }
     interface AppIcon {
         "icon"?: string;
@@ -409,7 +398,6 @@ declare namespace LocalJSX {
         "app-crop": AppCrop;
         "app-dialog": AppDialog;
         "app-divider": AppDivider;
-        "app-home": AppHome;
         "app-icon": AppIcon;
         "app-input": AppInput;
         "app-layout-vertical-split": AppLayoutVerticalSplit;
@@ -441,7 +429,6 @@ declare module "@stencil/core" {
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;
             "app-divider": LocalJSX.AppDivider & JSXBase.HTMLAttributes<HTMLAppDividerElement>;
-            "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
             "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
