@@ -1,5 +1,5 @@
 export enum Icons {
-  ROTATE_90_DEGREES_CCW = "rotate_90_degrees_ccw",
+  ROTATE_CCW = "rotate-ccw",
   DONE_ALL = "done_all",
   EXPAND_LESS = "expand_less",
   ADD = "plus",

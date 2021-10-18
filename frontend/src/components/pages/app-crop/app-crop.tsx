@@ -133,11 +133,11 @@ export class AppCrop {
         {this.rotateShown &&
           <app-button-round
             id="rotateButton"
+            label="rotate image"
+            classes="button-round--primary"
             onPress={() => this.rotate90DegClockwise()}
           >
-            <app-icon icon={Icons.ROTATE_90_DEGREES_CCW} />
-            <span>rotate</span><br />
-            <span>image</span>
+            <app-icon icon={Icons.ROTATE_CCW} />
           </app-button-round>
         }
 
