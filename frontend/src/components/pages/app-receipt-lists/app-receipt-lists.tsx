@@ -85,6 +85,7 @@ export class AppReceiptLists {
                   <h4>Receipts uploaded</h4>
                   <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Uploaded)} primary>
                     crop receipts
+                    <div class="button-space" />
                     <app-icon icon={Icons.ARROW_RIGHT} />
                   </app-button>
                 </div>
@@ -94,6 +95,7 @@ export class AppReceiptLists {
                   <h4>Receipts ready for extraction</h4>
                   <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Open)} primary>
                     Start extraction
+                    <div class="button-space" />
                     <app-icon icon={Icons.ARROW_RIGHT} />
                   </app-button>
                 </div>
@@ -103,6 +105,7 @@ export class AppReceiptLists {
                   <h4>Receipts in progress</h4>
                   <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.InProgress)} primary>
                     Continue extraction
+                    <div class="button-space" />
                     <app-icon icon={Icons.ARROW_RIGHT} />
                   </app-button>
                 </div>
