@@ -19,6 +19,8 @@ data:
       gzip_comp_level 9;
       etag on;
 
+      client_max_body_size 60M;
+
       location / {
         try_files $uri $uri/ /index.html;
       }
