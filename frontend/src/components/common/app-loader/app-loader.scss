@@ -1,27 +1,46 @@
 :host {
   display: inline-block;
-  --loader-width: var(--size-s);
-  --loader-animation-width: 5rem;
 
-  .loader-wrapper {
-    --loader-animation-needed-space: calc(var(--loader-width) + var(--loader-animation-width));
-    width: var(--loader-animation-needed-space);
+  .loader,
+  .loader:after {
+    border-radius: 50%;
+    width: var(--size-xxl);
+    height: var(--size-xxl);
+  }
 
-    .loader {
-      width: var(--loader-width);
-      height: var(--loader-width);
-      background-color: var(--primary);
-
-      animation-name: bounce;
-      animation-timing-function: cubic-bezier(0.56, 0.06, 0.05, 0.95);
-      animation-duration: 1s;
-      animation-iteration-count: infinite;
+  .loader {
+    margin: 60px auto;
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: var(--size-xs) solid var(--background-dark);
+    border-right: var(--size-xs) solid var(--background-dark);
+    border-bottom: var(--size-xs) solid var(--background-dark);
+    border-left: var(--size-xs) solid var(--primary);
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 1.1s infinite linear;
+    animation: load8 1.1s infinite linear;
+  }
+  @-webkit-keyframes load8 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
     }
-
-    @keyframes bounce {
-      from, 0% { transform: translateX(0rem); }
-      50% { transform: translateX(var(--loader-animation-width)); }
-      100%, to { transform: translateX(0rem); }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes load8 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 }

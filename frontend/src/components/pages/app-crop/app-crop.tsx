@@ -37,7 +37,7 @@ export class AppCrop {
   @State() hasActiveImage: boolean = false;
   @State() alreadyTookPhotograph: boolean = false;
   @State() dialog: HTMLAppDialogElement;
-  @State() isUploading: boolean = false;
+  @State() isUploading: boolean = true;
 
   private currentReceipt: Receipt;
 
@@ -190,19 +190,21 @@ export class AppCrop {
         <input style={({ display: "none" })} type="file" accept="image/*" capture="camera" onChange={() => this.retryTakingImage()} ref={(el) => this.photoInput = el} />
 
         <app-dialog ref={(el) => this.dialog = el} manuallyClosable={false}>
-          <div class="dialog-body">
-            {this.isUploading && <div>
-              <app-loader />
-              <p>Uploading image and extracting text</p>
-            </div>}
-            {!this.isUploading && <div>
-              <app-icon icon={Icons.DONE} />
-              <p>Upload done!</p>
-            </div>}
-          </div>
-          <div class="dialog-footer">
-            <app-button primary fullWidth onPress={() => this.takeNextImage()}>Meanwhile, upload next</app-button>
-            <app-button primary fullWidth disabled={this.isUploading} onPress={() => this.startExtraction()}>Extract values</app-button>
+          <div class="dialog">
+            <div class="dialog-header">
+              <h4>Uploading image</h4>
+            </div>
+            <app-divider />
+            <div class="dialog-body">
+              {this.isUploading && <app-loader />}
+              {!this.isUploading && <h4>Upload succeeded</h4>}
+            </div>
+            <app-divider />
+            <div class="dialog-footer">
+              <app-button onPress={() => this.takeNextImage()}>Upload next</app-button>
+              <div class="grow" />
+              <app-button primary disabled={this.isUploading} onPress={() => this.startExtraction()}>Extract infos</app-button>
+            </div>
           </div>
         </app-dialog>
       </div>

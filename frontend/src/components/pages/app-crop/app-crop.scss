@@ -1,3 +1,7 @@
+@import '../../common/typography';
+
+@include typography();
+
 .grow {
   flex-grow: 1;
 }
@@ -40,20 +44,34 @@
   }
 }
 
-.dialog-body > div {
+.dialog {
+  background: var(--background);
+  border-radius: 19px;
+}
+
+.dialog-header {
+  padding: var(--size-s);
+  h4 { margin: var(--size-s); }
+}
+
+.dialog-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  padding: var(--size-m);
+  min-height: 15rem;
+
+  border-radius: 1.9rem;
+
+  padding: var(--size-s);
 }
 
 .dialog-footer {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  padding: var(--size-s);
 
-  app-button {
-    flex: 1 1 0;
-  }
+  app-button { flex: 1; }
 }

@@ -56,7 +56,8 @@
   }
 
   &[disabled] {
-    filter: brightness(0.3);
+    background: #A7A7A7;
+    color: #676767;
     cursor: initial;
 
     &:active {
