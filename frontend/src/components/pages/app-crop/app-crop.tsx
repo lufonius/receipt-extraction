@@ -73,7 +73,7 @@ export class AppCrop {
     this.rotateShown = true;
   }
 
-  async drawImageAndDetectedRectangle() {
+  async retryTakingImage() {
     if (this.alreadyTookPhotograph) {
       this.cropCanvas.destroy();
     }
@@ -174,7 +174,7 @@ export class AppCrop {
           {this.cropShown && <app-button onPress={() => this.cropByDragableRectangle()} primary>Crop</app-button>}
           {this.uploadShown && <app-button onPress={() => this.initReceiptAndShowDialog()} primary>Upload</app-button>}
         </div>
-        <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.drawImageAndDetectedRectangle()} ref={(el) => this.photoInput = el} />
+        <input style={({ display: "none" })} type="file" accept="image/*" capture="camera" onChange={() => this.retryTakingImage()} ref={(el) => this.photoInput = el} />
 
         <app-dialog ref={(el) => this.dialog = el} manuallyClosable={false}>
           <div class="dialog-body">
