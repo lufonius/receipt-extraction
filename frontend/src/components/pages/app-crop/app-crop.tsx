@@ -27,17 +27,14 @@ export class AppCrop {
   @Prop() history: RouterHistory;
 
   photoInput: HTMLInputElement;
-  controlsHeight: number = 50;
+  controlsHeight: number = 60;
   magnifiedCanvas: HTMLDivElement;
   canvas: HTMLDivElement;
   canvasMarginX: number = 10;
 
   private cropCanvas: CropCanvas;
 
-  @State() takePhotoShown: boolean = true;
-  @State() cropShown: boolean = true;
-  @State() rotateShown: boolean = false;
-  @State() uploadShown: boolean = false;
+  @State() hasActiveImage: boolean = false;
   @State() alreadyTookPhotograph: boolean = false;
   @State() dialog: HTMLAppDialogElement;
   @State() isUploading: boolean = false;
@@ -48,8 +45,42 @@ export class AppCrop {
     if (this.history.location.state.image instanceof File) {
       const file: File = this.history.location.state.image;
       await this.drawImage(file);
+      this.hasActiveImage = true;
     } else {
       this.history.push('/');
+    }
+  }
+
+  private async drawImage(file: File) {
+    await this.setupCanvas();
+
+    if (!!file) {
+      await this.cropCanvas.fitAndDrawImageBlob(file);
+    }
+  }
+
+  async rotate90DegClockwise() {
+    await this.cropCanvas.rotate90DegClockwise();
+  }
+
+  async cropByDragableRectangle() {
+    await this.cropCanvas.cropByDragableRectangle();
+  }
+
+  async retryTakingImage() {
+    if (this.photoInput.files.length > 0) {
+      if (this.hasActiveImage) {
+        this.cropCanvas.destroy();
+      }
+
+      await this.setupCanvas();
+
+      const file: File = this.photoInput.files[0];
+
+      if (!!file) {
+        await this.cropCanvas.fitAndDrawImageBlob(file);
+        this.hasActiveImage = true;
+      }
     }
   }
 
@@ -62,45 +93,7 @@ export class AppCrop {
     });
   }
 
-  async rotate90DegClockwise() {
-    await this.cropCanvas.rotate90DegClockwise();
-  }
-
-  async cropByDragableRectangle() {
-    await this.cropCanvas.cropByDragableRectangle();
-    this.cropShown = false;
-    this.uploadShown = true;
-    this.rotateShown = true;
-  }
-
-  async retryTakingImage() {
-    if (this.alreadyTookPhotograph) {
-      this.cropCanvas.destroy();
-    }
-
-    await this.setupCanvas();
-
-    const file: File = this.photoInput.files[0];
-
-    if (!!file) {
-      await this.cropCanvas.fitAndDrawImageBlob(file);
-
-      this.alreadyTookPhotograph = true;
-      this.cropShown = true;
-    }
-  }
-
-  async drawImage(file: File) {
-    await this.setupCanvas();
-
-    if (!!file) {
-      await this.cropCanvas.fitAndDrawImageBlob(file);
-
-      this.alreadyTookPhotograph = true;
-      this.cropShown = true;
-    }
-  }
-
+  // TODO: add another upload only, and make initing the receipt a separate step
   async initReceiptAndShowDialog() {
     this.dialog.isVisible(true);
     try {
@@ -120,17 +113,28 @@ export class AppCrop {
     }
   }
 
-  async reset() {
+  async takeNextImage() {
     this.cropCanvas.destroy();
     await this.dialog.isVisible(false);
 
-    this.takePhotoShown = true;
-    this.cropShown = true;
-    this.alreadyTookPhotograph = false;
-    this.rotateShown = false;
-    this.uploadShown = false;
+    this.hasActiveImage = false;
     this.isUploading = false;
+
+    this.photoInput.click();
   }
+
+  /*
+  * {this.rotateShown &&
+          <app-button-round
+            id="rotateButton"
+            label="rotate image"
+            classes="button-round--primary"
+            onPress={() => this.rotate90DegClockwise()}
+          >
+            <app-icon icon={Icons.ROTATE_CCW} />
+          </app-button-round>
+        }
+  * */
 
   async startExtraction() {
     try {
@@ -150,30 +154,18 @@ export class AppCrop {
           ref={(el) => this.canvas = el}
         />
 
-        {this.rotateShown &&
-          <app-button-round
-            id="rotateButton"
-            label="rotate image"
-            classes="button-round--primary"
-            onPress={() => this.rotate90DegClockwise()}
-          >
-            <app-icon icon={Icons.ROTATE_CCW} />
-          </app-button-round>
-        }
-
-        <div
-          style={({ height: `${this.controlsHeight}px` })}
-          class="controls"
-        >
-          {this.takePhotoShown && <app-button onPress={() => this.photoInput.click()} primary>
-            { this.alreadyTookPhotograph ? "Retry" : "Take photo" }
-          </app-button> }
 
 
+        {this.hasActiveImage && <div style={({ height: `${this.controlsHeight}px` })} class="controls">
+          <app-button onPress={() => this.photoInput.click()}>Retry</app-button>
           <div class="grow" />
-          {this.cropShown && <app-button onPress={() => this.cropByDragableRectangle()} primary>Crop</app-button>}
-          {this.uploadShown && <app-button onPress={() => this.initReceiptAndShowDialog()} primary>Upload</app-button>}
-        </div>
+          <app-button onPress={() => this.initReceiptAndShowDialog()} primary>Upload</app-button>
+        </div>}
+
+        {!this.hasActiveImage && <div style={({ height: `${this.controlsHeight}px` })} class="controls">
+          <app-button onPress={() => this.photoInput.click()}>Take photo</app-button>
+        </div>}
+
         <input style={({ display: "none" })} type="file" accept="image/*" capture="camera" onChange={() => this.retryTakingImage()} ref={(el) => this.photoInput = el} />
 
         <app-dialog ref={(el) => this.dialog = el} manuallyClosable={false}>
@@ -188,7 +180,7 @@ export class AppCrop {
             </div>}
           </div>
           <div class="dialog-footer">
-            <app-button primary fullWidth onPress={() => this.reset()}>Meanwhile, upload next</app-button>
+            <app-button primary fullWidth onPress={() => this.takeNextImage()}>Meanwhile, upload next</app-button>
             <app-button primary fullWidth disabled={this.isUploading} onPress={() => this.startExtraction()}>Extract values</app-button>
           </div>
         </app-dialog>

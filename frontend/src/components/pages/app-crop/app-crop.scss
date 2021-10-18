@@ -16,6 +16,9 @@
 .controls {
   display: flex;
   align-items: center;
+  background-color: var(--background-dark);
+  padding-left: var(--size-s);
+  padding-right: var(--size-s);
 }
 
 .background {

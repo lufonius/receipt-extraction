@@ -14,12 +14,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--background-light);
   text-align: center;
   color: var(--foreground);
   border: none;
   border-radius: 2px;
   font-size: var(--font-size);
+  background: none;
   // if set to normal (default), we have a box around the letter, which itself can have some padding.
   // because we want to have full control of the size of the button, the line height is the same as the font-size.
   line-height: var(--font-size);
@@ -27,7 +27,7 @@
   transition: all 0.05s ease;
   cursor: pointer;
   font-family: var(--heading-font-family);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-bold);
 
   white-space: nowrap;
 
