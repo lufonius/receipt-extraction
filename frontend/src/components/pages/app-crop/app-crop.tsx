@@ -3,7 +3,7 @@ import { RouterHistory } from '@stencil/router';
 import {Inject} from "../../../global/di/inject";
 import {CropCanvasFactory} from "./crop-canvas-factory";
 import {CropCanvas} from "./crop-canvas";
-import {Icons} from "../../../global/material-icons-enum";
+import {Icons} from "../../../global/icons-enum";
 import {InitReceiptService} from "./init-receipt.service";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";

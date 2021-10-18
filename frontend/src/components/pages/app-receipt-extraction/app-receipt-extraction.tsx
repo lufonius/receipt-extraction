@@ -5,7 +5,7 @@ import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../../model
 import flyd from 'flyd';
 import {ReceiptItemService} from "./receipt-item.service";
 import {Size} from "../../common/size";
-import {Icons} from "../../../global/material-icons-enum";
+import {Icons} from "../../../global/icons-enum";
 import {waitFor} from "../../../global/waitFor";
 import {Mapper} from "../../model/mapper";
 import {cloneDeep} from "../../model/cloneDeep";

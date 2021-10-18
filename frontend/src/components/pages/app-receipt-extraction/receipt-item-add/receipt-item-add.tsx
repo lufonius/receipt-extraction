@@ -1,6 +1,6 @@
 import {Component, Event, EventEmitter, h, Host, Method, Prop, State} from '@stencil/core';
 import {Category, Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
-import {Icons} from "../../../../global/material-icons-enum";
+import {Icons} from "../../../../global/icons-enum";
 import {Size} from "../../../common/size";
 import {cloneDeep} from "../../../model/cloneDeep";
 import {dateValidator, numberValidator, requiredValidator} from "../../../common/validator";

@@ -1,6 +1,6 @@
 import {Component, Host, h, Prop, State, Watch, Event, EventEmitter} from '@stencil/core';
 import {Size} from "../../../common/size";
-import {Icons} from "../../../../global/material-icons-enum";
+import {Icons} from "../../../../global/icons-enum";
 import {ReceiptItemType} from "../../../model/client";
 
 @Component({

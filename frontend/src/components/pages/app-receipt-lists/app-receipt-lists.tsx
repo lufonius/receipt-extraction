@@ -7,7 +7,7 @@ import {Mapper} from "../../model/mapper";
 import {RouterHistory} from "@stencil/router";
 import {CategoryService} from "../category.service";
 import {ReceiptService} from "../receipt.service";
-import {Icons} from "../../../global/material-icons-enum";
+import {Icons} from "../../../global/icons-enum";
 
 @Component({
   tag: 'app-receipt-lists',

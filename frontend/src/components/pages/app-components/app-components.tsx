@@ -1,5 +1,5 @@
 import {Component, Host, h, State} from '@stencil/core';
-import {Icons} from "../../../global/material-icons-enum";
+import {Icons} from "../../../global/icons-enum";
 import {Size} from "../../common/size";
 
 @Component({
