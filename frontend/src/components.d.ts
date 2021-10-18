@@ -60,6 +60,9 @@ export namespace Components {
     }
     interface AppLogo {
     }
+    interface AppNavbar {
+        "activeUrl": string;
+    }
     interface AppProfile {
         "match": MatchResults;
     }
@@ -183,6 +186,12 @@ declare global {
         prototype: HTMLAppLogoElement;
         new (): HTMLAppLogoElement;
     };
+    interface HTMLAppNavbarElement extends Components.AppNavbar, HTMLStencilElement {
+    }
+    var HTMLAppNavbarElement: {
+        prototype: HTMLAppNavbarElement;
+        new (): HTMLAppNavbarElement;
+    };
     interface HTMLAppProfileElement extends Components.AppProfile, HTMLStencilElement {
     }
     var HTMLAppProfileElement: {
@@ -269,6 +278,7 @@ declare global {
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
         "app-loader": HTMLAppLoaderElement;
         "app-logo": HTMLAppLogoElement;
+        "app-navbar": HTMLAppNavbarElement;
         "app-profile": HTMLAppProfileElement;
         "app-qr-generation": HTMLAppQrGenerationElement;
         "app-qr-scan": HTMLAppQrScanElement;
@@ -339,6 +349,9 @@ declare namespace LocalJSX {
     }
     interface AppLogo {
     }
+    interface AppNavbar {
+        "activeUrl"?: string;
+    }
     interface AppProfile {
         "match"?: MatchResults;
     }
@@ -402,6 +415,7 @@ declare namespace LocalJSX {
         "app-layout-vertical-split": AppLayoutVerticalSplit;
         "app-loader": AppLoader;
         "app-logo": AppLogo;
+        "app-navbar": AppNavbar;
         "app-profile": AppProfile;
         "app-qr-generation": AppQrGeneration;
         "app-qr-scan": AppQrScan;
@@ -433,6 +447,7 @@ declare module "@stencil/core" {
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
             "app-loader": LocalJSX.AppLoader & JSXBase.HTMLAttributes<HTMLAppLoaderElement>;
             "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
+            "app-navbar": LocalJSX.AppNavbar & JSXBase.HTMLAttributes<HTMLAppNavbarElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-qr-generation": LocalJSX.AppQrGeneration & JSXBase.HTMLAttributes<HTMLAppQrGenerationElement>;
             "app-qr-scan": LocalJSX.AppQrScan & JSXBase.HTMLAttributes<HTMLAppQrScanElement>;

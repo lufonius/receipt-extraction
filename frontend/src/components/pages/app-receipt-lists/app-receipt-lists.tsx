@@ -71,19 +71,21 @@ export class AppReceiptLists {
   render() {
     return (
       <Host>
-        {this.receiptListHasBeenLoaded && <div>
-        <span>you have {this.countReceipts(ReceiptStatusDto.Uploaded)} receipts uploaded</span>
-          <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Uploaded)} primary>Continue editing</app-button>
-          <br />
+          {this.receiptListHasBeenLoaded && <div>
+          <span>you have {this.countReceipts(ReceiptStatusDto.Uploaded)} receipts uploaded</span>
+            <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Uploaded)} primary>Continue editing</app-button>
+            <br />
 
-          <span>you have {this.countReceipts(ReceiptStatusDto.Open)} receipts open</span>
-          <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Open)} primary>Continue editing</app-button>
-          <br />
+            <span>you have {this.countReceipts(ReceiptStatusDto.Open)} receipts open</span>
+            <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Open)} primary>Continue editing</app-button>
+            <br />
 
-          <span>you have {this.countReceipts(ReceiptStatusDto.InProgress)} receipts in progress</span>
-          <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.InProgress)} primary>Continue editing</app-button>
-          <br />
-        </div> }
+            <span>you have {this.countReceipts(ReceiptStatusDto.InProgress)} receipts in progress</span>
+            <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.InProgress)} primary>Continue editing</app-button>
+            <br />
+          </div>}
+
+        <app-navbar activeUrl="/" />
       </Host>
     );
   }

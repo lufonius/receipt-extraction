@@ -28,14 +28,13 @@ export class AppRoot {
         <main>
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
-              <stencil-route url="/" component="app-home" exact={true} />
+              <stencil-route url="/" component="app-receipt-lists" exact={true} />
               <stencil-route url="/profile/:name" component="app-profile" />
               <stencil-route url="/crop" component="app-crop" />
               <stencil-route url="/qr-generation" component="app-qr-generation" />
               <stencil-route url="/qr-scan" component="app-qr-scan" />
               <stencil-route url="/receipt-extraction" component="app-receipt-extraction" />
               <stencil-route url="/components" component="app-components" />
-              <stencil-route url="/list-receipts" component="app-receipt-lists" />
             </stencil-route-switch>
           </stencil-router>
         </main>

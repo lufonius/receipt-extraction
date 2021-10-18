@@ -1,0 +1,47 @@
+:host {
+  display: block;
+
+  .fill {
+    flex: 1;
+  }
+
+  .navbar {
+    position: fixed;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    width: 100%;
+
+    background: var(--background-dark);
+
+    .active a {
+      color: var(--primary)!important;
+    }
+
+    .navbar-item a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      padding: var(--size-s);
+      cursor: pointer;
+
+      color: var(--foreground);
+      text-decoration: none;
+
+      span {
+        font-family: var(--heading-font-family);
+        font-size: var(--body-font-size);
+        font-weight: var(--font-weight-semi-bold);
+        text-transform: uppercase;
+      }
+
+      &:hover {
+        color: var(--primary);
+      }
+    }
+  }
+}
