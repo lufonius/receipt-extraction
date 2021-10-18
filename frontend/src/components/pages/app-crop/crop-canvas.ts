@@ -19,7 +19,8 @@ export class CropCanvas {
   private image: Image;
   private rectangle: DragableRectangle;
 
-  private imageData: ImageData;  private imageMarginXY: { x: number, y: number };
+  private imageData: ImageData;
+  private imageMarginXY: { x: number, y: number };
   private imageScaleRatio: number;
 
   constructor(
@@ -60,6 +61,10 @@ export class CropCanvas {
   }
 
   async detectRectangle() {
+    if (this.rectangle) {
+      this.rectangle.clear();
+    }
+
     const detectedRectangle = await this.openCvService.detectRectangleAroundDocument(this.imageData, this.imageData.width, this.imageData.height, 0);
 
     // we have to adjust the rectangle to the drawing on the canvas.
@@ -71,9 +76,37 @@ export class CropCanvas {
     this.rectangle = new DragableRectangle(this.stage, points, this.primaryColor);
   }
 
+  initCropRectangle() {
+    if (this.rectangle) {
+      this.rectangle.clear();
+    }
+
+    const points = [
+      {
+        x: 0,
+        y: this.imageMarginXY.y
+      },
+      {
+        x: (this.imageData.width * this.imageScaleRatio) + this.imageMarginXY.x,
+        y: this.imageMarginXY.y
+      },
+      {
+        x: (this.imageData.width  * this.imageScaleRatio) + this.imageMarginXY.x,
+        y: (this.imageData.height * this.imageScaleRatio) + this.imageMarginXY.y
+      },
+      {
+        x: 0,
+        y: (this.imageData.height * this.imageScaleRatio) + this.imageMarginXY.y
+      }
+    ];
+
+    this.rectangle = new DragableRectangle(this.stage, points, this.primaryColor);
+  }
+
   async fitAndDrawImageBlob(imageBlob: File) {
     const imageBitmap = await createImageBitmap(imageBlob);
     this.imageData = this.convertBitmapToImageData(imageBitmap);
+    await this.makeBlackAndWhite();
 
     let imageOrientation = this.determineOrientation(this.imageData.width, this.imageData.height);
 
@@ -97,6 +130,10 @@ export class CropCanvas {
     return height / width;
   }
 
+  async makeBlackAndWhite() {
+    this.imageData = await this.openCvService.makeBlackAndWhite(this.imageData);
+  }
+
   async rotate90DegClockwise() {
     this.imageData = await this.openCvService.rotate90DegClockwise(this.imageData);
     await this.fitOnScreen();
@@ -116,7 +153,7 @@ export class CropCanvas {
 
     await this.fitOnScreen();
     this.drawImage();
-    this.rectangle.clear();
+    this.initCropRectangle();
   }
 
   async fitOnScreen() {

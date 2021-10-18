@@ -3,7 +3,8 @@ import {
   load as _load,
   detectRectangleAroundDocument as _detectRectangleAroundDocument,
   cropAndWarpByPoints as _cropAndWarpByPoints,
-  rotate90DegClockwise as _rotate90DegClockwise
+  rotate90DegClockwise as _rotate90DegClockwise,
+  makeBlackAndWhite as _makeBlackAndWhite
 } from './opencv.worker';
 
 export interface RotatedRect { corners: Array<{ x: number, y: number }> };
@@ -31,6 +32,17 @@ export class OpenCvService {
   ): Promise<{ imageWithRectangle: ImageData, rect: RotatedRect }> {
     await this.loadIfNotLoadedAlready();
     return _detectRectangleAroundDocument(image, width, height, left);
+  }
+
+  async makeBlackAndWhite(
+    image: ImageData
+  ) {
+    await this.loadIfNotLoadedAlready();
+    return _makeBlackAndWhite(
+      image,
+      image.height,
+      image.width
+    );
   }
 
   async cropAndWarpByPoints(

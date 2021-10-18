@@ -15,5 +15,7 @@ export enum Icons {
   KEYBOARD_HIDE = "keyboard_hide",
   CHEVRONS_DOWN = "chevrons-down",
   CHECK_CIRCLE = "check-circle",
-  SAVE = "save"
+  SAVE = "save",
+  CROP = "crop",
+  EYE = "eye"
 }

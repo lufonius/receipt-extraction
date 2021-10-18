@@ -45,6 +45,7 @@ export class AppCrop {
     if (this.history.location.state.image instanceof File) {
       const file: File = this.history.location.state.image;
       await this.drawImage(file);
+      this.initCropRectangle();
       this.hasActiveImage = true;
     } else {
       this.history.push('/');
@@ -67,6 +68,14 @@ export class AppCrop {
     await this.cropCanvas.cropByDragableRectangle();
   }
 
+  async detectEdges() {
+    await this.cropCanvas.detectRectangle();
+  }
+
+  initCropRectangle() {
+    this.cropCanvas.initCropRectangle();
+  }
+
   async retryTakingImage() {
     if (this.photoInput.files.length > 0) {
       if (this.hasActiveImage) {
@@ -80,6 +89,7 @@ export class AppCrop {
       if (!!file) {
         await this.cropCanvas.fitAndDrawImageBlob(file);
         this.hasActiveImage = true;
+        this.initCropRectangle();
       }
     }
   }
@@ -123,19 +133,6 @@ export class AppCrop {
     this.photoInput.click();
   }
 
-  /*
-  * {this.rotateShown &&
-          <app-button-round
-            id="rotateButton"
-            label="rotate image"
-            classes="button-round--primary"
-            onPress={() => this.rotate90DegClockwise()}
-          >
-            <app-icon icon={Icons.ROTATE_CCW} />
-          </app-button-round>
-        }
-  * */
-
   async startExtraction() {
     try {
       await this.receiptService.startExtraction(this.currentReceipt.id);
@@ -154,8 +151,6 @@ export class AppCrop {
           ref={(el) => this.canvas = el}
         />
 
-
-
         {this.hasActiveImage && <div style={({ height: `${this.controlsHeight}px` })} class="controls">
           <app-button onPress={() => this.photoInput.click()}>Retry</app-button>
           <div class="grow" />
@@ -164,6 +159,32 @@ export class AppCrop {
 
         {!this.hasActiveImage && <div style={({ height: `${this.controlsHeight}px` })} class="controls">
           <app-button onPress={() => this.photoInput.click()}>Take photo</app-button>
+        </div>}
+
+        {this.hasActiveImage && <div class="image-editing-controls">
+          <app-button-round
+            label="crop"
+            classes="button-round--primary"
+            onPress={() => this.cropByDragableRectangle()}
+          >
+            <app-icon icon={Icons.CROP} />
+          </app-button-round>
+
+          <app-button-round
+            label="detect edges"
+            classes="button-round--primary"
+            onPress={() => this.detectEdges()}
+          >
+            <app-icon icon={Icons.EYE} />
+          </app-button-round>
+
+          <app-button-round
+            label="rotate"
+            classes="button-round--primary"
+            onPress={() => this.rotate90DegClockwise()}
+          >
+            <app-icon icon={Icons.ROTATE_CCW} />
+          </app-button-round>
         </div>}
 
         <input style={({ display: "none" })} type="file" accept="image/*" capture="camera" onChange={() => this.retryTakingImage()} ref={(el) => this.photoInput = el} />

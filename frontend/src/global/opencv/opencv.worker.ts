@@ -167,6 +167,16 @@ function min(points, calcPrev, calcCurrent) {
   });
 }
 
+export function makeBlackAndWhite(
+  imageData: ImageData,
+  height: number,
+  width: number
+): Promise<ImageData> {
+  return new Promise((resolve) => {
+    resolve(_makeBlackAndWhite(imageData, height, width));
+  });
+}
+
 // points have an x and y value from 0 to 1
 // indicating the relative position
 export function cropAndWarpByPoints(
@@ -238,7 +248,7 @@ function _cropAndWarpByPoints(
   const M = cv.getPerspectiveTransform(cv.matFromArray(4, 1, cv.CV_32FC2, cropSourcePointsFlat), cv.matFromArray(4, 1, cv.CV_32FC2, cropDestinationPoints));
   cv.warpPerspective(cropSourceImage, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
 
-  cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
+  // cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY);
 
   if (dst.cols > dst.rows) {
     cv.rotate(dst, dst, cv.ROTATE_90_CLOCKWISE)
@@ -250,6 +260,21 @@ function _cropAndWarpByPoints(
   dst.delete();
 
   return imageData;
+}
+
+function _makeBlackAndWhite(
+  imageData: ImageData,
+  height: number,
+  width: number
+): ImageData {
+  const image = createMatFromImageData(imageData);
+
+  cv.cvtColor(image, image, cv.COLOR_RGBA2GRAY);
+
+  const blackAndWhiteImageData = imageDataFromMat(image);
+  image.delete();
+
+  return blackAndWhiteImageData;
 }
 
 export async function rotate90DegClockwise(image: ImageData): Promise<ImageData> {
