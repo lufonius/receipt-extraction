@@ -34,7 +34,7 @@ export class AppNavbar {
             <span>home</span>
           </stencil-route-link>
 
-          <stencil-route-link url="/categories" class={this.getClasses("/categories")}>
+          <stencil-route-link url="/category" class={this.getClasses("/category")}>
             <app-icon size={Size.m} icon="layers"/>
             <span>categories</span>
           </stencil-route-link>

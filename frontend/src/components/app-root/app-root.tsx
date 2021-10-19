@@ -29,6 +29,7 @@ export class AppRoot {
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
               <stencil-route url="/" component="app-receipt-lists" exact={true} />
+              <stencil-route url="/category" component="app-category" />
               <stencil-route url="/profile/:name" component="app-profile" />
               <stencil-route url="/edit-image" component="app-crop" />
               <stencil-route url="/qr-generation" component="app-qr-generation" />

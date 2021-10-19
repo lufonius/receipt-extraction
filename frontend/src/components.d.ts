@@ -26,6 +26,8 @@ export namespace Components {
         "label": string;
         "size": Size;
     }
+    interface AppCategory {
+    }
     interface AppComponents {
     }
     interface AppCrop {
@@ -124,6 +126,12 @@ declare global {
     var HTMLAppButtonRoundElement: {
         prototype: HTMLAppButtonRoundElement;
         new (): HTMLAppButtonRoundElement;
+    };
+    interface HTMLAppCategoryElement extends Components.AppCategory, HTMLStencilElement {
+    }
+    var HTMLAppCategoryElement: {
+        prototype: HTMLAppCategoryElement;
+        new (): HTMLAppCategoryElement;
     };
     interface HTMLAppComponentsElement extends Components.AppComponents, HTMLStencilElement {
     }
@@ -261,6 +269,7 @@ declare global {
         "app-backdrop": HTMLAppBackdropElement;
         "app-button": HTMLAppButtonElement;
         "app-button-round": HTMLAppButtonRoundElement;
+        "app-category": HTMLAppCategoryElement;
         "app-components": HTMLAppComponentsElement;
         "app-crop": HTMLAppCropElement;
         "app-dialog": HTMLAppDialogElement;
@@ -303,6 +312,8 @@ declare namespace LocalJSX {
         "label"?: string;
         "onPress"?: (event: CustomEvent<MouseEvent>) => void;
         "size"?: Size;
+    }
+    interface AppCategory {
     }
     interface AppComponents {
     }
@@ -396,6 +407,7 @@ declare namespace LocalJSX {
         "app-backdrop": AppBackdrop;
         "app-button": AppButton;
         "app-button-round": AppButtonRound;
+        "app-category": AppCategory;
         "app-components": AppComponents;
         "app-crop": AppCrop;
         "app-dialog": AppDialog;
@@ -427,6 +439,7 @@ declare module "@stencil/core" {
             "app-backdrop": LocalJSX.AppBackdrop & JSXBase.HTMLAttributes<HTMLAppBackdropElement>;
             "app-button": LocalJSX.AppButton & JSXBase.HTMLAttributes<HTMLAppButtonElement>;
             "app-button-round": LocalJSX.AppButtonRound & JSXBase.HTMLAttributes<HTMLAppButtonRoundElement>;
+            "app-category": LocalJSX.AppCategory & JSXBase.HTMLAttributes<HTMLAppCategoryElement>;
             "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;

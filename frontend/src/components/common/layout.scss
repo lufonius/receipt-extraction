@@ -1,0 +1,26 @@
+@import 'typography';
+
+@mixin page-layout() {
+  .page-layout {
+    .header {
+      background-color: var(--background-dark);
+      padding: var(--size-m);
+    }
+
+    .body {
+      padding: var(--size-m);
+      padding-top: var(--size-xl);
+      padding-bottom: 7.3rem;
+    }
+
+    @include typography();
+
+    h1, h4 {
+      margin: 0 0 var(--size-s);
+    }
+
+    p {
+      margin-top: 0;
+    }
+  }
+}

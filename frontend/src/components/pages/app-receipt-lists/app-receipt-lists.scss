@@ -1,55 +1,20 @@
+@import '../../common/layout';
+
 :host {
   display: block;
 
-  .content-wrapper {
-    .header {
-      background-color: var(--background-dark);
-      padding: var(--size-m);
-    }
+  @include page-layout();
 
-    .body {
-      padding: var(--size-m);
-      padding-top: var(--size-xl);
-      padding-bottom: 7.3rem;
+  .status-container {
+    margin-bottom: var(--size-xxl);
+    max-width: 18.6rem;
 
-      .status-container {
-        margin-bottom: var(--size-xxl);
-        max-width: 18.6rem;
+    h1 { margin: 0; }
+    h4 { margin: 0 0 var(--size-s); }
 
-        h1 {
-          margin: 0;
-        }
-
-        h4 {
-          margin: 0 0 var(--size-s);
-        }
-
-        .button-space {
-          height: 1px;
-          width: var(--size-sm);
-        }
-      }
-    }
-
-    h1, h4 {
-      font-family: var(--heading-font-family);
-      font-weight: var(--font-weight-bold);
-      text-transform: uppercase;
-      margin: 0 0 var(--size-s);
-    }
-
-    h1 {
-      font-size: var(--font-size-xxl);
-    }
-
-    h4 {
-      font-size: var(--font-size-m);
-    }
-
-    p {
-      font-family: var(--body-font-family);
-      font-size: var(--body-font-size);
-      margin-top: 0;
+    .button-space {
+      height: 1px;
+      width: var(--size-sm);
     }
   }
 }

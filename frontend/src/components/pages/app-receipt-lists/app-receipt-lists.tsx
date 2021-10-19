@@ -72,7 +72,7 @@ export class AppReceiptLists {
   render() {
     return (
       <Host>
-          <div class="content-wrapper">
+          <div class="page-layout">
             <div class="header">
               <h1>Home</h1>
               <p>Use drezip to upload receipts, extract the items and categorise them.</p>
