@@ -1,0 +1,31 @@
+@import '../../common/layout';
+
+:host {
+  display: block;
+
+  @include page-layout;
+
+  .page-layout > .body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .fill {
+    flex-grow: 1;
+  }
+
+  .category-item {
+    display: flex;
+    align-items: center;
+
+    padding: var(--size-s) var(--size-m);
+
+    .category-controls {
+      display: flex;
+
+      app-button-round {
+        margin-left: var(--size-xs);
+      }
+    }
+  }
+}
