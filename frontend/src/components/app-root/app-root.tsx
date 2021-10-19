@@ -1,4 +1,7 @@
 import { Component, h } from '@stencil/core';
+import {Inject} from "../../global/di/inject";
+import {GlobalStore} from "../../global/global-store.service";
+import {CategoryService} from "../pages/category.service";
 
 @Component({
   tag: 'app-root',
@@ -6,6 +9,14 @@ import { Component, h } from '@stencil/core';
   shadow: false,
 })
 export class AppRoot {
+
+  @Inject(GlobalStore) store: GlobalStore;
+  @Inject(CategoryService) categoryService: CategoryService;
+
+  async componentDidLoad() {
+    const categories = await this.categoryService.getCategories();
+    this.store.setCategories(categories);
+  }
 
   addPWA() {
     if (!window.beforeInstallEvent) {

@@ -7,7 +7,6 @@ import {Icons} from "../../../global/icons-enum";
 import {InitReceiptService} from "./init-receipt.service";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";
-import {CategoryService} from "../category.service";
 import {ReceiptService} from "../receipt.service";
 import {Receipt} from "../../model/client";
 
@@ -19,7 +18,6 @@ import {Receipt} from "../../model/client";
 export class AppCrop {
   @Inject(CropCanvasFactory) private cropCanvasFactory: CropCanvasFactory;
   @Inject(InitReceiptService) private initReceiptService: InitReceiptService;
-  @Inject(CategoryService) private categoryService: CategoryService;
   @Inject(GlobalStore) private globalStore: GlobalStore;
   @Inject(Mapper) private mapper: Mapper;
   @Inject(ReceiptService) private receiptService: ReceiptService;
@@ -110,12 +108,11 @@ export class AppCrop {
       this.isUploading = true;
       const jpegAsBlob = await this.cropCanvas.imageAsPngBlob
       const receiptDto = await this.initReceiptService.initReceipt(jpegAsBlob)
-      const categories = await this.categoryService.getCategories();
+      const categories = this.globalStore.selectCategories()();
       const receipt = this.mapper.receiptFromDto(receiptDto, categories);
       this.isUploading = false;
       this.currentReceipt = receipt;
       this.globalStore.setCurrentReceipt(receipt);
-      this.globalStore.setCategories(categories);
     } catch (error) {
       // retry?
       this.dialog.isVisible(false);

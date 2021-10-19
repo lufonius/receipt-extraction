@@ -27,6 +27,7 @@ export namespace Components {
         "size": Size;
     }
     interface AppCategory {
+        "history": RouterHistory;
     }
     interface AppComponents {
     }
@@ -314,6 +315,7 @@ declare namespace LocalJSX {
         "size"?: Size;
     }
     interface AppCategory {
+        "history"?: RouterHistory;
     }
     interface AppComponents {
     }

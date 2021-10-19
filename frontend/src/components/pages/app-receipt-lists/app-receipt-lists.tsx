@@ -5,7 +5,6 @@ import {Inject} from "../../../global/di/inject";
 import {GlobalStore} from "../../../global/global-store.service";
 import {Mapper} from "../../model/mapper";
 import {RouterHistory} from "@stencil/router";
-import {CategoryService} from "../category.service";
 import {ReceiptService} from "../receipt.service";
 import {Icons} from "../../../global/icons-enum";
 
@@ -18,7 +17,6 @@ export class AppReceiptLists {
 
   @Inject(GlobalStore) private globalStore: GlobalStore;
   @Inject(Mapper) private mapper: Mapper;
-  @Inject(CategoryService) private categoryService: CategoryService;
   @Inject(ReceiptService) private receiptService: ReceiptService;
 
   @Prop() history: RouterHistory;
@@ -62,7 +60,7 @@ export class AppReceiptLists {
       await this.receiptService.startExtraction(receiptDto.id);
     }
 
-    const categories = await this.categoryService.getCategories();
+    const categories = this.globalStore.selectCategories()();
     const receipt = this.mapper.receiptFromDto(receiptDto, categories);
     this.globalStore.setCurrentReceipt(receipt);
     this.globalStore.setCategories(categories);
