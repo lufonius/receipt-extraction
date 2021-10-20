@@ -60,30 +60,6 @@ export class ReceiptItemsEdit {
 
         <app-divider />
         <div class="divider">
-          Taxes
-          <div class="fill" />
-          <app-button-round size={Size.l} onPress={() => this.add.emit(ReceiptItemType.Tax)}>
-            <app-icon size={Size.sm} icon={Icons.ADD} />
-          </app-button-round>
-        </div>
-
-        {this.taxes
-          .map(it =>
-            <list-item label={`${it.label}`} amount={`${it.value}`}>
-              <div slot="controls">
-                <app-button-round size={Size.l} onPress={() => this.delete.emit(it)}>
-                  <app-icon size={Size.sm} icon={Icons.DELETE} />
-                </app-button-round>
-              </div>
-            </list-item>
-          )
-        }
-
-        {this.taxes.length === 0 && <div class="no-entries-container">
-          <span class="no-entries-text">Select taxes on the receipt</span>
-        </div>}
-
-        <div class="divider">
           Items
           <div class="fill" />
           <app-button-round size={Size.l} onPress={() => this.add.emit(ReceiptItemType.Category)}>
