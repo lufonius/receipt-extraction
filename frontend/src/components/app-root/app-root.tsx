@@ -25,6 +25,7 @@ export class AppRoot {
     this.store.setCategories(categories);
 
     flyd.on((message) => this.showSnackbar('success', message),this.snackbarService.successSnacks)
+    flyd.on((message) => this.showSnackbar('failure', message),this.snackbarService.failureSnacks)
   }
 
   private showSnackbar(type: 'success' | 'failure', message: string) {

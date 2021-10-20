@@ -90,10 +90,11 @@ export class AppReceiptExtraction {
     try {
       await this.receiptItemService.deleteReceiptItem(receiptItem.id);
       this.updateLinesColor(receiptItem, 0x696969);
+      this.snackbarService.showSuccessSnack("deleted");
     } catch (error) {
-      // show snackbar
       this.globalStore.addReceiptItemOfCurrentReceipt(receiptItem);
       this.updateLinesColor(receiptItem);
+      this.snackbarService.showFailureSnack("failure");
     }
   }
 
@@ -162,10 +163,11 @@ export class AppReceiptExtraction {
       const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
       await this.receiptItemService.updateReceiptItem(this.currentReceiptItem.id, dto);
       this.updateLinesColor(this.currentReceiptItem, 0x03b700);
+      this.snackbarService.showSuccessSnack("updated");
     } catch(error) {
-      // show snackbar
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.receiptItemBeforeUpdate.id, this.receiptItemBeforeUpdate);
       this.updateLinesColor(this.receiptItemBeforeUpdate, 0x696969);
+      this.snackbarService.showFailureSnack("failure");
     }
   }
 
@@ -195,7 +197,8 @@ export class AppReceiptExtraction {
         value: null,
         valueLineId: null,
         receiptId: this.currentReceipt.id,
-        type: this.currentReceiptItemType
+        type: this.currentReceiptItemType,
+        categoryId: this.currentReceiptItem?.categoryId
       };
   }
 
@@ -238,9 +241,10 @@ export class AppReceiptExtraction {
       await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
 
       await this.receiptService.endExtraction(this.currentReceipt.id);
-      this.history.push("/list-receipts");
+      this.history.push("/");
+      this.snackbarService.showSuccessSnack("done")
     } catch (error) {
-      // woooot?
+      this.snackbarService.showFailureSnack("error completing extraction")
     }
   }
 
