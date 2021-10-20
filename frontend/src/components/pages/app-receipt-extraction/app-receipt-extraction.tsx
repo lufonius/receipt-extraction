@@ -252,7 +252,7 @@ export class AppReceiptExtraction {
             </app-button-round>
             <div class="fill" />
             {this.isTaxOrCategory() && <app-button-round size={Size.xl} onPress={async () => { await this.saveAndNext(); }} classes="button-round--primary" label="save & next">
-              <app-icon icon={Icons.ARROW_RIGHT} />
+              <app-icon svgUrl="assets/custom-icons.svg#save-and-next" />
             </app-button-round>}
             <div class="spacer-xs" />
             <app-button-round size={Size.xl} onPress={async () => { await this.saveAndClose(); }} classes="button-round--primary" label="save">
