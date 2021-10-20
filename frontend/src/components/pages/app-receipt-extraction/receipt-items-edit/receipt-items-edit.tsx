@@ -35,28 +35,39 @@ export class ReceiptItemsEdit {
       <Host>
 
         <app-divider />
-        {this.total && <list-item label={`${this.total.label}`} amount={`${this.total.value}`} emptyLabel="Select the total on the receipt">
-          <div slot="controls">
-            <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
-              <app-icon size={Size.sm} icon={Icons.EDIT} />
-            </app-button-round>
-            {this.total.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.total)}>
-              <app-icon size={Size.sm} icon={Icons.DELETE} />
-            </app-button-round>}
+        <div class="date-or-total-container">
+          <div>
+            {this.total.label && <span class="label">{this.total.label}</span>}
+            {!this.total.label && this.total.value && <span class="label">Total</span>}
+            {this.total.value && <span class="value">{this.total.value} CHF</span>}
+            {!this.total.label && <span class="value">Select the total</span>}
           </div>
-        </list-item> }
+          <div class="fill"/>
+          <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
+            <app-icon size={Size.sm} icon={Icons.EDIT}/>
+          </app-button-round>
+          {this.total.value &&
+          <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.total)}>
+            <app-icon size={Size.sm} icon={Icons.DELETE}/>
+          </app-button-round>}
+        </div>
 
         <app-divider />
-        {this.date && <list-item label={`${this.date.label}`} amount={`${this.date.value}`} emptyLabel="Select the date on the receipt">
-          <div slot="controls">
-            <app-button-round size={Size.l} onPress={() => this.update.emit(this.date)}>
-              <app-icon size={Size.sm} icon={Icons.EDIT} />
-            </app-button-round>
-            {this.date.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.date)}>
-              <app-icon size={Size.sm} icon={Icons.DELETE} />
-            </app-button-round>}
+        <div class="date-or-total-container">
+          <div>
+            {this.date.label && <span class="label">{ this.date.label }</span>}
+            {!this.date.label && this.date.value && <span class="label">Date</span>}
+            {this.date.value && <span class="value">{ this.date.value }</span>}
+            {!this.date.value && <span class="value">Select the date</span>}
           </div>
-        </list-item> }
+          <div class="fill" />
+          <app-button-round size={Size.l} onPress={() => this.update.emit(this.date)}>
+            <app-icon size={Size.sm} icon={Icons.EDIT} />
+          </app-button-round>
+          {this.date.value && <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.resetEmpty.emit(this.date)}>
+            <app-icon size={Size.sm} icon={Icons.DELETE} />
+          </app-button-round>}
+        </div>
 
         <app-divider />
         <div class="divider">

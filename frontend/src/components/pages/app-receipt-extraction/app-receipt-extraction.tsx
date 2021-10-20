@@ -199,12 +199,30 @@ export class AppReceiptExtraction {
       };
   }
 
+  async save() {
+    if (this.isTaxOrCategory()) {
+      await this.saveAndNext();
+    } else {
+      await this.saveAndClose();
+    }
+  }
+
   async saveAndNext() {
     this.submitted = true;
 
     if (this.valid) {
       await this.saveItem();
       this.resetCurrentReceiptItem();
+      this.submitted = false;
+    }
+  }
+
+  async saveAndClose() {
+    this.submitted = true;
+
+    if (this.valid) {
+      await this.saveItem();
+      await this.hideAddItem(false);
       this.submitted = false;
     }
   }
@@ -249,7 +267,7 @@ export class AppReceiptExtraction {
             </app-button-round>
             <div class="fill" />
             <div class="spacer-xs" />
-            <app-button-round size={Size.xl} onPress={async () => { await this.saveAndNext(); }} classes="button-round--primary" label="save">
+            <app-button-round size={Size.xl} onPress={async () => { await this.save(); }} classes="button-round--primary" label="save">
               <app-icon icon={Icons.SAVE} />
             </app-button-round>
           </div>}

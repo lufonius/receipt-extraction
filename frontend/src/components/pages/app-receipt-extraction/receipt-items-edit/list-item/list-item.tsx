@@ -30,10 +30,6 @@ export class ListItem {
               <span class="edit-item-label-title">{this.label}</span>
               <span class="edit-item-label-amount">{this.amount} CHF</span>
           </div>}
-
-          {!this.hasAnyValueSet() && <div class="edit-item-label">
-            <span class="edit-item-label-novalue">{ this.emptyLabel }</span>
-          </div>}
           <div class="fill" />
           <div class="edit-item-controls">
             <slot name="controls" />

@@ -29,4 +29,28 @@
   .no-entries-container {
     padding: var(--size-m) var(--size-s);
   }
+
+  .date-or-total-container {
+    display: flex;
+    padding: var(--size-s);
+    align-items: center;
+
+    .label {
+      display: block;
+      font-family: var(--heading-font-family);
+      font-size: var(--font-size-m);
+      font-weight: var(--font-weight-semi-bold);
+    }
+
+    .value {
+      display: block;
+      font-family: var(--body-font-family);
+      font-size: var(--font-size-s);
+      font-weight: var(--font-weight-regular);
+    }
+
+    .margin-left-xs {
+      margin-left: var(--size-xs);
+    }
+  }
 }
