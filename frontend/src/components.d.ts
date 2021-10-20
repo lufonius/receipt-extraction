@@ -43,6 +43,7 @@ export namespace Components {
     interface AppIcon {
         "icon": string;
         "size": Size;
+        "svgUrl": string;
     }
     interface AppInput {
         "focused": boolean;
@@ -330,6 +331,7 @@ declare namespace LocalJSX {
     interface AppIcon {
         "icon"?: string;
         "size"?: Size;
+        "svgUrl"?: string;
     }
     interface AppInput {
         "focused"?: boolean;

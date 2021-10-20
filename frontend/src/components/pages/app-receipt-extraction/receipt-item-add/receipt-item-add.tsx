@@ -126,14 +126,14 @@ export class ReceiptItemAdd {
             size={Size.l}
             onPress={() => this.valueInputShowKeyboard = false}
           >
-            <app-icon size={Size.sm} icon={Icons.KEYBOARD_HIDE} />
+            <app-icon svgUrl="assets/custom-icons.svg#keyboard-hide" />
           </app-button-round>}
           {!this.valueInputShowKeyboard && <app-button-round
             class="margin-left-s"
             size={Size.l}
             onPress={() => this.valueInputShowKeyboard = true}
           >
-            <app-icon icon={Icons.KEYBOARD} />
+            <app-icon svgUrl="assets/custom-icons.svg#keyboard" />
           </app-button-round>}
           <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setLabel("", null)}>
             <app-icon size={Size.sm} icon={Icons.DELETE} />
@@ -160,14 +160,14 @@ export class ReceiptItemAdd {
             size={Size.l}
             onPress={() => this.labelInputShowKeyboard = false}
           >
-            <app-icon size={Size.sm} icon={Icons.KEYBOARD_HIDE} />
+            <app-icon svgUrl="assets/custom-icons.svg#keyboard-hide" />
           </app-button-round>}
           {!this.labelInputShowKeyboard && <app-button-round
             class="margin-left-s"
             size={Size.l}
             onPress={() => this.labelInputShowKeyboard = true}
           >
-            <app-icon size={Size.sm} icon={Icons.KEYBOARD} />
+            <app-icon svgUrl="assets/custom-icons.svg#keyboard" />
           </app-button-round>}
           <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setValue("", null)}>
             <app-icon size={Size.sm} icon={Icons.DELETE} />

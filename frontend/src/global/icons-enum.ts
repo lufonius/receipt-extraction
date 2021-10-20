@@ -11,8 +11,6 @@ export enum Icons {
   NEXT_PLAN = "next_plan",
   ARROW_RIGHT = "arrow-right",
   ARROW_RIGHT_ALT = "arrow_right_alt",
-  KEYBOARD = "keyboard",
-  KEYBOARD_HIDE = "keyboard_hide",
   CHEVRONS_DOWN = "chevrons-down",
   CHECK_CIRCLE = "check-circle",
   SAVE = "save",

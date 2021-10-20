@@ -10,10 +10,20 @@ export class AppIcon {
   @Prop() icon: string;
   @Prop() size: Size;
 
+  @Prop() svgUrl: string = null;
+
+  getComposedSvgUrl(): string {
+    if (this.svgUrl) {
+      return this.svgUrl;
+    } else {
+      return "lib/feather-sprite.svg#" + this.icon;
+    }
+  }
+
   render() {
     return (<Host>
       <svg class={"feather " + this.size}>
-        <use href={"lib/feather-sprite.svg#" + this.icon } />
+        <use href={this.getComposedSvgUrl()} />
       </svg>
     </Host>);
   }
