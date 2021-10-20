@@ -11,6 +11,7 @@ import {Mapper} from "../../model/mapper";
 import {cloneDeep} from "../../model/cloneDeep";
 import {ReceiptService} from "../receipt.service";
 import {RouterHistory} from "@stencil/router";
+import {SnackbarService} from "../snackbar.service";
 
 @Component({
   tag: 'app-receipt-extraction',
@@ -22,6 +23,7 @@ export class AppReceiptExtraction {
   @Inject(ReceiptItemService) private receiptItemService: ReceiptItemService;
   @Inject(Mapper) private mapper: Mapper;
   @Inject(ReceiptService) private receiptService: ReceiptService;
+  @Inject(SnackbarService) private snackbarService: SnackbarService;
 
   @Prop() history: RouterHistory;
 
@@ -140,11 +142,16 @@ export class AppReceiptExtraction {
   }
 
   private async createItem() {
-    const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
-    const savedReceiptItemDto = await this.receiptItemService.createReceiptItem(dto);
-    const savedReceiptItem = this.mapper.receiptItemFromDto(savedReceiptItemDto);
-    this.globalStore.addReceiptItemOfCurrentReceipt(savedReceiptItem);
-    this.updateLinesColor(savedReceiptItem);
+    try {
+      const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
+      const savedReceiptItemDto = await this.receiptItemService.createReceiptItem(dto);
+      const savedReceiptItem = this.mapper.receiptItemFromDto(savedReceiptItemDto);
+      this.globalStore.addReceiptItemOfCurrentReceipt(savedReceiptItem);
+      this.updateLinesColor(savedReceiptItem);
+      this.snackbarService.showSuccessSnack("Saved");
+    } catch {
+      this.snackbarService.showFailureSnack("Failed");
+    }
   }
 
   private async updateItem() {

@@ -1,7 +1,11 @@
-import { Component, h } from '@stencil/core';
+import {Component, h, State} from '@stencil/core';
 import {Inject} from "../../global/di/inject";
 import {GlobalStore} from "../../global/global-store.service";
 import {CategoryService} from "../pages/category.service";
+import {SnackbarService} from "../pages/snackbar.service";
+import flyd from "flyd";
+import {cloneDeep} from "../model/cloneDeep";
+import { v4 as uuid } from 'uuid';
 
 @Component({
   tag: 'app-root',
@@ -12,10 +16,27 @@ export class AppRoot {
 
   @Inject(GlobalStore) store: GlobalStore;
   @Inject(CategoryService) categoryService: CategoryService;
+  @Inject(SnackbarService) snackbarService: SnackbarService;
 
-  async componentDidLoad() {
+  @State() private snackbar: { message: string, type: 'success' | 'failure', show: boolean } = null;
+
+  async componentWillLoad() {
     const categories = await this.categoryService.getCategories();
     this.store.setCategories(categories);
+
+    flyd.on((message) => this.showSnackbar('success', message),this.snackbarService.successSnacks)
+  }
+
+  private showSnackbar(type: 'success' | 'failure', message: string) {
+    this.snackbar = { message, type, show: false };
+
+    setTimeout(() => {
+      this.snackbar = {...this.snackbar, show: true};
+    }, 20);
+
+    setTimeout(() => {
+      this.snackbar = {...this.snackbar, show: false};
+    }, 2000)
   }
 
   addPWA() {
@@ -36,6 +57,7 @@ export class AppRoot {
   render() {
     return (
       <div>
+        {this.snackbar && <app-snackbar message={this.snackbar.message} type={this.snackbar.type} show={this.snackbar.show} />}
         <main>
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>

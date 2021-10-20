@@ -1,0 +1,49 @@
+:host {
+  display: block;
+
+  .snackbar {
+    position: fixed;
+    top: var(--size-s);
+    right: -110%;
+
+    display: flex;
+    padding: var(--size-s);
+    transition: right 0.2s cubic-bezier(0,.89,.34,.99);
+
+    border-radius: 0.2rem;
+    box-shadow: 0 0 9px 0 rgba(0,0,0,0.075);
+
+    z-index: 9999;
+
+    span {
+      font-family: var(--heading-font-family);
+      font-size: var(--font-size-m);
+      font-weight: var(--font-weight-bold);
+      text-transform: uppercase;
+      height: var(--size-m);
+    }
+
+    app-icon {
+      margin-right: var(--size-s);
+      height: var(--size-m);
+    }
+  }
+
+  .animation-in {
+    animation-direction: initial;
+    right: var(--size-s);
+  }
+
+  .animation-out {
+    animation-direction: reverse;
+    right: -110%;
+  }
+
+  .success {
+    background-color: var(--success);
+  }
+
+  .failure {
+    background-color: var(--error);
+  }
+}

@@ -81,6 +81,11 @@ export namespace Components {
     }
     interface AppRoot {
     }
+    interface AppSnackbar {
+        "message": string;
+        "show": boolean;
+        "type": 'success' | 'failure';
+    }
     interface DropupControls {
         "show": boolean;
     }
@@ -231,6 +236,12 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLAppSnackbarElement extends Components.AppSnackbar, HTMLStencilElement {
+    }
+    var HTMLAppSnackbarElement: {
+        prototype: HTMLAppSnackbarElement;
+        new (): HTMLAppSnackbarElement;
+    };
     interface HTMLDropupControlsElement extends Components.DropupControls, HTMLStencilElement {
     }
     var HTMLDropupControlsElement: {
@@ -288,6 +299,7 @@ declare global {
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-receipt-lists": HTMLAppReceiptListsElement;
         "app-root": HTMLAppRootElement;
+        "app-snackbar": HTMLAppSnackbarElement;
         "dropup-controls": HTMLDropupControlsElement;
         "list-item": HTMLListItemElement;
         "receipt-item-add": HTMLReceiptItemAddElement;
@@ -373,6 +385,11 @@ declare namespace LocalJSX {
     }
     interface AppRoot {
     }
+    interface AppSnackbar {
+        "message"?: string;
+        "show"?: boolean;
+        "type"?: 'success' | 'failure';
+    }
     interface DropupControls {
         "onContainerShownAnimationEnd"?: (event: CustomEvent<boolean>) => void;
         "show"?: boolean;
@@ -428,6 +445,7 @@ declare namespace LocalJSX {
         "app-receipt-extraction": AppReceiptExtraction;
         "app-receipt-lists": AppReceiptLists;
         "app-root": AppRoot;
+        "app-snackbar": AppSnackbar;
         "dropup-controls": DropupControls;
         "list-item": ListItem;
         "receipt-item-add": ReceiptItemAdd;
@@ -460,6 +478,7 @@ declare module "@stencil/core" {
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-receipt-lists": LocalJSX.AppReceiptLists & JSXBase.HTMLAttributes<HTMLAppReceiptListsElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "app-snackbar": LocalJSX.AppSnackbar & JSXBase.HTMLAttributes<HTMLAppSnackbarElement>;
             "dropup-controls": LocalJSX.DropupControls & JSXBase.HTMLAttributes<HTMLDropupControlsElement>;
             "list-item": LocalJSX.ListItem & JSXBase.HTMLAttributes<HTMLListItemElement>;
             "receipt-item-add": LocalJSX.ReceiptItemAdd & JSXBase.HTMLAttributes<HTMLReceiptItemAddElement>;
