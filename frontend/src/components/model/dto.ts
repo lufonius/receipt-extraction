@@ -58,4 +58,5 @@ export interface CategoryDto {
   avatar_url: string;
   color: number;
   name: string;
+  deleted: boolean;
 }

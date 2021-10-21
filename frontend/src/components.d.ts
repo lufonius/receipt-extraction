@@ -29,6 +29,8 @@ export namespace Components {
     interface AppCategory {
         "history": RouterHistory;
     }
+    interface AppCategoryUpsert {
+    }
     interface AppComponents {
     }
     interface AppCrop {
@@ -139,6 +141,12 @@ declare global {
     var HTMLAppCategoryElement: {
         prototype: HTMLAppCategoryElement;
         new (): HTMLAppCategoryElement;
+    };
+    interface HTMLAppCategoryUpsertElement extends Components.AppCategoryUpsert, HTMLStencilElement {
+    }
+    var HTMLAppCategoryUpsertElement: {
+        prototype: HTMLAppCategoryUpsertElement;
+        new (): HTMLAppCategoryUpsertElement;
     };
     interface HTMLAppComponentsElement extends Components.AppComponents, HTMLStencilElement {
     }
@@ -283,6 +291,7 @@ declare global {
         "app-button": HTMLAppButtonElement;
         "app-button-round": HTMLAppButtonRoundElement;
         "app-category": HTMLAppCategoryElement;
+        "app-category-upsert": HTMLAppCategoryUpsertElement;
         "app-components": HTMLAppComponentsElement;
         "app-crop": HTMLAppCropElement;
         "app-dialog": HTMLAppDialogElement;
@@ -329,6 +338,8 @@ declare namespace LocalJSX {
     }
     interface AppCategory {
         "history"?: RouterHistory;
+    }
+    interface AppCategoryUpsert {
     }
     interface AppComponents {
     }
@@ -429,6 +440,7 @@ declare namespace LocalJSX {
         "app-button": AppButton;
         "app-button-round": AppButtonRound;
         "app-category": AppCategory;
+        "app-category-upsert": AppCategoryUpsert;
         "app-components": AppComponents;
         "app-crop": AppCrop;
         "app-dialog": AppDialog;
@@ -462,6 +474,7 @@ declare module "@stencil/core" {
             "app-button": LocalJSX.AppButton & JSXBase.HTMLAttributes<HTMLAppButtonElement>;
             "app-button-round": LocalJSX.AppButtonRound & JSXBase.HTMLAttributes<HTMLAppButtonRoundElement>;
             "app-category": LocalJSX.AppCategory & JSXBase.HTMLAttributes<HTMLAppCategoryElement>;
+            "app-category-upsert": LocalJSX.AppCategoryUpsert & JSXBase.HTMLAttributes<HTMLAppCategoryUpsertElement>;
             "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;

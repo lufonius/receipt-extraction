@@ -8,6 +8,13 @@
   .page-layout > .body {
     padding-left: 0;
     padding-right: 0;
+    position: relative;
+
+    .new-button {
+      position: fixed;
+      bottom: calc(7.3rem + var(--size-s));
+      right: var(--size-s);
+    }
   }
 
   .fill {
@@ -19,6 +26,13 @@
     align-items: center;
 
     padding: var(--size-s) var(--size-m);
+
+    .category-color {
+      width: var(--size-m);
+      height: var(--size-m);
+      border-radius: 50%;
+      margin-right: var(--size-s);
+    }
 
     .category-controls {
       display: flex;

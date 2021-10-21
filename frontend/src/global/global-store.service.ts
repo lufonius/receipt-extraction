@@ -43,6 +43,17 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
   });
 
   setCategories = (categories: Category[]) => this.patch(state => state.categories = categories);
+  deleteCategory = (id: number) => this.patch(state => {
+    const index = state.categories.map(it => it.id).indexOf(id);
+    if (index !== -1) {
+      state.categories.splice(index, 1);
+    }
+  });
+  updateCategory = (category: Category) => this.patch(state => {
+    const index = state.categories.map(it => it.id).indexOf(category.id);
+    state.categories[index] = category;
+  });
+  addCategory = (category: Category) => this.patch(state => state.categories.push(category));
 
   // Selectors
   selectCurrentReceipt = () => this.select(state => state.currentReceipt);
@@ -79,7 +90,9 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
     return this.select(state => state.currentReceipt.items.length > 0);
   };
 
-  selectCategories = () => this.select(state => state.categories);
+  selectCategories = (includeDeleted: boolean = true) => {
+    return this.select(state => state.categories.filter(it => includeDeleted ? true : it.deleted === false));
+  };
   selectCategoriesById = () => this.select(state => new Map<number, Category>(state.categories.map(it => [it.id, it])));
 }
 

@@ -21,7 +21,7 @@ export class AppRoot {
   @State() private snackbar: { message: string, type: 'success' | 'failure', show: boolean } = null;
 
   async componentWillLoad() {
-    const categories = await this.categoryService.getCategories();
+    const categories = await this.categoryService.get();
     this.store.setCategories(categories);
 
     flyd.on((message) => this.showSnackbar('success', message),this.snackbarService.successSnacks)

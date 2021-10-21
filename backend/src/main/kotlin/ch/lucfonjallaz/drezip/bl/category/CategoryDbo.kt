@@ -1,9 +1,13 @@
 package ch.lucfonjallaz.drezip.bl.category
 
+import org.hibernate.annotations.*
 import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.Table
 
 @Entity
 @Table(name="category")
+@SQLDelete(sql = "UPDATE category SET deleted = true WHERE id=?")
 data class CategoryDbo (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +24,9 @@ data class CategoryDbo (
 
     @Column(nullable = true)
     val parentCategoryId: Int? = null,
+
+    @Column(nullable = false)
+    val deleted: Boolean = false,
 
     @OneToMany(targetEntity = CategoryDbo::class, mappedBy = "parentCategoryId")
     var subCategories: List<CategoryDbo>? = null

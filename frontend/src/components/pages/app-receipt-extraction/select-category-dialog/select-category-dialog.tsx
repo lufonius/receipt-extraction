@@ -22,7 +22,7 @@ export class SelectCategoryDialog {
   public dialog: HTMLAppDialogElement;
 
   componentWillLoad() {
-    flyd.on((categories) => this.categories = categories, this.store.selectCategories());
+    flyd.on((categories) => this.categories = categories, this.store.selectCategories(false));
   }
 
   @Method() async show() {

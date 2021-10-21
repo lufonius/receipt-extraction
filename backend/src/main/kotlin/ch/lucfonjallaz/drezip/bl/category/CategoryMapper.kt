@@ -12,7 +12,19 @@ class CategoryMapper {
                 avatarUrl = dbo.avatarUrl,
                 color = dbo.color,
                 name = dbo.name,
+                deleted = dbo.deleted,
                 subCategories = dbo.subCategories?.map { mapFromDbo(it) }
+        )
+    }
+
+    fun mapFromDto(dto: CategoryDto): CategoryDbo {
+        return CategoryDbo(
+                id = dto.id,
+                avatarUrl = dto.avatarUrl,
+                color = dto.color,
+                name = dto.name,
+                parentCategoryId = dto.parentCategoryId,
+                subCategories = dto.subCategories?.map { it -> mapFromDto(it) }
         )
     }
 }

@@ -5,9 +5,15 @@ import {CategoryDto} from "../model/dto";
 export class CategoryService {
   private baseApiUrl: string = "/api"
 
-  async getCategories(): Promise<CategoryDto[]> {
+  async get(): Promise<CategoryDto[]> {
     return await fetch(`${this.baseApiUrl}/category`, {
       method: 'GET'
     }).then(r => r.json());
+  }
+
+  async delete(id: number): Promise<void> {
+    return await fetch(`${this.baseApiUrl}/category/${id}`, {
+      method: 'DELETE'
+    }).then(r => undefined);
   }
 }

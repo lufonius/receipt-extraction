@@ -6,6 +6,8 @@ import {Category} from "../../model/client";
 import * as flyd from "flyd";
 import {Icons} from "../../../global/icons-enum";
 import {Size} from "../../common/size";
+import {CategoryService} from "../category.service";
+import {SnackbarService} from "../snackbar.service";
 
 @Component({
   tag: 'app-category',
@@ -17,10 +19,23 @@ export class AppCategory {
   @Prop() history: RouterHistory;
 
   @Inject(GlobalStore) store: GlobalStore;
+  @Inject(CategoryService) categoryService: CategoryService;
+  @Inject(SnackbarService) snackbarService: SnackbarService;
   @State() categories: Array<Category> = [];
 
   componentDidLoad() {
-    flyd.on((categories: Array<Category>) => this.categories = categories, this.store.selectCategories());
+    flyd.on((categories: Array<Category>) => this.categories = categories, this.store.selectCategories(false));
+  }
+
+  async deleteCategory(category: Category) {
+    try {
+      this.store.deleteCategory(category.id);
+      await this.categoryService.delete(category.id);
+      this.snackbarService.showSuccessSnack("Deleted")
+    } catch {
+      this.store.addCategory(category);
+      this.snackbarService.showFailureSnack("Failure");
+    }
   }
 
   render() {
@@ -28,13 +43,14 @@ export class AppCategory {
       <Host>
         <div class="page-layout">
           <div class="header">
-            <h4>Categories</h4>
+            <h1>Categories</h1>
             <p>Manage categories here</p>
           </div>
           <div class="body">
             {this.categories.map(it =>
               <div>
                 <div class="category-item">
+                  <div class="category-color" style={({ background: "#" + it.color.toString(16) })} />
                   <span>{ it.name }</span>
 
                   <div class="fill" />
@@ -42,7 +58,7 @@ export class AppCategory {
                     <app-button-round size={Size.l}>
                       <app-icon icon={Icons.EDIT} size={Size.sm} />
                     </app-button-round>
-                    <app-button-round size={Size.l}>
+                    <app-button-round size={Size.l} onPress={() => this.deleteCategory(it)}>
                       <app-icon icon={Icons.DELETE} size={Size.sm} />
                     </app-button-round>
                   </div>
@@ -51,6 +67,16 @@ export class AppCategory {
                 <app-divider />
               </div>
             )}
+
+            <div class="new-button">
+              <app-button-round
+                classes="button-round--primary"
+                size={Size.xl}
+                label="new"
+              >
+                <app-icon icon={Icons.ADD} />
+              </app-button-round>
+            </div>
           </div>
         </div>
 
