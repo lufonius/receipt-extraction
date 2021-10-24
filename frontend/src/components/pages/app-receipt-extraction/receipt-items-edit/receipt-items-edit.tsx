@@ -40,7 +40,7 @@ export class ReceiptItemsEdit {
             {this.total.label && <span class="label">{this.total.label}</span>}
             {!this.total.label && this.total.value && <span class="label">Total</span>}
             {this.total.value && <span class="value">{this.total.value} CHF</span>}
-            {!this.total.label && <span class="value">Select the total</span>}
+            {!this.total.value && <span class="value">Select the total</span>}
           </div>
           <div class="fill"/>
           <app-button-round size={Size.l} onPress={() => this.update.emit(this.total)}>
