@@ -256,6 +256,9 @@ export class AppReceiptExtraction {
           onContainerShownAnimationEnd={({ detail: show }) => this.dropUpAnimationEnd = show}
         >
           {this.showEditItemsPanel && <div class="controls" slot="controls">
+            <app-button-round size={Size.xl} onPress={() => this.history.goBack()} classes="button-round--primary" class="back-button" label="back">
+              <app-icon icon={Icons.ARROW_LEFT} />
+            </app-button-round>
             <app-button-round size={Size.xl} onPress={() => this.showDropup = !this.showDropup} classes="button-round--primary" label="entries">
               <app-icon icon={Icons.CHEVRONS_DOWN} />
             </app-button-round>

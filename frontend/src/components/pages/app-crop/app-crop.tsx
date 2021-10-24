@@ -142,6 +142,15 @@ export class AppCrop {
   render() {
     return (
       <div class="background">
+        <app-button-round
+          label="back"
+          classes="button-round--primary"
+          class="back-button"
+          onPress={() => this.history.goBack()}
+        >
+          <app-icon icon={Icons.ARROW_LEFT} />
+        </app-button-round>
+
         <div
           class="canvas"
           style={({ height: `${innerHeight - this.controlsHeight}px`, "margin-left": `${this.canvasMarginX}px`, })}
