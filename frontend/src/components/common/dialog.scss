@@ -1,0 +1,17 @@
+@mixin dialog() {
+  .dialog {
+    background: var(--background);
+    border-radius: 1.9rem;
+
+    .dialog-header {
+      padding: var(--size-s);
+      h4 { margin: var(--size-s); }
+    }
+
+    .dialog-body {
+      border-radius: 1.9rem;
+
+      padding: var(--size-s);
+    }
+  }
+}

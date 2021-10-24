@@ -44,28 +44,7 @@
   }
 }
 
-.dialog {
-  background: var(--background);
-  border-radius: 19px;
-}
 
-.dialog-header {
-  padding: var(--size-s);
-  h4 { margin: var(--size-s); }
-}
-
-.dialog-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  min-height: 15rem;
-
-  border-radius: 1.9rem;
-
-  padding: var(--size-s);
-}
 
 .dialog-footer {
   display: flex;

@@ -55,7 +55,7 @@ export enum ReceiptItemTypeDto {
 
 export interface CategoryDto {
   id: number;
-  avatar_url: string;
+  avatarUrl: string;
   color: number;
   name: string;
   deleted: boolean;

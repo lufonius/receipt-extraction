@@ -1,7 +1,25 @@
 @import '../../common/layout';
+@import '../../common/typography';
+@import '../../common/dialog';
 
 :host {
   display: block;
+
+  @include typography();
+  @include dialog();
+
+  .category-color-line {
+    display: flex;
+    padding-top: var(--size-xs);
+    padding-bottom: var(--size-xs);
+    justify-content: space-between;
+  }
+
+  .category-color {
+    width: var(--size-l);
+    height: var(--size-l);
+    border-radius: 50%;
+  }
 
   .page-layout {
     position: fixed;
@@ -27,12 +45,6 @@
         .category-color-label {
           margin-bottom: var(--size-xs);
           font-size: var(--font-size-s);
-        }
-
-        .category-color {
-          width: var(--size-l);
-          height: var(--size-l);
-          border-radius: 50%;
         }
       }
 

@@ -25,8 +25,6 @@ export class AppDialog {
   }
 
   private closeOnOutsideClick(kp: any) {
-    console.log("close", kp);
-
     if (this.manuallyClosable) {
       this.isVisible(false);
     }

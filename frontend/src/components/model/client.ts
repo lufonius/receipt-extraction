@@ -52,7 +52,7 @@ export interface Point {
 
 export interface Category {
   id: number;
-  avatar_url: string;
+  avatarUrl: string;
   color: number;
   name: string;
   deleted: boolean;

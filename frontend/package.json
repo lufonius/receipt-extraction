@@ -34,6 +34,7 @@
     "deepmerge": "^4.2.2",
     "feather-icons": "^4.28.0",
     "flyd": "^0.2.8",
+    "hsl-to-hex": "^1.0.0",
     "immer": "^8.0.0",
     "pixi-viewport": "^4.32.0",
     "pixi.js": "^6.0.0",
