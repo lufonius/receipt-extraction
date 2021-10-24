@@ -7,6 +7,7 @@ export enum Icons {
   CLOSE = "x",
   DONE = "done",
   ARROW_RIGHT = "arrow-right",
+  ARROW_LEFT = "arrow-left",
   CHEVRONS_DOWN = "chevrons-down",
   CHECK_CIRCLE = "check-circle",
   CHECK = "check",

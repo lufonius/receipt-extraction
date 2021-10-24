@@ -1,6 +1,7 @@
 import {Injectable} from "./di/injectable";
 import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../components/model/client";
 import {LocalstorageStore} from "./localstorage-store";
+import flyd from "flyd";
 
 @Injectable
 export class GlobalStore extends LocalstorageStore<GlobalState> {

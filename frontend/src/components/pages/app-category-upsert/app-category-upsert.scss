@@ -1,3 +1,57 @@
+@import '../../common/layout';
+
 :host {
   display: block;
+
+  .page-layout {
+    position: fixed;
+    padding: var(--size-m);
+    bottom: 7.3rem;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    .edit-container {
+      display: flex;
+      margin-bottom: var(--size-m);
+      align-items: flex-end;
+
+      .category-color-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .category-color-label {
+          margin-bottom: var(--size-xs);
+          font-size: var(--font-size-s);
+        }
+
+        .category-color {
+          width: var(--size-l);
+          height: var(--size-l);
+          border-radius: 50%;
+        }
+      }
+
+      .spacer {
+        width: var(--size-m);
+        height: 1px;
+      }
+
+      app-input {
+        flex: 1;
+      }
+    }
+
+    .controls-container {
+      display: flex;
+    }
+  }
+
+  .fill {
+    flex: 1;
+  }
 }

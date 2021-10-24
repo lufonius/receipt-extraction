@@ -30,6 +30,9 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface AppCategoryUpsert {
+        "history": RouterHistory;
+        "match": any;
+        "mode": 'insert' | 'update';
     }
     interface AppComponents {
     }
@@ -340,6 +343,9 @@ declare namespace LocalJSX {
         "history"?: RouterHistory;
     }
     interface AppCategoryUpsert {
+        "history"?: RouterHistory;
+        "match"?: any;
+        "mode"?: 'insert' | 'update';
     }
     interface AppComponents {
     }

@@ -16,7 +16,7 @@ export class AppIcon {
     if (this.svgUrl) {
       return this.svgUrl;
     } else {
-      return "lib/feather-sprite.svg#" + this.icon;
+      return "/lib/feather-sprite.svg#" + this.icon;
     }
   }
 

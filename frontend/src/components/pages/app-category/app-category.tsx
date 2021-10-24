@@ -38,6 +38,11 @@ export class AppCategory {
     }
   }
 
+  redirectToUpsertPage(id?: number) {
+    const link = id ? `/category-upsert/${id}` : "/category-upsert";
+    this.history.push(link);
+  }
+
   render() {
     return (
       <Host>
@@ -55,7 +60,7 @@ export class AppCategory {
 
                   <div class="fill" />
                   <div class="category-controls">
-                    <app-button-round size={Size.l}>
+                    <app-button-round size={Size.l} onPress={() => this.redirectToUpsertPage(it.id)}>
                       <app-icon icon={Icons.EDIT} size={Size.sm} />
                     </app-button-round>
                     <app-button-round size={Size.l} onPress={() => this.deleteCategory(it)}>
@@ -73,6 +78,7 @@ export class AppCategory {
                 classes="button-round--primary"
                 size={Size.xl}
                 label="new"
+                onPress={() => this.redirectToUpsertPage(null)}
               >
                 <app-icon icon={Icons.ADD} />
               </app-button-round>
