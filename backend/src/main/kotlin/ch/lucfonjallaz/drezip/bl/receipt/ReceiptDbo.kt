@@ -22,6 +22,9 @@ data class ReceiptDbo(
         val imgUrl: String,
 
         @Column(nullable = true)
+        val merchant: String? = null,
+
+        @Column(nullable = true)
         val angle: Float? = null,
 
         @Column(nullable = false)

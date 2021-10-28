@@ -1,0 +1,1 @@
+ALTER TABLE receipt ADD COLUMN merchant VARCHAR(250) NULL;
