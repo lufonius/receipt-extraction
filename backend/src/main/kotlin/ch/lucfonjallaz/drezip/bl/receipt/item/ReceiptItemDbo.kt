@@ -12,11 +12,6 @@ data class ReceiptItemDbo(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int = 0,
 
-        // hmmm
-        @Enumerated(EnumType.STRING)
-        @Column(nullable = false)
-        val type: ReceiptItemType,
-
         @Column(nullable = true, length = 2000)
         var label: String? = null,
 
@@ -25,7 +20,7 @@ data class ReceiptItemDbo(
         var labelLine: LineDbo? = null,
 
         @Column(nullable = true)
-        val value: String? = null,
+        val price: Float? = null,
 
         @OneToOne(fetch = FetchType.LAZY, optional = true)
         @JoinColumn(name = "value_line_id")
