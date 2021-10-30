@@ -2,5 +2,8 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/backend/setup_sql_users_grants_roles.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/fixtures/afterMigrate.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1_3_0__replace_total_date_receipt_items_to_receipt.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1_4_0__remove_itemtype_and_rename_value.sql" dialect="MySQL" />
   </component>
 </project>
