@@ -7,12 +7,12 @@ INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category
 INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (4, 'test', 0x00f3ff, 'Sweets', 2);
 
 # receipt
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (1, 'InProgress', 'https://drezip.blob.core.windows.net/local/9b6b01d7-b133-466a-b758-b6309b55bc19.jpeg', -0.6052, null, '2021-02-28');
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (2, 'Open', 'https://drezip.blob.core.windows.net/local/5c91693e-b137-4787-9f96-9210908a2d80.jpeg', -0.6052, null, '2021-02-28');
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (3, 'Open', 'https://drezip.blob.core.windows.net/local/8cf19e45-3b1b-4af8-b2ee-52eb3e38cf9a.jpeg', -0.6052, null, '2021-02-28');
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (4, 'Open', 'https://drezip.blob.core.windows.net/local/1691d113-9120-446d-9630-8e234213bab2.jpeg', 0, null, '2021-02-28');
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (5, 'Open', 'https://drezip.blob.core.windows.net/local/f3cc4b50-9feb-48ac-9ade-770575463fd4.jpeg', 0, null, '2021-02-28');
-INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_id, uploaded_at) VALUES (6, 'Open', 'https://drezip.blob.core.windows.net/local/76af9837-c561-4989-8261-87764902527d.jpeg', -0.3255, null, '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (1, 'InProgress', 'https://drezip.blob.core.windows.net/local/9b6b01d7-b133-466a-b758-b6309b55bc19.jpeg', -0.6052, 30.65, 'migros', '2021-02-28', null, '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (2, 'Open', 'https://drezip.blob.core.windows.net/local/5c91693e-b137-4787-9f96-9210908a2d80.jpeg', -0.6052, 30.65, 'migros', '2021-02-28', null, '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (3, 'Open', 'https://drezip.blob.core.windows.net/local/8cf19e45-3b1b-4af8-b2ee-52eb3e38cf9a.jpeg', -0.6052, 30.65, 'migros', '2021-02-28', null, '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (4, 'Open', 'https://drezip.blob.core.windows.net/local/1691d113-9120-446d-9630-8e234213bab2.jpeg', 0, null, 30.65, 'migros', '2021-02-28', '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (5, 'Open', 'https://drezip.blob.core.windows.net/local/f3cc4b50-9feb-48ac-9ade-770575463fd4.jpeg', 0, null, 30.65, 'migros', '2021-02-28', '2021-02-28');
+INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (6, 'Open', 'https://drezip.blob.core.windows.net/local/76af9837-c561-4989-8261-87764902527d.jpeg', -0.3255, 30.65, 'migros', '2021-02-28', null, '2021-02-28');
 
 # line
 INSERT IGNORE INTO drezip.line (id, text, top_left_x, top_left_y, top_right_x, top_right_y, bottom_left_x, bottom_left_y, bottom_right_x, bottom_right_y, receipt_id) VALUES (1, 'Schwimmbad Geiselweid', 139, 174, 664, 164, 140, 210, 665, 198, 1);
@@ -248,8 +248,4 @@ INSERT IGNORE INTO drezip.line (id, text, top_left_x, top_left_y, top_right_x, t
 INSERT IGNORE INTO drezip.line (id, text, top_left_x, top_left_y, top_right_x, top_right_y, bottom_left_x, bottom_left_y, bottom_right_x, bottom_right_y, receipt_id) VALUES (231, '8.00', 442, 1640, 514, 1640, 443, 1671, 514, 1668, 6);
 
 # receipt-item
-INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, label, label_line_id, value, value_line_id, type, category_id) VALUES (1, 1, 'KKT Integriert', 20, 8, 21, 'Category', 1);
-INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, label, label_line_id, value, value_line_id, type, category_id) VALUES (2, 1, '7.7%', 28, 0.57, 29, 'Tax', null);
-
-INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, type) VALUES(3, 1, 'Total');
-INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, type) VALUES(4, 1, 'Date');
+INSERT IGNORE INTO drezip.receipt_item (id, receipt_id, label, label_line_id, price, value_line_id, category_id) VALUES (1, 1, 'KKT Integriert', 20, 8, 21, 1);
