@@ -13,7 +13,6 @@ data class ReceiptDbo(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int = 0,
 
-        // hmmm
         @Enumerated(EnumType.STRING)
         @Column(nullable = false)
         val status: ReceiptStatus,
@@ -22,7 +21,13 @@ data class ReceiptDbo(
         val imgUrl: String,
 
         @Column(nullable = true)
-        val merchant: String? = null,
+        val transactionMerchant: String? = null,
+
+        @Column(nullable = true)
+        val transactionTotal: Float? = null,
+
+        @Column(nullable = true)
+        val transactionDate: Date? = null,
 
         @Column(nullable = true)
         val angle: Float? = null,
