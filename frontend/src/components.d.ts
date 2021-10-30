@@ -8,7 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { Size } from "./components/common/size";
 import { MatchResults, RouterHistory } from "@stencil/router";
 import { Validator } from "./components/common/validator";
-import { Category, Line, ReceiptItem, ReceiptItemType } from "./components/model/client";
+import { Category, Line, ReceiptItem } from "./components/model/client";
 export namespace Components {
     interface AppBackdrop {
         "show": boolean;
@@ -45,8 +45,6 @@ export namespace Components {
     }
     interface AppDivider {
     }
-    interface AppHome {
-    }
     interface AppIcon {
         "icon": string;
         "size": Size;
@@ -60,8 +58,9 @@ export namespace Components {
         "placeholder": string;
         "showErrors": boolean;
         "showMobileKeyboard": boolean;
+        "type": string;
         "validators": Validator[];
-        "value": string;
+        "value": any;
     }
     interface AppLayoutVerticalSplit {
     }
@@ -109,10 +108,9 @@ export namespace Components {
         "submitted": boolean;
     }
     interface ReceiptItemsEdit {
-        "categoryItems": ReceiptItem[];
-        "date": ReceiptItem;
-        "taxes": ReceiptItem[];
-        "total": ReceiptItem;
+        "date": string;
+        "items": ReceiptItem[];
+        "total": number;
     }
     interface ReceiptLines {
     }
@@ -176,12 +174,6 @@ declare global {
     var HTMLAppDividerElement: {
         prototype: HTMLAppDividerElement;
         new (): HTMLAppDividerElement;
-    };
-    interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
-    }
-    var HTMLAppHomeElement: {
-        prototype: HTMLAppHomeElement;
-        new (): HTMLAppHomeElement;
     };
     interface HTMLAppIconElement extends Components.AppIcon, HTMLStencilElement {
     }
@@ -307,7 +299,6 @@ declare global {
         "app-crop": HTMLAppCropElement;
         "app-dialog": HTMLAppDialogElement;
         "app-divider": HTMLAppDividerElement;
-        "app-home": HTMLAppHomeElement;
         "app-icon": HTMLAppIconElement;
         "app-input": HTMLAppInputElement;
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
@@ -366,8 +357,6 @@ declare namespace LocalJSX {
     }
     interface AppDivider {
     }
-    interface AppHome {
-    }
     interface AppIcon {
         "icon"?: string;
         "size"?: Size;
@@ -380,13 +369,14 @@ declare namespace LocalJSX {
         "mobileKeyboardType"?: string;
         "onInputBlur"?: (event: CustomEvent<void>) => void;
         "onInputFocus"?: (event: CustomEvent<void>) => void;
-        "onInputValueChange"?: (event: CustomEvent<string>) => void;
+        "onInputValueChange"?: (event: CustomEvent<any>) => void;
         "onValidChange"?: (event: CustomEvent<boolean>) => void;
         "placeholder"?: string;
         "showErrors"?: boolean;
         "showMobileKeyboard"?: boolean;
+        "type"?: string;
         "validators"?: Validator[];
-        "value"?: string;
+        "value"?: any;
     }
     interface AppLayoutVerticalSplit {
     }
@@ -436,14 +426,16 @@ declare namespace LocalJSX {
         "submitted"?: boolean;
     }
     interface ReceiptItemsEdit {
-        "categoryItems"?: ReceiptItem[];
-        "date"?: ReceiptItem;
-        "onAdd"?: (event: CustomEvent<ReceiptItemType>) => void;
-        "onDelete"?: (event: CustomEvent<ReceiptItem>) => void;
-        "onResetEmpty"?: (event: CustomEvent<ReceiptItem>) => void;
-        "onUpdate"?: (event: CustomEvent<ReceiptItem>) => void;
-        "taxes"?: ReceiptItem[];
-        "total"?: ReceiptItem;
+        "date"?: string;
+        "items"?: ReceiptItem[];
+        "onDeleteDate"?: (event: CustomEvent<void>) => void;
+        "onDeleteItem"?: (event: CustomEvent<ReceiptItem>) => void;
+        "onDeleteTotal"?: (event: CustomEvent<void>) => void;
+        "onShowAddItem"?: (event: CustomEvent<void>) => void;
+        "onShowUpdateDate"?: (event: CustomEvent<string>) => void;
+        "onShowUpdateItem"?: (event: CustomEvent<ReceiptItem>) => void;
+        "onShowUpdateTotal"?: (event: CustomEvent<number>) => void;
+        "total"?: number;
     }
     interface ReceiptLines {
         "onLineClick"?: (event: CustomEvent<Line>) => void;
@@ -462,7 +454,6 @@ declare namespace LocalJSX {
         "app-crop": AppCrop;
         "app-dialog": AppDialog;
         "app-divider": AppDivider;
-        "app-home": AppHome;
         "app-icon": AppIcon;
         "app-input": AppInput;
         "app-layout-vertical-split": AppLayoutVerticalSplit;
@@ -497,7 +488,6 @@ declare module "@stencil/core" {
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;
             "app-divider": LocalJSX.AppDivider & JSXBase.HTMLAttributes<HTMLAppDividerElement>;
-            "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-icon": LocalJSX.AppIcon & JSXBase.HTMLAttributes<HTMLAppIconElement>;
             "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;

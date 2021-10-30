@@ -1,7 +1,7 @@
 import {Component, h, Host, Prop, State} from '@stencil/core';
 import {Inject} from "../../../global/di/inject";
 import {GlobalStore} from "../../../global/global-store.service";
-import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../../model/client";
+import {Category, Line, Receipt, ReceiptItem} from "../../model/client";
 import flyd from 'flyd';
 import {ReceiptItemService} from "./receipt-item.service";
 import {Size} from "../../common/size";
@@ -27,10 +27,9 @@ export class AppReceiptExtraction {
 
   @Prop() history: RouterHistory;
 
-  @State() public total: ReceiptItem;
-  @State() public date: ReceiptItem;
-  @State() public taxes: ReceiptItem[] = [];
-  @State() public categoryItems: ReceiptItem[] = [];
+  @State() public total: number;
+  @State() public date: string;
+  @State() public items: ReceiptItem[] = [];
   @State() public showDropup: boolean = false;
   @State() public showEditItemsPanel: boolean = true;
   @State() public showAddItemPanel: boolean = false;
@@ -38,7 +37,6 @@ export class AppReceiptExtraction {
   @State() public currentReceiptItem: ReceiptItem;
   @State() submitted: boolean = false;
   @State() valid: boolean = false;
-  private currentReceiptItemType: ReceiptItemType;
   private currentReceipt: Receipt;
   public receiptItemAdd: HTMLReceiptItemAddElement;
   private categories: Category[];
@@ -52,35 +50,15 @@ export class AppReceiptExtraction {
 
     // TODO: currently, the problem is only with the receipt items. until we do not have a distinct select, let's just clone depp
     flyd.on((receipt) => this.currentReceipt = cloneDeep(receipt), this.globalStore.selectCurrentReceipt());
-    flyd.on(taxes => this.taxes = taxes, this.globalStore.selectTaxesOfCurrentReceipt());
     flyd.on(total => this.total = total, this.globalStore.selectTotalOfCurrentReceipt());
     flyd.on(date => this.date = date, this.globalStore.selectDateOfCurrentReceipt());
-    flyd.on(items => this.categoryItems = items, this.globalStore.selectCategoryItemsOfCurrentReceipt());
+    flyd.on(items => this.items = items, this.globalStore.selectCategoryItemsOfCurrentReceipt());
   }
 
   async lineClicked(line: Line) {
     if (this.showAddItemPanel) {
       await this.receiptItemAdd.componentOnReady();
       await this.receiptItemAdd.selectLine(line);
-    }
-  }
-
-  async reset(receiptItem: ReceiptItem) {
-    const clonedReceiptItem = cloneDeep(receiptItem);
-    clonedReceiptItem.valueLineId = null;
-    clonedReceiptItem.value = null;
-    clonedReceiptItem.labelLineId = null;
-    clonedReceiptItem.label = null;
-
-    try {
-      this.globalStore.updateReceiptItemOfCurrentReceipt(clonedReceiptItem.id, clonedReceiptItem);
-      const dto = this.mapper.dtoFromReceiptItem(clonedReceiptItem);
-      await this.receiptItemService.updateReceiptItem(clonedReceiptItem.id, dto);
-      this.updateLinesColor(receiptItem, 0x696969);
-    } catch(error) {
-      // show snackbar
-      this.globalStore.updateReceiptItemOfCurrentReceipt(receiptItem.id, receiptItem);
-      this.updateLinesColor(receiptItem);
     }
   }
 
@@ -99,13 +77,12 @@ export class AppReceiptExtraction {
   }
 
   public dropUpAnimationEnd = false;
-  async add(type: ReceiptItemType) {
-    this.currentReceiptItemType = type;
+  async showAddItem() {
     this.resetCurrentReceiptItem();
     await this.hideOverviewAndShowAddItems();
   }
 
-  async update(receiptItem: ReceiptItem) {
+  async showUpdateItem(receiptItem: ReceiptItem) {
     // clonedeep, as we would mutate the state directly, and immer.js does not like that
     // (it's also bad practice)
     this.receiptItemBeforeUpdate = cloneDeep(receiptItem);
@@ -194,20 +171,15 @@ export class AppReceiptExtraction {
         id: 0,
         label: null,
         labelLineId: null,
-        value: null,
+        price: null,
         valueLineId: null,
         receiptId: this.currentReceipt.id,
-        type: this.currentReceiptItemType,
         categoryId: this.currentReceiptItem?.categoryId
       };
   }
 
   async save() {
-    if (this.isTaxOrCategory()) {
-      await this.saveAndNext();
-    } else {
-      await this.saveAndClose();
-    }
+    await this.saveAndNext();
   }
 
   async saveAndNext() {
@@ -228,11 +200,6 @@ export class AppReceiptExtraction {
       await this.hideAddItem(false);
       this.submitted = false;
     }
-  }
-
-  isTaxOrCategory() {
-    return this.currentReceiptItem.type === ReceiptItemType.Tax
-      || this.currentReceiptItem.type === ReceiptItemType.Category;
   }
 
   async endExtraction() {
@@ -291,12 +258,10 @@ export class AppReceiptExtraction {
             {this.showEditItemsPanel && <receipt-items-edit
               total={this.total}
               date={this.date}
-              taxes={this.taxes}
-              categoryItems={this.categoryItems}
-              onResetEmpty={(item: CustomEvent<ReceiptItem>) => this.reset(item.detail)}
-              onDelete={(item: CustomEvent<ReceiptItem>) => this.delete(item.detail)}
-              onUpdate={(item: CustomEvent<ReceiptItem>) => this.update(item.detail)}
-              onAdd={(item: CustomEvent<ReceiptItemType>) => this.add(item.detail)}
+              items={this.items}
+              onDeleteItem={(item: CustomEvent<ReceiptItem>) => this.delete(item.detail)}
+              onShowUpdateItem={(item: CustomEvent<ReceiptItem>) => this.showUpdateItem(item.detail)}
+              onShowAddItem={() => this.showAddItem()}
             />}
           </div>
         </dropup-controls>

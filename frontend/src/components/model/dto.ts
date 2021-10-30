@@ -4,7 +4,8 @@ export interface ReceiptDto {
   imgUrl: string;
   angle?: number;
   transactionTotal?: number,
-  transactionDate?: Date,
+  // the date is being serialized
+  transactionDate?: string,
   lines: LineDto[];
   items: ReceiptItemDto[];
 }

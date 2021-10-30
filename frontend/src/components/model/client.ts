@@ -4,7 +4,7 @@ export interface Receipt {
   imgUrl: string;
   angle?: number;
   transactionTotal?: number;
-  transactionDate?: Date;
+  transactionDate?: string;
   lines: Line[];
   items: ReceiptItem[];
 }

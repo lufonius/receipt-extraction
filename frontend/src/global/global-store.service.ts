@@ -1,7 +1,6 @@
 import {Injectable} from "./di/injectable";
-import {Category, Line, Receipt, ReceiptItem, ReceiptItemType} from "../components/model/client";
+import {Category, Line, Receipt, ReceiptItem} from "../components/model/client";
 import {LocalstorageStore} from "./localstorage-store";
-import flyd from "flyd";
 
 @Injectable
 export class GlobalStore extends LocalstorageStore<GlobalState> {
@@ -61,31 +60,11 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
   selectCurrentReceiptImgUrl = () => this.select(state => state.currentReceipt.imgUrl);
   selectCurrentReceiptLines = () => this.select(state => state.currentReceipt.lines);
 
-  selectTotalOfCurrentReceipt = () => {
-    return this.select(state => {
-      return state.currentReceipt.items
-        .find(it => it.type === ReceiptItemType.Total);
-    });
-  }
+  selectTotalOfCurrentReceipt = () => this.select(state => state.currentReceipt.transactionTotal);
 
-  selectDateOfCurrentReceipt = () => {
-    return this.select(state => {
-      return state.currentReceipt.items
-        .find(it => it.type === ReceiptItemType.Date);
-    });
-  }
+  selectDateOfCurrentReceipt = () => this.select(state => state.currentReceipt.transactionDate);
 
-  selectTaxesOfCurrentReceipt = () => {
-    return this.select(state => {
-      return state.currentReceipt.items.filter(it => it.type === ReceiptItemType.Tax);
-    });
-  }
-
-  selectCategoryItemsOfCurrentReceipt = () => {
-    return this.select(state => {
-      return state.currentReceipt.items.filter(it => it.type === ReceiptItemType.Category);
-    });
-  }
+  selectCategoryItemsOfCurrentReceipt = () => this.select(state => state.currentReceipt.items);
 
   selectHasCurrentReceiptAnyItems = () => {
     return this.select(state => state.currentReceipt.items.length > 0);

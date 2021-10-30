@@ -1,9 +1,9 @@
-import {Component, Event, EventEmitter, h, Host, Method, Prop, State} from '@stencil/core';
-import {Category, Line, ReceiptItem, ReceiptItemType} from "../../../model/client";
+import {Component, Event, EventEmitter, h, Host, Method, Prop, State, Watch} from '@stencil/core';
+import {Category, Line, ReceiptItem} from "../../../model/client";
 import {Icons} from "../../../../global/icons-enum";
 import {Size} from "../../../common/size";
 import {cloneDeep} from "../../../model/cloneDeep";
-import {dateValidator, numberValidator, requiredValidator} from "../../../common/validator";
+import {numberValidator, requiredValidator} from "../../../common/validator";
 
 @Component({
   tag: 'receipt-item-add',
@@ -14,6 +14,10 @@ export class ReceiptItemAdd {
   @Event() receiptItemChange: EventEmitter<ReceiptItem>;
   @Event() formValidChange: EventEmitter<boolean>;
   @Prop() receiptItem: ReceiptItem;
+  @Watch("receiptItem") receiptItemInChange(receiptItem: ReceiptItem) {
+    this.priceAsText = receiptItem.price?.toFixed(2);
+  }
+  @State() priceAsText: string;
 
   @Prop() submitted: boolean = false;
   @Prop() categories: Category[] = [];
@@ -30,7 +34,7 @@ export class ReceiptItemAdd {
 
   @Method() async selectLine(line: Line) {
     if (this.valueInputFocused) {
-      this.setValue(line.text, line.id);
+      this.setPrice(line.text, line.id);
     } else if (this.labelInputFocused) {
       this.setLabel(line.text, line.id);
     }
@@ -40,13 +44,17 @@ export class ReceiptItemAdd {
     this.formValidChange.emit(this.valueInputValid && this.labelInputValid);
   }
 
-  private setValue(value: string, valueLineId?: number) {
+  private setPrice(priceAsText: string, valueLineId?: number) {
+    this.priceAsText = priceAsText;
+
     this.receiptItem = cloneDeep(this.receiptItem);
-    this.receiptItem.value = value;
     this.receiptItem.valueLineId = valueLineId;
+
+    if (numberValidator(this.priceAsText) === null) {
+      this.receiptItem.price = parseFloat(priceAsText);
+    }
+
     this.receiptItemChange.emit(this.receiptItem);
-    this.valueInputFocused = true;
-    this.labelInputFocused = false;
   }
 
   private setLabel(value: string, labelLineId?: number) {
@@ -70,19 +78,11 @@ export class ReceiptItemAdd {
     this.receiptItemChange.emit(this.receiptItem);
   }
 
-  private getValueValidator() {
-    if (this.receiptItem.type === ReceiptItemType.Date) {
-      return [requiredValidator, dateValidator];
-    } else {
-      return [requiredValidator, numberValidator];
-    }
-  }
-
   render() {
     return (
       <Host>
         <app-divider />
-        {this.receiptItem.type === ReceiptItemType.Category && <div class="category-item">
+        <div class="category-item">
           {this.categoryOfReceiptItem && <div class="category-item-circle" style={({ "background-color": "#" + this.categoryOfReceiptItem.color.toString(16) })} />}
 
           <div class="category-item-text-container">
@@ -103,9 +103,9 @@ export class ReceiptItemAdd {
             onPress={() => this.unassignCurrentCategory()}>
             <app-icon size={Size.sm} icon={Icons.DELETE} />
           </app-button-round>}
-        </div>}
+        </div>
 
-        {this.receiptItem.type === ReceiptItemType.Category && <app-divider />}
+        <app-divider />
 
         <div class="input">
           <div class="fill">
@@ -142,13 +142,13 @@ export class ReceiptItemAdd {
         <div class="input">
           <div class="fill">
             <app-input
-              label={`Select the ${this.receiptItem.type === ReceiptItemType.Date ? "date" : "value"} on the receipt`}
-              value={this.receiptItem.value}
+              label={`Select the article name on the receipt`}
+              value={this.priceAsText}
               focused={this.valueInputFocused}
-              validators={this.getValueValidator()}
+              validators={[requiredValidator, numberValidator]}
               showErrors={this.submitted}
               onValidChange={({ detail: valid }) => { this.valueInputValid = valid; this.onValidityChange(); }}
-              onInputValueChange={({ detail: text }) => this.setValue(text, this.receiptItem.valueLineId)}
+              onInputValueChange={({ detail: text }) => this.setPrice(text, this.receiptItem.valueLineId)}
               onInputFocus={() => this.valueInputFocused = true}
               onInputBlur={() => this.valueInputFocused = false}
               showMobileKeyboard={this.labelInputShowKeyboard}
@@ -169,7 +169,7 @@ export class ReceiptItemAdd {
           >
             <app-icon svgUrl="assets/custom-icons.svg#keyboard" />
           </app-button-round>}
-          <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setValue("", null)}>
+          <app-button-round class="margin-left-s" size={Size.l} onPress={() => this.setPrice(null, null)}>
             <app-icon size={Size.sm} icon={Icons.DELETE} />
           </app-button-round>
         </div>

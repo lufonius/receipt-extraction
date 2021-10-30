@@ -10,13 +10,14 @@ export class AppInput {
 
   @Event() inputFocus: EventEmitter<void>;
   @Event() inputBlur: EventEmitter<void>;
-  @Event() inputValueChange: EventEmitter<string>;
+  @Event() inputValueChange: EventEmitter<any>;
   @Event() validChange: EventEmitter<boolean>;
   @State() errors: string[] = [];
 
   @Prop() label: string;
   @Prop() placeholder: string;
-  @Prop() value: string;
+  @Prop() value: any;
+  @Prop() type: string = "text";
   @Watch("value") onValueChange(value: string) {
     this.runValidators(value);
   }
@@ -101,7 +102,7 @@ export class AppInput {
         <label htmlFor="value">{ this.label }</label>
         <input
           id="value"
-          type="text"
+          type={this.type}
           value={this.value}
           class={({ "error-input": this.showErrors && this.errors.length > 0 })}
           placeholder={this.placeholder}
