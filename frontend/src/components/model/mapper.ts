@@ -1,6 +1,6 @@
 import {Injectable} from "../../global/di/injectable";
-import {CategoryDto, ReceiptDto, ReceiptItemDto, ReceiptItemTypeDto, ReceiptStatusDto} from "./dto";
-import {Category, Line, Receipt, ReceiptItem, ReceiptItemType, ReceiptStatus} from "./client";
+import {CategoryDto, ReceiptDto, ReceiptItemDto, ReceiptStatusDto} from "./dto";
+import {Category, Line, Receipt, ReceiptItem, ReceiptStatus} from "./client";
 import {cloneDeep} from "./cloneDeep";
 import { arrayToDict } from './array-to-dict';
 import { dictToArray } from './dict-to-array';
@@ -11,8 +11,7 @@ export class Mapper {
     const clonedReceiptItem = cloneDeep<ReceiptDto, Receipt>(
       receiptDto,
       {
-        ".status": (status: ReceiptStatusDto) => ReceiptStatus[status],
-        ".items.type": (type: ReceiptItemTypeDto) => ReceiptItemType[type]
+        ".status": (status: ReceiptStatusDto) => ReceiptStatus[status]
       }
     );
 
@@ -52,20 +51,10 @@ export class Mapper {
   }
 
   receiptItemFromDto(receiptItemDto: ReceiptItemDto): ReceiptItem {
-    return cloneDeep<ReceiptItemDto, ReceiptItem>(
-      receiptItemDto,
-      {
-        ".type": (type: ReceiptItemTypeDto) => ReceiptItemType[type]
-      }
-    )
+    return cloneDeep<ReceiptItemDto, ReceiptItem>(receiptItemDto)
   }
 
   dtoFromReceiptItem(receiptItem: ReceiptItem): ReceiptItemDto {
-    return cloneDeep<ReceiptItem, ReceiptItemDto>(
-      receiptItem,
-      {
-        ".type": (type: ReceiptItemType) => ReceiptItemTypeDto[type]
-      }
-    )
+    return cloneDeep<ReceiptItem, ReceiptItemDto>(receiptItem)
   }
 }

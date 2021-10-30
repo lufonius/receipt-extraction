@@ -3,6 +3,8 @@ export interface Receipt {
   status: ReceiptStatus;
   imgUrl: string;
   angle?: number;
+  transactionTotal?: number;
+  transactionDate?: Date;
   lines: Line[];
   items: ReceiptItem[];
 }
@@ -10,19 +12,11 @@ export interface Receipt {
 export interface ReceiptItem {
   id: number;
   receiptId: number;
-  type: ReceiptItemType;
   label: string;
   labelLineId: number;
-  value?: string;
+  price?: number;
   valueLineId?: number;
   categoryId?: number;
-}
-
-export enum ReceiptItemType {
-  Category = "Category",
-  Tax = "Tax",
-  Total = "Total",
-  Date = "Date"
 }
 
 export enum ReceiptStatus {
