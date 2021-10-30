@@ -2,7 +2,6 @@ package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import java.util.*
 
@@ -64,17 +63,15 @@ fun createTestReceiptItemDbo(
         amountLine: LineDbo,
         receiptDbo: ReceiptDbo,
         categoryDbo: CategoryDbo?,
-        type: ReceiptItemType = ReceiptItemType.Category,
         label: String = "testLabel",
-        value: String = "0.95"
+        price: Float = 0.95F
 ) = ReceiptItemDbo(
     id = id,
         labelLine = labelLine,
         valueLine = amountLine,
         receipt = receiptDbo,
         category = categoryDbo,
-        type = type,
         label = label,
-        value = value
+        price = price
 )
 

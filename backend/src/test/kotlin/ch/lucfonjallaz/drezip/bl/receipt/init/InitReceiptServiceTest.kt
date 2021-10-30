@@ -4,9 +4,7 @@ import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDbo
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDboRepository
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus
 import ch.lucfonjallaz.drezip.bl.receipt.UUIDGenerator
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
 import io.mockk.*
@@ -66,22 +64,6 @@ class InitReceiptServiceTest {
 
         assertThat(receipt.imgUrl).isEqualTo("https://gaggi.com/bongo.jpg")
         assertThat(receipt.status).isEqualTo(ReceiptStatus.Uploaded)
-
-        val receiptItemDbosSaved = slot<List<ReceiptItemDbo>>()
-        verify { receiptItemDboRepository.saveAll(capture(receiptItemDbosSaved)) }
-
-        assertThat(receiptItemDbosSaved.captured)
-                .usingRecursiveFieldByFieldElementComparator()
-                .containsExactlyInAnyOrder(
-                        ReceiptItemDbo(
-                                type = ReceiptItemType.Total,
-                                receipt = receiptDbo
-                        ),
-                        ReceiptItemDbo(
-                                type = ReceiptItemType.Date,
-                                receipt = receiptDbo
-                        )
-                )
     }
 
     @Test
@@ -123,9 +105,6 @@ class InitReceiptServiceTest {
         val lineDbosSaved = slot<List<LineDbo>>()
         verify { lineDboRepository.saveAll(capture(lineDbosSaved)) }
 
-        val receiptItemDbosSaved = slot<List<ReceiptItemDbo>>()
-        verify { receiptItemDboRepository.saveAll(capture(receiptItemDbosSaved)) }
-
         assertThat(lineDbosSaved.captured)
                 .usingRecursiveFieldByFieldElementComparator()
                 .containsExactly(
@@ -139,19 +118,6 @@ class InitReceiptServiceTest {
                                 bottomLeftX = 6,
                                 bottomLeftY = 7,
                                 text = "extracted text",
-                                receipt = receiptDboOnSaveWithoutLines
-                        )
-                )
-
-        assertThat(receiptItemDbosSaved.captured)
-                .usingRecursiveFieldByFieldElementComparator()
-                .containsExactlyInAnyOrder(
-                        ReceiptItemDbo(
-                                type = ReceiptItemType.Total,
-                                receipt = receiptDboOnSaveWithoutLines
-                        ),
-                        ReceiptItemDbo(
-                                type = ReceiptItemType.Date,
                                 receipt = receiptDboOnSaveWithoutLines
                         )
                 )

@@ -5,7 +5,6 @@ import ch.lucfonjallaz.drezip.bl.category.CategoryDto
 import ch.lucfonjallaz.drezip.bl.receipt.*
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDto
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -71,10 +70,9 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		val receiptItemToBeSaved = ReceiptItemDto(
 				receiptId = receiptDbo.id,
-				type = ReceiptItemType.Category,
 				label = "Bananen",
 				labelLineId = firstLineDbo.id,
-				value = "0.95",
+				price = 0.95F,
 				valueLineId = secondLineDbo.id,
 				categoryId = categoryDbo.id
 		)
@@ -99,11 +97,10 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		val secondLineId = receiptDto.lines?.get(1)?.id ?: throw Exception("line at index 1 not found")
 
 		val inProgressReceiptDto = startReceiptExtraction(receiptDto.id)
-		setTotalAndDateOfReceipt(inProgressReceiptDto, firstLineId, secondLineId)
+		setTotalAndDateOfReceipt(inProgressReceiptDto)
 		val receiptItemDto = addReceiptItemWithCategory(firstLineId, secondLineId, receiptDto.id)
 		editReceiptItem(receiptItemDto)
 		deleteReceiptItem(receiptItemDto.id)
-		addReceiptItemWithTax(firstLineId, secondLineId, receiptDto.id)
 		endReceiptExtraction(receiptDto.id)
 	}
 
@@ -145,41 +142,20 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 	}
 
 	private fun setTotalAndDateOfReceipt(
-			receiptDto: ReceiptDto,
-			totalLineId: Int,
-			dateLineId: Int
+			receiptDto: ReceiptDto
 	) {
 		val restTemplate = TestRestTemplate()
-		val totalReceiptItem = receiptDto.items?.find { it.type == ReceiptItemType.Total } ?: throw Exception("no total receipt item found, but there should have been one")
-		val totalReceiptItemToBeUpdated = totalReceiptItem.copy(
-				value = "0.97",
-				valueLineId = totalLineId
+		val newDate = Date()
+		val updateReceiptDto = receiptDto.copy(
+				transactionTotal = 0.95F,
+				transactionDate = newDate
 		)
 
-		val totalToUpdateRequest = RequestEntity(totalReceiptItemToBeUpdated, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/item/${receiptDto.id}"))
-		val totalUpdateResponse = restTemplate.exchange(totalToUpdateRequest, ReceiptItemDto::class.java)
+		val updateRequest = RequestEntity(updateReceiptDto, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/${receiptDto.id}"))
+		val updateResponse = restTemplate.exchange(updateRequest, ReceiptDto::class.java).body
 
-		val updatedTotalReceiptItemDto = totalUpdateResponse.body ?: throw Exception("did not update receipt item dto")
-		assertThat(updatedTotalReceiptItemDto.value).isEqualTo("0.97")
-		assertThat(updatedTotalReceiptItemDto.valueLineId).isEqualTo(totalLineId)
-
-
-		val dateReceiptItem = receiptDto.items?.find { it.type == ReceiptItemType.Date } ?: throw Exception("no date receipt item found, but there should have been one")
-		val dateReceiptItemToBeUpdated = dateReceiptItem.copy(
-				value = "26.04.1997",
-				valueLineId = dateLineId,
-				label = "Datum",
-				labelLineId = totalLineId
-		)
-
-		val dateToUpdateRequest = RequestEntity(dateReceiptItemToBeUpdated, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/item/${receiptDto.id}"))
-		val dateUpdateResponse = restTemplate.exchange(dateToUpdateRequest, ReceiptItemDto::class.java)
-
-		val updateddateReceiptItemDto = dateUpdateResponse.body ?: throw Exception("did not update receipt item dto")
-		assertThat(updateddateReceiptItemDto.value).isEqualTo("26.04.1997")
-		assertThat(updateddateReceiptItemDto.valueLineId).isEqualTo(dateLineId)
-		assertThat(updateddateReceiptItemDto.label).isEqualTo("Datum")
-		assertThat(updateddateReceiptItemDto.labelLineId).isEqualTo(totalLineId)
+		assertThat(updateResponse?.transactionTotal).isEqualTo(0.95F)
+		assertThat(updateResponse?.transactionDate).isEqualTo(newDate)
 	}
 
 	private fun addReceiptItemWithCategory(labelLineId: Int, amountLineId: Int, receiptId: Int): ReceiptItemDto {
@@ -196,10 +172,9 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		val receiptItemToBeSaved = ReceiptItemDto(
 				receiptId = receiptId,
-				type = ReceiptItemType.Category,
 				label = "Bananen",
 				labelLineId = labelLineId,
-				value = "0.95",
+				price = 0.95F,
 				valueLineId = amountLineId,
 				categoryId = category.id
 		)
@@ -220,7 +195,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 	private fun editReceiptItem(receiptItemDtoToBeEdited: ReceiptItemDto) {
 		val editedReceiptItemDto = receiptItemDtoToBeEdited.copy(
-				value = "70.88",
+				price = 70.88F,
 				label = "editedLabel"
 		)
 
@@ -244,32 +219,6 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 		val entity = entityManager.find(ReceiptItemDbo::class.java, id)
 		assertThat(entity).isNull()
-	}
-
-	private fun addReceiptItemWithTax(labelLineId: Int, amountLineId: Int, receiptId: Int): ReceiptItemDto {
-		val restTemplate = TestRestTemplate()
-		val receiptItemToBeSaved = ReceiptItemDto(
-				receiptId = receiptId,
-				type = ReceiptItemType.Tax,
-				label = "Tax",
-				labelLineId = labelLineId,
-				value = "0.95",
-				valueLineId = amountLineId,
-				categoryId = null
-		)
-
-		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(receiptItemToBeSaved, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/item"))
-		val savedReceiptItemResponse = restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
-
-		val savedReceiptItem = savedReceiptItemResponse.body ?: throw Exception("did not save receipt item")
-
-		assertThat(savedReceiptItem.id).isNotNull
-		assertThat(savedReceiptItem)
-				.usingRecursiveComparison()
-				.ignoringFields("id")
-				.isEqualTo(receiptItemToBeSaved)
-
-		return savedReceiptItem
 	}
 
 	private fun endReceiptExtraction(receiptId: Int) {

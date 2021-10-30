@@ -1,9 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
 import ch.lucfonjallaz.drezip.bl.receipt.*
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
 import org.springframework.stereotype.Component
@@ -23,7 +20,6 @@ class InitReceiptService (
         val fileStorageService: FileStorageService,
         val lineDboRepository: LineDboRepository,
         val receiptDboRepository: ReceiptDboRepository,
-        val receiptItemDboRepository: ReceiptItemDboRepository,
         val uuidGenerator: UUIDGenerator,
         val entityManager: EntityManager
 ) {
@@ -42,7 +38,6 @@ class InitReceiptService (
             ))
             val lineDbos = extractedText.lines.map { mapToLineDbo(it.text, it.boundingBox, receiptDbo) }
             lineDboRepository.saveAll(lineDbos)
-            createInitialReceiptItems(receiptDbo)
 
             entityManager.refresh(receiptDbo)
             return receiptDbo
@@ -52,8 +47,6 @@ class InitReceiptService (
                     imgUrl = imageUrl,
                     uploadedAt = Date()
             ))
-
-            createInitialReceiptItems(receiptDbo)
 
             entityManager.refresh(receiptDbo)
             return receiptDbo
@@ -72,11 +65,4 @@ class InitReceiptService (
             text = text,
             receipt = receipt
     )
-
-    private fun createInitialReceiptItems(receiptDbo: ReceiptDbo) {
-        val totalReceiptItemDbo = ReceiptItemDbo(type = ReceiptItemType.Total, receipt = receiptDbo)
-        val dateReceiptItemDbo = ReceiptItemDbo(type = ReceiptItemType.Date, receipt = receiptDbo)
-
-        receiptItemDboRepository.saveAll(listOf(totalReceiptItemDbo, dateReceiptItemDbo))
-    }
 }

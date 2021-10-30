@@ -1,14 +1,11 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
-import io.mockk.InternalPlatformDsl.toArray
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.BDDAssumptions.given
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -36,31 +33,12 @@ class ReceiptServiceTest {
                 labelLine = lineDboWithId1,
                 amountLine = lineDboWithId1,
                 receiptDbo = receiptDbo,
-                categoryDbo = categoryDbo,
-                type = ReceiptItemType.Category
+                categoryDbo = categoryDbo
         )
 
         val exc = assertThrows<Exception> { receiptService.upsertReceiptItem(dbo) }
 
         assertThat(exc.message).isEqualTo("amount and label cannot be the same box on the receipt. select different lines.")
-    }
-
-    @Test
-    fun `should validate that a receiptItem of type Tax has no category set`() {
-        val receiptDbo = createTestReceiptDbo(status = ReceiptStatus.InProgress)
-        val categoryDbo = createTestCategoryDbo()
-        val lineDboWithId1 = createTestLineDbo(receiptDbo, id = 1)
-        val lineDboWithId2 = createTestLineDbo(receiptDbo, id = 2)
-        val dbo = createTestReceiptItemDbo(
-                labelLine = lineDboWithId1,
-                amountLine = lineDboWithId2,
-                receiptDbo = receiptDbo,
-                categoryDbo = categoryDbo,
-                type = ReceiptItemType.Tax
-        )
-        val exc = assertThrows<Exception> { receiptService.upsertReceiptItem(dbo) }
-
-        assertThat(exc.message).isEqualTo("If you specify a ReceiptItem Type of 'Tax', you must not pass a category")
     }
 
     @ParameterizedTest
@@ -74,8 +52,7 @@ class ReceiptServiceTest {
                 labelLine = lineDboWithId1,
                 amountLine = lineDboWithId2,
                 receiptDbo = receiptDbo,
-                categoryDbo = categoryDbo,
-                type = ReceiptItemType.Category
+                categoryDbo = categoryDbo
         )
 
         val exc = assertThrows<Exception> { receiptService.upsertReceiptItem(dbo) }

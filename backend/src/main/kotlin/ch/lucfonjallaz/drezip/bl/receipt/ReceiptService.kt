@@ -3,7 +3,6 @@ package ch.lucfonjallaz.drezip.bl.receipt
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus.*
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
-import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemType
 import org.springframework.stereotype.Component
 import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
@@ -21,7 +20,7 @@ class ReceiptService(
     }
 
     fun updateReceipt(updateDbo: ReceiptDbo): ReceiptDbo {
-        if(receiptDboRepository.existsById(updateDbo.id)) {
+        if (receiptDboRepository.existsById(updateDbo.id)) {
             return receiptDboRepository.save(updateDbo)
         } else {
             throw EntityNotFoundException("could not find receipt entity with id ${updateDbo.id}")
@@ -54,7 +53,6 @@ class ReceiptService(
     }
 
     fun deleteReceiptItem(id: Int) {
-        validateBeforeDelete(id)
         receiptItemDboRepository.deleteById(id)
     }
 
@@ -69,22 +67,10 @@ class ReceiptService(
             throw Exception("You can only add ReceiptItems to Receipts which have the status 'InProgress'")
         }
 
-        if (dbo.type == ReceiptItemType.Tax && dbo.category != null) {
-            throw Exception("If you specify a ReceiptItem Type of 'Tax', you must not pass a category")
-        }
-
         if (dbo.valueLine != null && dbo.labelLine != null) {
             if (dbo.valueLine?.id == dbo.labelLine?.id) {
                 throw Exception("amount and label cannot be the same box on the receipt. select different lines.")
             }
-        }
-    }
-
-    private fun validateBeforeDelete(id: Int) {
-        val receiptItem = receiptItemDboRepository.getOne(id)
-
-        if (receiptItem.type == ReceiptItemType.Total || receiptItem.type == ReceiptItemType.Date) {
-            throw Exception("receipt items with type ${receiptItem.type} must always be present and cannot be deleted")
         }
     }
 }
