@@ -102,6 +102,8 @@ export namespace Components {
         "label": string;
     }
     interface ReceiptDateEdit {
+        "date": string;
+        "submitted": boolean;
     }
     interface ReceiptItemAdd {
         "categories": Category[];
@@ -439,6 +441,10 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     interface ReceiptDateEdit {
+        "date"?: string;
+        "onDateChange"?: (event: CustomEvent<string>) => void;
+        "onValidChange"?: (event: CustomEvent<boolean>) => void;
+        "submitted"?: boolean;
     }
     interface ReceiptItemAdd {
         "categories"?: Category[];

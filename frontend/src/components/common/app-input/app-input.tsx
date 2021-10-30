@@ -85,6 +85,8 @@ export class AppInput {
   private onInput(input: string) {
     this.runValidators(input);
 
+    console.log(this.errors);
+
     if (this.errors.length === 0) {
       this.inputValueChange.emit(input);
       this.value = input;

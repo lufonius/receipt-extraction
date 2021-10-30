@@ -34,6 +34,7 @@ export class AppReceiptExtraction {
   @State() public showEditItemsPanel: boolean = true;
   @State() public showAddItemPanel: boolean = false;
   @State() public showEditTotalPanel: boolean = false;
+  @State() public showEditDatePanel: boolean = false;
   public receiptItemBeforeUpdate: ReceiptItem;
   @State() public currentReceiptItem: ReceiptItem;
   @State() submitted: boolean = false;
@@ -92,8 +93,11 @@ export class AppReceiptExtraction {
   }
 
   async showEditTotal() {
-    console.log("here");
     await this.hideDropupAndExecuteFn(true, () => this.showEditTotalPanel = true);
+  }
+
+  async showEditDate() {
+    await this.hideDropupAndExecuteFn(true, () => this.showEditDatePanel = true);
   }
 
   async hideDropupAndExecuteFn(ignoreValidity: boolean, fn: () => void) {
@@ -119,6 +123,14 @@ export class AppReceiptExtraction {
     this.hideDropupAndExecuteFn(ignoreValidity, () => {
       this.showEditItemsPanel = true;
       this.showEditTotalPanel = false;
+      this.submitted = false;
+    });
+  }
+
+  async closeEditDate(ignoreValidity: boolean) {
+    this.hideDropupAndExecuteFn(ignoreValidity, () => {
+      this.showEditItemsPanel = true;
+      this.showEditDatePanel = false;
       this.submitted = false;
     });
   }
@@ -211,6 +223,7 @@ export class AppReceiptExtraction {
       this.currentReceipt = cloneDeep(this.currentReceipt);
       this.snackbarService.showSuccessSnack("Saved");
       this.closeEditTotal(true);
+      this.closeEditDate(true);
     } catch {
       this.snackbarService.showFailureSnack("Failure");
     }
@@ -272,11 +285,32 @@ export class AppReceiptExtraction {
             </app-button-round>
           </div>}
 
+          {this.showEditDatePanel && <div class="controls" slot="controls">
+            <app-button-round size={Size.xl} onPress={() => this.closeEditDate(true)} classes="button-round--primary" label="close">
+              <app-icon icon={Icons.CLOSE} />
+            </app-button-round>
+            <div class="fill" />
+            <div class="spacer-xs" />
+            <app-button-round size={Size.xl} onPress={async () => {
+              if (this.valid) { await this.saveReceiptAndClose(); }
+              this.submitted = true;
+            }} classes="button-round--primary" label="save">
+              <app-icon icon={Icons.SAVE} />
+            </app-button-round>
+          </div>}
+
           <div slot="dropup">
             {this.showEditTotalPanel && <receipt-total-edit
-              total={this.total}
+              total={this.currentReceipt.transactionTotal}
               onTotalChange={({detail: total}) => this.total = total}
               submitted={this.submitted}
+            />}
+
+            {this.showEditDatePanel && <receipt-date-edit
+              date={this.currentReceipt.transactionDate}
+              onDateChange={({ detail: date }) => this.date = date}
+              submitted={this.submitted}
+              onValidChange={({ detail: valid }) => this.valid = valid}
             />}
 
             {this.showAddItemPanel && <receipt-item-add
@@ -295,6 +329,7 @@ export class AppReceiptExtraction {
               onShowUpdateItem={(item: CustomEvent<ReceiptItem>) => this.showUpdateItem(item.detail)}
               onShowAddItem={() => this.showAddItem()}
               onShowUpdateTotal={() => this.showEditTotal()}
+              onShowUpdateDate={() => this.showEditDate()}
             />}
           </div>
         </dropup-controls>
