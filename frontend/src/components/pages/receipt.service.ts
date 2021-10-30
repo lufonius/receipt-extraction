@@ -1,4 +1,5 @@
 import {Injectable} from "../../global/di/injectable";
+import {CategoryDto, ReceiptDto} from "../model/dto";
 
 @Injectable
 export class ReceiptService {
@@ -24,5 +25,15 @@ export class ReceiptService {
       console.error("request failed. response: ", response);
       throw Error("starting receipt extraction did not work");
     }
+  }
+
+  async update(id: number, receiptDto: ReceiptDto): Promise<void> {
+    return await fetch(`${this.baseApiUrl}/receipt/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(receiptDto)
+    }).then(r => undefined);
   }
 }

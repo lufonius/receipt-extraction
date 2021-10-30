@@ -38,6 +38,20 @@ export class Mapper {
     return clonedReceiptItem;
   }
 
+  receiptDtoFromReceipt(receipt: Receipt): ReceiptDto {
+    return {
+      id: receipt.id,
+      imgUrl: receipt.imgUrl,
+      status: receipt.status as any,
+      angle: receipt.angle,
+      uploadedAt: receipt.uploadedAt,
+      transactionTotal: receipt.transactionTotal,
+      transactionDate: receipt.transactionDate,
+      lines: null,
+      items: null
+    };
+  }
+
   private setColorOfLineIfReferenced(
     line: Line,
     category: CategoryDto

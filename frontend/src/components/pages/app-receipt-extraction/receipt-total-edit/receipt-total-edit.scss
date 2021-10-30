@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  align-items: flex-end;
+
+  padding: var(--size-s);
+
+  .margin-left-s {
+    margin-left: var(--size-s);
+  }
+
+  app-input {
+    flex: 1;
+  }
+}

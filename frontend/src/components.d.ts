@@ -101,6 +101,8 @@ export namespace Components {
         "emptyLabel": string;
         "label": string;
     }
+    interface ReceiptDateEdit {
+    }
     interface ReceiptItemAdd {
         "categories": Category[];
         "receiptItem": ReceiptItem;
@@ -113,6 +115,10 @@ export namespace Components {
         "total": number;
     }
     interface ReceiptLines {
+    }
+    interface ReceiptTotalEdit {
+        "submitted": boolean;
+        "total"?: number;
     }
     interface SelectCategoryDialog {
         "hide": () => Promise<void>;
@@ -265,6 +271,12 @@ declare global {
         prototype: HTMLListItemElement;
         new (): HTMLListItemElement;
     };
+    interface HTMLReceiptDateEditElement extends Components.ReceiptDateEdit, HTMLStencilElement {
+    }
+    var HTMLReceiptDateEditElement: {
+        prototype: HTMLReceiptDateEditElement;
+        new (): HTMLReceiptDateEditElement;
+    };
     interface HTMLReceiptItemAddElement extends Components.ReceiptItemAdd, HTMLStencilElement {
     }
     var HTMLReceiptItemAddElement: {
@@ -282,6 +294,12 @@ declare global {
     var HTMLReceiptLinesElement: {
         prototype: HTMLReceiptLinesElement;
         new (): HTMLReceiptLinesElement;
+    };
+    interface HTMLReceiptTotalEditElement extends Components.ReceiptTotalEdit, HTMLStencilElement {
+    }
+    var HTMLReceiptTotalEditElement: {
+        prototype: HTMLReceiptTotalEditElement;
+        new (): HTMLReceiptTotalEditElement;
     };
     interface HTMLSelectCategoryDialogElement extends Components.SelectCategoryDialog, HTMLStencilElement {
     }
@@ -314,9 +332,11 @@ declare global {
         "app-snackbar": HTMLAppSnackbarElement;
         "dropup-controls": HTMLDropupControlsElement;
         "list-item": HTMLListItemElement;
+        "receipt-date-edit": HTMLReceiptDateEditElement;
         "receipt-item-add": HTMLReceiptItemAddElement;
         "receipt-items-edit": HTMLReceiptItemsEditElement;
         "receipt-lines": HTMLReceiptLinesElement;
+        "receipt-total-edit": HTMLReceiptTotalEditElement;
         "select-category-dialog": HTMLSelectCategoryDialogElement;
     }
 }
@@ -418,6 +438,8 @@ declare namespace LocalJSX {
         "emptyLabel"?: string;
         "label"?: string;
     }
+    interface ReceiptDateEdit {
+    }
     interface ReceiptItemAdd {
         "categories"?: Category[];
         "onFormValidChange"?: (event: CustomEvent<boolean>) => void;
@@ -439,6 +461,11 @@ declare namespace LocalJSX {
     }
     interface ReceiptLines {
         "onLineClick"?: (event: CustomEvent<Line>) => void;
+    }
+    interface ReceiptTotalEdit {
+        "onTotalChange"?: (event: CustomEvent<number>) => void;
+        "submitted"?: boolean;
+        "total"?: number;
     }
     interface SelectCategoryDialog {
         "onSelectedCategoryIdChange"?: (event: CustomEvent<number>) => void;
@@ -469,9 +496,11 @@ declare namespace LocalJSX {
         "app-snackbar": AppSnackbar;
         "dropup-controls": DropupControls;
         "list-item": ListItem;
+        "receipt-date-edit": ReceiptDateEdit;
         "receipt-item-add": ReceiptItemAdd;
         "receipt-items-edit": ReceiptItemsEdit;
         "receipt-lines": ReceiptLines;
+        "receipt-total-edit": ReceiptTotalEdit;
         "select-category-dialog": SelectCategoryDialog;
     }
 }
@@ -503,9 +532,11 @@ declare module "@stencil/core" {
             "app-snackbar": LocalJSX.AppSnackbar & JSXBase.HTMLAttributes<HTMLAppSnackbarElement>;
             "dropup-controls": LocalJSX.DropupControls & JSXBase.HTMLAttributes<HTMLDropupControlsElement>;
             "list-item": LocalJSX.ListItem & JSXBase.HTMLAttributes<HTMLListItemElement>;
+            "receipt-date-edit": LocalJSX.ReceiptDateEdit & JSXBase.HTMLAttributes<HTMLReceiptDateEditElement>;
             "receipt-item-add": LocalJSX.ReceiptItemAdd & JSXBase.HTMLAttributes<HTMLReceiptItemAddElement>;
             "receipt-items-edit": LocalJSX.ReceiptItemsEdit & JSXBase.HTMLAttributes<HTMLReceiptItemsEditElement>;
             "receipt-lines": LocalJSX.ReceiptLines & JSXBase.HTMLAttributes<HTMLReceiptLinesElement>;
+            "receipt-total-edit": LocalJSX.ReceiptTotalEdit & JSXBase.HTMLAttributes<HTMLReceiptTotalEditElement>;
             "select-category-dialog": LocalJSX.SelectCategoryDialog & JSXBase.HTMLAttributes<HTMLSelectCategoryDialogElement>;
         }
     }

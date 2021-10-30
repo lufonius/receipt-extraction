@@ -33,6 +33,7 @@ export class AppReceiptExtraction {
   @State() public showDropup: boolean = false;
   @State() public showEditItemsPanel: boolean = true;
   @State() public showAddItemPanel: boolean = false;
+  @State() public showEditTotalPanel: boolean = false;
   public receiptItemBeforeUpdate: ReceiptItem;
   @State() public currentReceiptItem: ReceiptItem;
   @State() submitted: boolean = false;
@@ -79,7 +80,7 @@ export class AppReceiptExtraction {
   public dropUpAnimationEnd = false;
   async showAddItem() {
     this.resetCurrentReceiptItem();
-    await this.hideOverviewAndShowAddItems();
+    await this.hideDropupAndExecuteFn(true, () => this.showAddItemPanel = true);
   }
 
   async showUpdateItem(receiptItem: ReceiptItem) {
@@ -87,28 +88,39 @@ export class AppReceiptExtraction {
     // (it's also bad practice)
     this.receiptItemBeforeUpdate = cloneDeep(receiptItem);
     this.currentReceiptItem = cloneDeep(receiptItem);
-    await this.hideOverviewAndShowAddItems();
+    await this.hideDropupAndExecuteFn(true, () => this.showAddItemPanel = true);
   }
 
-  async hideOverviewAndShowAddItems() {
-    this.showDropup = false;
-    await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
-
-    this.showEditItemsPanel = false;
-    this.showAddItemPanel = true;
-    this.showDropup = true;
+  async showEditTotal() {
+    console.log("here");
+    await this.hideDropupAndExecuteFn(true, () => this.showEditTotalPanel = true);
   }
 
-  async hideAddItem(ignoreValidity: boolean) {
+  async hideDropupAndExecuteFn(ignoreValidity: boolean, fn: () => void) {
     if (this.valid || ignoreValidity) {
       this.showDropup = false;
       await waitFor(() => this.dropUpAnimationEnd === this.showDropup);
 
-      this.showEditItemsPanel = true;
-      this.showAddItemPanel = false;
+      this.showEditItemsPanel = false;
+      fn();
       this.showDropup = true;
-      this.submitted = false;
     }
+  }
+
+  async closeAddItem(ignoreValidity: boolean) {
+      this.hideDropupAndExecuteFn(ignoreValidity, () => {
+        this.showEditItemsPanel = true;
+        this.showAddItemPanel = false;
+        this.submitted = false;
+      });
+  }
+
+  async closeEditTotal(ignoreValidity: boolean) {
+    this.hideDropupAndExecuteFn(ignoreValidity, () => {
+      this.showEditItemsPanel = true;
+      this.showEditTotalPanel = false;
+      this.submitted = false;
+    });
   }
 
   async saveItem() {
@@ -178,11 +190,7 @@ export class AppReceiptExtraction {
       };
   }
 
-  async save() {
-    await this.saveAndNext();
-  }
-
-  async saveAndNext() {
+  async saveItemAndNext() {
     this.submitted = true;
 
     if (this.valid) {
@@ -192,15 +200,22 @@ export class AppReceiptExtraction {
     }
   }
 
-  async saveAndClose() {
-    this.submitted = true;
+  async saveReceiptAndClose() {
+    try {
+      this.currentReceipt.transactionTotal = this.total;
+      this.currentReceipt.transactionDate = this.date;
 
-    if (this.valid) {
-      await this.saveItem();
-      await this.hideAddItem(false);
-      this.submitted = false;
+      const dto = this.mapper.receiptDtoFromReceipt(this.currentReceipt);
+      await this.receiptService.update(this.currentReceipt.id, dto);
+      this.globalStore.setCurrentReceipt(this.currentReceipt);
+      this.currentReceipt = cloneDeep(this.currentReceipt);
+      this.snackbarService.showSuccessSnack("Saved");
+      this.closeEditTotal(true);
+    } catch {
+      this.snackbarService.showFailureSnack("Failure");
     }
   }
+
 
   async endExtraction() {
     try {
@@ -236,17 +251,34 @@ export class AppReceiptExtraction {
           </div>}
 
           {this.showAddItemPanel && <div class="controls" slot="controls">
-            <app-button-round size={Size.xl} onPress={() => this.hideAddItem(true)} classes="button-round--primary" label="close">
+            <app-button-round size={Size.xl} onPress={() => this.closeAddItem(true)} classes="button-round--primary" label="close">
               <app-icon icon={Icons.CLOSE} />
             </app-button-round>
             <div class="fill" />
             <div class="spacer-xs" />
-            <app-button-round size={Size.xl} onPress={async () => { await this.save(); }} classes="button-round--primary" label="save">
+            <app-button-round size={Size.xl} onPress={async () => { await this.saveItemAndNext(); }} classes="button-round--primary" label="save">
+              <app-icon icon={Icons.SAVE} />
+            </app-button-round>
+          </div>}
+
+          {this.showEditTotalPanel && <div class="controls" slot="controls">
+            <app-button-round size={Size.xl} onPress={() => this.closeEditTotal(true)} classes="button-round--primary" label="close">
+              <app-icon icon={Icons.CLOSE} />
+            </app-button-round>
+            <div class="fill" />
+            <div class="spacer-xs" />
+            <app-button-round size={Size.xl} onPress={async () => { await this.saveReceiptAndClose(); }} classes="button-round--primary" label="save">
               <app-icon icon={Icons.SAVE} />
             </app-button-round>
           </div>}
 
           <div slot="dropup">
+            {this.showEditTotalPanel && <receipt-total-edit
+              total={this.total}
+              onTotalChange={({detail: total}) => this.total = total}
+              submitted={this.submitted}
+            />}
+
             {this.showAddItemPanel && <receipt-item-add
               receiptItem={this.currentReceiptItem}
               submitted={this.submitted}
@@ -262,6 +294,7 @@ export class AppReceiptExtraction {
               onDeleteItem={(item: CustomEvent<ReceiptItem>) => this.delete(item.detail)}
               onShowUpdateItem={(item: CustomEvent<ReceiptItem>) => this.showUpdateItem(item.detail)}
               onShowAddItem={() => this.showAddItem()}
+              onShowUpdateTotal={() => this.showEditTotal()}
             />}
           </div>
         </dropup-controls>

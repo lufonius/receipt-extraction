@@ -3,6 +3,7 @@ export interface Receipt {
   status: ReceiptStatus;
   imgUrl: string;
   angle?: number;
+  uploadedAt: string;
   transactionTotal?: number;
   transactionDate?: string;
   lines: Line[];
