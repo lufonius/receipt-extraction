@@ -35,6 +35,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("com.azure:azure-storage-blob:12.13.0")
+	implementation("com.azure:azure-ai-formrecognizer:3.1.5")
+	implementation("com.azure:azure-identity:1.3.7")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

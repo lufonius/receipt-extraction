@@ -21,6 +21,6 @@ class FileStorageService(
         val client = container.getBlobClient(filename)
         client.upload(image.inputStream(), image.size.toLong())
 
-        return URL(client.blobUrl).path
+        return client.blobUrl
     }
 }

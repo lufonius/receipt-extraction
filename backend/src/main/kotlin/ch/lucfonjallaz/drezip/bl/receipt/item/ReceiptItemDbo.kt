@@ -15,18 +15,18 @@ data class ReceiptItemDbo(
         @Column(nullable = true, length = 2000)
         var label: String? = null,
 
-        @OneToOne(fetch = FetchType.LAZY, optional = true)
+        @OneToOne(fetch = FetchType.LAZY, optional = true, cascade = [CascadeType.PERSIST])
         @JoinColumn(name = "label_line_id")
         var labelLine: LineDbo? = null,
 
         @Column(nullable = true)
         val price: Float? = null,
 
-        @OneToOne(fetch = FetchType.LAZY, optional = true)
+        @OneToOne(fetch = FetchType.LAZY, optional = true, cascade = [CascadeType.PERSIST])
         @JoinColumn(name = "value_line_id")
         var valueLine: LineDbo? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = [CascadeType.PERSIST])
+        @ManyToOne(fetch = FetchType.LAZY, optional = false)
         @JoinColumn(name = "receipt_id")
         var receipt: ReceiptDbo,
 
