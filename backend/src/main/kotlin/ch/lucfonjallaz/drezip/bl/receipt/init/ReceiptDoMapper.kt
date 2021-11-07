@@ -81,13 +81,13 @@ class ReceiptDoMapper {
         return LineDbo(
             text = lineDo.text,
             topLeftX = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            topLeftY = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            topRightX = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            topRightY = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            bottomLeftX = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            bottomLeftY = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            bottomRightX = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
-            bottomRightY = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
+            topLeftY = Math.floor(lineDo.boundingBox[0].y.toDouble()).toInt(),
+            topRightX = Math.floor(lineDo.boundingBox[1].x.toDouble()).toInt(),
+            topRightY = Math.floor(lineDo.boundingBox[1].y.toDouble()).toInt(),
+            bottomLeftX = Math.floor(lineDo.boundingBox[2].x.toDouble()).toInt(),
+            bottomLeftY = Math.floor(lineDo.boundingBox[2].y.toDouble()).toInt(),
+            bottomRightX = Math.floor(lineDo.boundingBox[3].x.toDouble()).toInt(),
+            bottomRightY = Math.floor(lineDo.boundingBox[3].y.toDouble()).toInt(),
             receipt = receiptDbo
         )
     }

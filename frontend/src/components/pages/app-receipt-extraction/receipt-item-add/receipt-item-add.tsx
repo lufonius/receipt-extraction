@@ -44,6 +44,7 @@ export class ReceiptItemAdd {
 
   componentWillLoad() {
     this.priceAsText = this.receiptItem.price?.toFixed(2);
+    this.setSelectedCategory(this.receiptItem.categoryId);
   }
 
   private onValidityChange() {

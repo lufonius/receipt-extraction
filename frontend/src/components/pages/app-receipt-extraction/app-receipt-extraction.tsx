@@ -165,6 +165,7 @@ export class AppReceiptExtraction {
   }
 
   private showSelectItemCategoryDialog(receiptItem: ReceiptItem) {
+    this.receiptItemBeforeUpdate = cloneDeep(receiptItem);
     this.currentReceiptItem = cloneDeep(receiptItem);
     this.selectCategoryDialog.show();
   }
@@ -176,7 +177,7 @@ export class AppReceiptExtraction {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.currentReceiptItem.id, this.currentReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
       await this.receiptItemService.updateReceiptItem(this.currentReceiptItem.id, dto);
-      this.updateLinesColor(this.currentReceiptItem, 0x03b700);
+      this.updateLinesColor(this.currentReceiptItem, null);
       this.snackbarService.showSuccessSnack("updated");
     } catch(error) {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.receiptItemBeforeUpdate.id, this.receiptItemBeforeUpdate);

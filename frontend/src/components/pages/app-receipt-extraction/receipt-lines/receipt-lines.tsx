@@ -82,6 +82,8 @@ export class ReceiptLines {
         height,
         strokeWidth: 3,
         strokeColor: line.color,
+        padding: 2,
+        rounded: 4,
         id: line.id
       });
 

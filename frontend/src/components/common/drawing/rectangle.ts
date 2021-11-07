@@ -13,6 +13,8 @@ export class Rectangle implements Shape {
     height: number,
     strokeWidth: number,
     strokeColor: number,
+    padding: number,
+    rounded: number,
     id: number
   }) {
     this.id = params.id;
@@ -22,12 +24,14 @@ export class Rectangle implements Shape {
   private createImpl() {
     var graphics = new PIXI.Graphics();
     graphics.lineStyle(this.params.strokeWidth, this.params.strokeColor);
+    graphics.beginFill(this.params.strokeColor, 0.15);
 
-    graphics.drawRect(
-      this.params.x,
-      this.params.y,
-      this.params.width,
-      this.params.height
+    graphics.drawRoundedRect(
+      this.params.x - this.params.padding,
+      this.params.y - this.params.padding,
+      this.params.width + 2 * this.params.padding,
+      this.params.height + 2 *  + this.params.padding,
+      this.params.rounded
     );
 
     graphics.hitArea = new PIXI.Rectangle(
