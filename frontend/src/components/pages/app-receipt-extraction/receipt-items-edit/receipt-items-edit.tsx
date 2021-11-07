@@ -22,6 +22,7 @@ export class ReceiptItemsEdit {
   @Event() public showUpdateItem: EventEmitter<ReceiptItem>;
   @Event() public showUpdateTotal: EventEmitter<number>;
   @Event() public showUpdateDate: EventEmitter<string>;
+  @Event() public showUpdateItemCategory: EventEmitter<ReceiptItem>;
 
   @Event() public deleteItem: EventEmitter<ReceiptItem>;
   @Event() public deleteTotal: EventEmitter<void>;
@@ -103,7 +104,15 @@ export class ReceiptItemsEdit {
           .map(it =>
             <list-item label={`${it.label}`} amount={`${it.price.toFixed(2)}`} category={this.categoriesById.get(it.categoryId)}>
               <div slot="controls">
-                <app-button-round size={Size.l} onPress={() => this.deleteItem.emit(it)}>
+                <app-button-round size={Size.l} onPress={() => this.showUpdateItemCategory.emit(it)}>
+                  <app-icon size={Size.sm} icon={Icons.LAYERS} />
+                </app-button-round>
+
+                <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.showUpdateItem.emit(it)}>
+                  <app-icon size={Size.sm} icon={Icons.EDIT} />
+                </app-button-round>
+
+                <app-button-round class="margin-left-xs" size={Size.l} onPress={() => this.deleteItem.emit(it)}>
                   <app-icon size={Size.sm} icon={Icons.DELETE} />
                 </app-button-round>
               </div>

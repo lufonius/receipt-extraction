@@ -140,6 +140,10 @@ export class AppReceiptExtraction {
       await this.createItem();
     } else {
       await this.updateItem();
+      await this.hideDropupAndExecuteFn(false, () => {
+        this.showAddItemPanel = false;
+        this.showEditItemsPanel = true;
+      });
     }
   }
 

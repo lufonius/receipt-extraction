@@ -1,6 +1,7 @@
 import {Component, Host, h, Prop} from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import {Size} from "../size";
+import {Icons} from "../../../global/icons-enum";
 
 @Component({
   tag: 'app-navbar',
@@ -30,12 +31,12 @@ export class AppNavbar {
 
         <div class="navbar">
           <stencil-route-link url="/" class={this.getClasses("/")}>
-            <app-icon size={Size.m} icon="home"/>
+            <app-icon size={Size.m} icon={Icons.HOME} />
             <span>home</span>
           </stencil-route-link>
 
           <stencil-route-link url="/category" class={this.getClasses("/category")}>
-            <app-icon size={Size.m} icon="layers"/>
+            <app-icon size={Size.m} icon={Icons.LAYERS} />
             <span>categories</span>
           </stencil-route-link>
 

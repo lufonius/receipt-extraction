@@ -15,7 +15,9 @@ export class ReceiptItemAdd {
   @Event() formValidChange: EventEmitter<boolean>;
   @Prop() receiptItem: ReceiptItem;
   @Watch("receiptItem") receiptItemInChange(receiptItem: ReceiptItem) {
-    this.priceAsText = receiptItem.price?.toFixed(2);
+    if (receiptItem.price === null) {
+      this.priceAsText = "";
+    }
   }
   @State() priceAsText: string;
 
@@ -38,6 +40,10 @@ export class ReceiptItemAdd {
     } else if (this.labelInputFocused) {
       this.setLabel(line.text, line.id);
     }
+  }
+
+  componentWillLoad() {
+    this.priceAsText = this.receiptItem.price?.toFixed(2);
   }
 
   private onValidityChange() {
@@ -110,7 +116,7 @@ export class ReceiptItemAdd {
         <div class="input">
           <div class="fill">
             <app-input
-              label="Select the label on the receipt (optional)"
+              label="Select the article name on the receipt (optional)"
               value={this.receiptItem.label}
               focused={this.labelInputFocused}
               showErrors={this.submitted}
@@ -142,7 +148,7 @@ export class ReceiptItemAdd {
         <div class="input">
           <div class="fill">
             <app-input
-              label={`Select the article name on the receipt`}
+              label={`Select the article price on the receipt`}
               value={this.priceAsText}
               focused={this.valueInputFocused}
               validators={[requiredValidator, numberValidator]}

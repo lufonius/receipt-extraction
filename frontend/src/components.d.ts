@@ -462,6 +462,7 @@ declare namespace LocalJSX {
         "onShowAddItem"?: (event: CustomEvent<void>) => void;
         "onShowUpdateDate"?: (event: CustomEvent<string>) => void;
         "onShowUpdateItem"?: (event: CustomEvent<ReceiptItem>) => void;
+        "onShowUpdateItemCategory"?: (event: CustomEvent<ReceiptItem>) => void;
         "onShowUpdateTotal"?: (event: CustomEvent<number>) => void;
         "total"?: number;
     }
