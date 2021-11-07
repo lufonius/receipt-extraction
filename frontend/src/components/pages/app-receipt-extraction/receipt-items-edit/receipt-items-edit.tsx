@@ -36,7 +36,6 @@ export class ReceiptItemsEdit {
 
   getFormattedDate(): string {
     const months = [
-      null,
       "January",
       "February",
       "March",

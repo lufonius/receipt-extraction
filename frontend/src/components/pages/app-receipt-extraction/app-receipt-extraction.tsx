@@ -171,8 +171,6 @@ export class AppReceiptExtraction {
   }
 
   private async updateItem() {
-    this.updateLinesColor(this.receiptItemBeforeUpdate, 0x696969);
-
     try {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.currentReceiptItem.id, this.currentReceiptItem);
       const dto = this.mapper.dtoFromReceiptItem(this.currentReceiptItem);
@@ -181,7 +179,7 @@ export class AppReceiptExtraction {
       this.snackbarService.showSuccessSnack("updated");
     } catch(error) {
       this.globalStore.updateReceiptItemOfCurrentReceipt(this.receiptItemBeforeUpdate.id, this.receiptItemBeforeUpdate);
-      this.updateLinesColor(this.receiptItemBeforeUpdate, 0x696969);
+      this.updateLinesColor(this.receiptItemBeforeUpdate, null);
       this.snackbarService.showFailureSnack("failure");
     }
   }
