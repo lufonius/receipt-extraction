@@ -120,9 +120,10 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		val receiptDto = receiptDtoResponse.body ?: throw Exception("no receipt returned of the init endpoint")
 
 		assertThat(receiptDto.status).isEqualTo(ReceiptStatus.Open)
-		assertThat(receiptDto.angle).isNotNull
-
+		assertThat(receiptDto.angle).isNull()
 		assertThat(receiptDto.imgUrl).isNotNull
+		assertThat(receiptDto.items).isNotEmpty
+		assertThat(receiptDto.lines).isNotEmpty
 
 		return receiptDto
 	}

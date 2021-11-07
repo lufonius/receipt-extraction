@@ -60,15 +60,15 @@ fun createTestReceiptDbo(
 fun createTestReceiptItemDbo(
         id: Int = 0,
         labelLine: LineDbo,
-        amountLine: LineDbo,
+        priceLine: LineDbo,
         receiptDbo: ReceiptDbo,
-        categoryDbo: CategoryDbo?,
+        categoryDbo: CategoryDbo? = null,
         label: String = "testLabel",
         price: Float = 0.95F
 ) = ReceiptItemDbo(
     id = id,
         labelLine = labelLine,
-        valueLine = amountLine,
+        valueLine = priceLine,
         receipt = receiptDbo,
         category = categoryDbo,
         label = label,

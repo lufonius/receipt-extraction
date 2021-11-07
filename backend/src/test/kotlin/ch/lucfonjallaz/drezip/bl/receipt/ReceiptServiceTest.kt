@@ -31,7 +31,7 @@ class ReceiptServiceTest {
         val categoryDbo = createTestCategoryDbo()
         val dbo = createTestReceiptItemDbo(
                 labelLine = lineDboWithId1,
-                amountLine = lineDboWithId1,
+                priceLine = lineDboWithId1,
                 receiptDbo = receiptDbo,
                 categoryDbo = categoryDbo
         )
@@ -50,7 +50,7 @@ class ReceiptServiceTest {
         val categoryDbo = createTestCategoryDbo()
         val dbo = createTestReceiptItemDbo(
                 labelLine = lineDboWithId1,
-                amountLine = lineDboWithId2,
+                priceLine = lineDboWithId2,
                 receiptDbo = receiptDbo,
                 categoryDbo = categoryDbo
         )
