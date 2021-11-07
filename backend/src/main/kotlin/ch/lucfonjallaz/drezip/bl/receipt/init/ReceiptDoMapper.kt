@@ -36,12 +36,8 @@ class ReceiptDoMapper {
 
         val merchant = azureForm.fields["MerchantName"]?.value?.asString()
         val total = azureForm.fields["Total"]?.value?.asFloat()
-        val localDate = azureForm.fields["TransactionDate"]?.value?.asDate()
-        val localSwissDate = localDate?.let { LocalDate.of(localDate.year, localDate.dayOfMonth + 1, localDate.monthValue)}
-        val instant = localSwissDate?.atStartOfDay()?.atZone(ZoneId.systemDefault())?.toInstant()
-        val date = if (instant !== null) Date.from(instant) else null
 
-        return ReceiptDo(lines, items, date, total, merchant)
+        return ReceiptDo(lines, items, null, total, merchant)
     }
 
     private fun mapBoundingBoxAndTextToLineDo(boundingBox: FieldBoundingBox, text: String): LineDo {
