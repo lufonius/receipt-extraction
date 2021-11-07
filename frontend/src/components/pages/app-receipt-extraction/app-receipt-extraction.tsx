@@ -44,6 +44,8 @@ export class AppReceiptExtraction {
   @State() valid: boolean = false;
   private currentReceipt: Receipt;
   public receiptItemAdd: HTMLReceiptItemAddElement;
+  public receiptDateEdit: HTMLReceiptDateEditElement;
+  public receiptTotalEdit: HTMLReceiptTotalEditElement;
   private categories: Category[];
   private selectCategoryDialog: SelectCategoryDialog;
 
@@ -65,6 +67,16 @@ export class AppReceiptExtraction {
     if (this.showAddItemPanel) {
       await this.receiptItemAdd.componentOnReady();
       await this.receiptItemAdd.selectLine(line);
+    }
+
+    if (this.showEditDatePanel) {
+      await this.receiptDateEdit.componentOnReady();
+      await this.receiptDateEdit.selectLine(line);
+    }
+
+    if (this.showEditTotalPanel) {
+      await this.receiptTotalEdit.componentOnReady();
+      await this.receiptTotalEdit.selectLine(line);
     }
   }
 
@@ -234,8 +246,8 @@ export class AppReceiptExtraction {
       this.globalStore.setCurrentReceipt(this.currentReceipt);
       this.currentReceipt = cloneDeep(this.currentReceipt);
       this.snackbarService.showSuccessSnack("Saved");
-      this.closeEditTotal(true);
-      this.closeEditDate(true);
+      this.closeEditTotal(false);
+      this.closeEditDate(false);
     } catch {
       this.snackbarService.showFailureSnack("Failure");
     }
@@ -292,7 +304,10 @@ export class AppReceiptExtraction {
             </app-button-round>
             <div class="fill" />
             <div class="spacer-xs" />
-            <app-button-round size={Size.xl} onPress={async () => { await this.saveReceiptAndClose(); }} classes="button-round--primary" label="save">
+            <app-button-round size={Size.xl} onPress={async () => {
+              if (this.valid) { await this.saveReceiptAndClose(); }
+              this.submitted = true;
+            }} classes="button-round--primary" label="save">
               <app-icon icon={Icons.SAVE} />
             </app-button-round>
           </div>}
@@ -313,12 +328,15 @@ export class AppReceiptExtraction {
 
           <div slot="dropup">
             {this.showEditTotalPanel && <receipt-total-edit
-              total={this.currentReceipt.transactionTotal}
+              ref={(el) => this.receiptTotalEdit = el}
+              total={this.currentReceipt.transactionTotal.toFixed(2)}
               onTotalChange={({detail: total}) => this.total = total}
+              onValidChange={({ detail: valid }) => this.valid = valid}
               submitted={this.submitted}
             />}
 
             {this.showEditDatePanel && <receipt-date-edit
+              ref={(el) => this.receiptDateEdit = el}
               date={this.currentReceipt.transactionDate}
               onDateChange={({ detail: date }) => this.date = date}
               submitted={this.submitted}

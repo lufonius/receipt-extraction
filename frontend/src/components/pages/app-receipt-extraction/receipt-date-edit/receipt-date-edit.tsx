@@ -1,7 +1,10 @@
-import {Component, Host, h, Prop, EventEmitter, Event, State, Watch} from '@stencil/core';
+import {Component, Host, h, Prop, EventEmitter, Event, State, Watch, Method} from '@stencil/core';
 import {Size} from "../../../common/size";
 import {Icons} from "../../../../global/icons-enum";
 import {dateValidator} from "../../../common/validator";
+import {Line} from "../../../model/client";
+import {Components} from "../../../../components";
+import AppInput = Components.AppInput;
 
 @Component({
   tag: 'receipt-date-edit',
@@ -13,7 +16,7 @@ export class ReceiptDateEdit {
   @Prop() date: string;
   @Watch("date") dateChanged(newDate: string) {
     const obj = new Date(newDate);
-    this.dateFormatted = `${obj.getDate()}.${obj.getMonth()}.${obj.getFullYear()}`;
+    this.dateFormatted = `${obj.getDate()}.${obj.getMonth() + 1}.${obj.getFullYear()}`;
   }
   @Event() dateChange: EventEmitter<string>;
   @Event() validChange: EventEmitter<boolean>;
@@ -23,10 +26,14 @@ export class ReceiptDateEdit {
 
   @State() dateFormatted: string;
 
+  @Method() async selectLine(line: Line) {
+    this.dateFormatted = line.text;
+  }
+
   componentWillLoad() {
     if (this.date !== null) {
       const obj = new Date(this.date);
-      this.dateFormatted = `${obj.getDate()}.${obj.getMonth()}.${obj.getFullYear()}`;
+      this.dateFormatted = `${obj.getDate()}.${obj.getMonth() + 1}.${obj.getFullYear()}`;
     }
   }
 

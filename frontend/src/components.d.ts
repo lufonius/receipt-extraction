@@ -103,6 +103,7 @@ export namespace Components {
     }
     interface ReceiptDateEdit {
         "date": string;
+        "selectLine": (line: Line) => Promise<void>;
         "submitted": boolean;
     }
     interface ReceiptItemAdd {
@@ -119,8 +120,9 @@ export namespace Components {
     interface ReceiptLines {
     }
     interface ReceiptTotalEdit {
+        "selectLine": (line: Line) => Promise<void>;
         "submitted": boolean;
-        "total"?: number;
+        "total"?: string;
     }
     interface SelectCategoryDialog {
         "hide": () => Promise<void>;
@@ -471,8 +473,9 @@ declare namespace LocalJSX {
     }
     interface ReceiptTotalEdit {
         "onTotalChange"?: (event: CustomEvent<number>) => void;
+        "onValidChange"?: (event: CustomEvent<boolean>) => void;
         "submitted"?: boolean;
-        "total"?: number;
+        "total"?: string;
     }
     interface SelectCategoryDialog {
         "onSelectedCategoryIdChange"?: (event: CustomEvent<number>) => void;

@@ -1,6 +1,8 @@
-import {Component, Host, h, Prop, EventEmitter, Event, State} from '@stencil/core';
+import {Component, Host, h, Prop, EventEmitter, Event, State, Method} from '@stencil/core';
 import {Size} from "../../../common/size";
 import {Icons} from "../../../../global/icons-enum";
+import {Line} from "../../../model/client";
+import {numberValidator} from "../../../common/validator";
 
 @Component({
   tag: 'receipt-total-edit',
@@ -9,22 +11,30 @@ import {Icons} from "../../../../global/icons-enum";
 })
 export class ReceiptTotalEdit {
 
-  @Prop() total?: number = null;
+  @Prop() total?: string = null;
   @Event() totalChange: EventEmitter<number>;
+  @Event() validChange: EventEmitter<boolean>;
 
   @Prop() submitted: boolean = false;
   @State() showKeyboard: boolean = false;
+
+  @Method() async selectLine(line: Line) {
+    this.total = line.text;
+    this.totalChange.emit(parseFloat(this.total));
+  }
 
   render() {
     return (
       <Host>
         <app-input
           label="Select the total on the receipt"
-          type="number"
+          type="text"
           value={this.total}
           focused={true}
+          validators={[numberValidator]}
+          onValidChange={({ detail: valid }) => this.validChange.emit(valid)}
           showErrors={this.submitted}
-          onInputValueChange={({ detail: total }) => this.totalChange.emit(total)}
+          onInputValueChange={({ detail: total }) => this.totalChange.emit(parseFloat(total))}
           showMobileKeyboard={this.showKeyboard}
         />
         {!this.showKeyboard && <app-button-round
