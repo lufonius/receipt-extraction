@@ -12,6 +12,8 @@ import {cloneDeep} from "../../model/cloneDeep";
 import {ReceiptService} from "../receipt.service";
 import {RouterHistory} from "@stencil/router";
 import {SnackbarService} from "../snackbar.service";
+import {Components} from "../../../components";
+import SelectCategoryDialog = Components.SelectCategoryDialog;
 
 @Component({
   tag: 'app-receipt-extraction',
@@ -35,6 +37,7 @@ export class AppReceiptExtraction {
   @State() public showAddItemPanel: boolean = false;
   @State() public showEditTotalPanel: boolean = false;
   @State() public showEditDatePanel: boolean = false;
+  @State() public showEditItemCategoryDialog: boolean = false;
   public receiptItemBeforeUpdate: ReceiptItem;
   @State() public currentReceiptItem: ReceiptItem;
   @State() submitted: boolean = false;
@@ -42,6 +45,7 @@ export class AppReceiptExtraction {
   private currentReceipt: Receipt;
   public receiptItemAdd: HTMLReceiptItemAddElement;
   private categories: Category[];
+  private selectCategoryDialog: SelectCategoryDialog;
 
   componentWillLoad() {
     flyd.on((hasAnyItems) => {
@@ -54,7 +58,7 @@ export class AppReceiptExtraction {
     flyd.on((receipt) => this.currentReceipt = cloneDeep(receipt), this.globalStore.selectCurrentReceipt());
     flyd.on(total => this.total = total, this.globalStore.selectTotalOfCurrentReceipt());
     flyd.on(date => this.date = date, this.globalStore.selectDateOfCurrentReceipt());
-    flyd.on(items => this.items = items, this.globalStore.selectCategoryItemsOfCurrentReceipt());
+    flyd.on(items => this.items = cloneDeep(items), this.globalStore.selectCategoryItemsOfCurrentReceipt());
   }
 
   async lineClicked(line: Line) {
@@ -158,6 +162,11 @@ export class AppReceiptExtraction {
     } catch {
       this.snackbarService.showFailureSnack("Failed");
     }
+  }
+
+  private showSelectItemCategoryDialog(receiptItem: ReceiptItem) {
+    this.currentReceiptItem = cloneDeep(receiptItem);
+    this.selectCategoryDialog.show();
   }
 
   private async updateItem() {
@@ -334,11 +343,22 @@ export class AppReceiptExtraction {
               onShowAddItem={() => this.showAddItem()}
               onShowUpdateTotal={() => this.showEditTotal()}
               onShowUpdateDate={() => this.showEditDate()}
+              onShowUpdateItemCategory={({ detail: receiptItem }) => this.showSelectItemCategoryDialog(receiptItem)}
             />}
           </div>
         </dropup-controls>
 
         <receipt-lines onLineClick={(event: CustomEvent<Line>) => this.lineClicked(event.detail)} />
+
+        <select-category-dialog
+          ref={(el) => this.selectCategoryDialog = el}
+          selectedCategoryId={this.currentReceiptItem?.categoryId}
+          onSelectedCategoryIdChange={async ({ detail: categoryId }) => {
+            this.currentReceiptItem.categoryId = categoryId;
+            await this.updateItem();
+            await this.selectCategoryDialog.hide();
+          }}
+        />
       </Host>
     );
   }
