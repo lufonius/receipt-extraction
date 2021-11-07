@@ -28,6 +28,10 @@ data:
 
     # optical character recognition service
     app.ocr-url=https://thelab.cognitiveservices.azure.com/vision/v3.1/read/analyze?language=de
+
+    # form recognizer properties
+    app.form-recognizer-key=4c3f88914efb46aba8b47c5b73d3ca13
+    app.form-recognizer-url=https://drezip.cognitiveservices.azure.com/
 ---
 apiVersion: v1
 kind: ServiceAccount
