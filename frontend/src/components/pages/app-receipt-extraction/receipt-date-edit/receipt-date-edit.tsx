@@ -28,6 +28,9 @@ export class ReceiptDateEdit {
 
   @Method() async selectLine(line: Line) {
     this.dateFormatted = line.text;
+    if (dateValidator(line.text) === null) {
+      this.convertDateToIsoStringAndEmit(this.dateFormatted);
+    }
   }
 
   componentWillLoad() {

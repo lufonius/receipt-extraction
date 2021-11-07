@@ -80,7 +80,7 @@ export class ReceiptLines {
         y: line.topLeft.y,
         width,
         height,
-        strokeWidth: 3,
+        strokeWidth: 5,
         strokeColor: line.color,
         padding: 2,
         rounded: 4,
