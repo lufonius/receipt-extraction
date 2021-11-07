@@ -3,8 +3,11 @@ use drezip;
 # category
 INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (1, 'test', 0xe400ff, 'Food', null);
 INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (2, 'test', 0x00f3ff, 'Household', null);
-INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (3, 'test', 0x00f3ff, 'Snacks', 2);
-INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (4, 'test', 0x00f3ff, 'Sweets', 2);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (3, 'test', 0x90FFD0, 'Taxes', null);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (4, 'test', 0xFFBF3B, 'Rent', null);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (5, 'test', 0xFF6FE2, 'Digital subscriptions', null);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (6, 'test', 0x672FFF, 'Friends & Lover', null);
+INSERT IGNORE INTO drezip.category (id, avatar_url, color, name, parent_category_id) VALUES (7, 'test', 0x8EFF23, 'Alc', null);
 
 # receipt
 INSERT IGNORE INTO drezip.receipt (id, status, img_url, angle, transaction_total, transaction_merchant, transaction_date, transaction_id, uploaded_at) VALUES (1, 'InProgress', 'https://drezip.blob.core.windows.net/local/9b6b01d7-b133-466a-b758-b6309b55bc19.jpeg', -0.6052, 30.65, 'migros', '2021-02-28', null, '2021-02-28');
