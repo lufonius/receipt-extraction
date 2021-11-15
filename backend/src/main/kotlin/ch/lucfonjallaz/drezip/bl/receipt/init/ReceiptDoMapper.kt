@@ -7,9 +7,8 @@ import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import com.azure.ai.formrecognizer.models.FieldBoundingBox
 import com.azure.ai.formrecognizer.models.RecognizedForm
 import org.springframework.stereotype.Component
-import java.time.LocalDate
-import java.time.ZoneId
 import java.util.*
+import java.util.Calendar
 
 @Component
 class ReceiptDoMapper {
@@ -36,8 +35,13 @@ class ReceiptDoMapper {
 
         val merchant = azureForm.fields["MerchantName"]?.value?.asString()
         val total = azureForm.fields["Total"]?.value?.asFloat()
+        val dateAsString = azureForm.fields["TransactionDate"]?.valueData?.text
+        var date: Date? = null
+        if (dateAsString !== null) {
+            date = tryExtractDate(dateAsString)
+        }
 
-        return ReceiptDo(lines, items, null, total, merchant)
+        return ReceiptDo(lines, items, date, total, merchant)
     }
 
     private fun mapBoundingBoxAndTextToLineDo(boundingBox: FieldBoundingBox, text: String): LineDo {
@@ -91,4 +95,25 @@ class ReceiptDoMapper {
     }
 
 
+    private fun tryExtractDate(dateAsString: String): Date? {
+        val noWhitespace = dateAsString.replace(" ", "")
+        val onlyDotsNoWhitespace = noWhitespace.replace(",", ".")
+        val regexDDMMYYYY = Regex("^([0-3]?[1-9])\\.([0-1]?[1-9])\\.(20([0-9][0-9]))")
+
+        val matchesFormat = onlyDotsNoWhitespace.matches(regexDDMMYYYY)
+        if (matchesFormat) {
+            val (days, months, years) = onlyDotsNoWhitespace.split(".").map { it.toInt() }
+            val cal = Calendar.getInstance()
+            cal[Calendar.YEAR] = years
+            cal[Calendar.MONTH] = months - 1
+            cal[Calendar.DAY_OF_MONTH] = days
+            cal[Calendar.HOUR_OF_DAY] = 0
+            cal[Calendar.MINUTE] = 0
+            cal[Calendar.SECOND] = 0
+            cal[Calendar.MILLISECOND] = 0
+            return cal.time
+        } else {
+            return null
+        }
+    }
 }

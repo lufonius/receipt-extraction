@@ -27,6 +27,7 @@ data class ReceiptDbo(
         val transactionTotal: Float? = null,
 
         @Column(nullable = true)
+        @Temporal(TemporalType.DATE)
         val transactionDate: Date? = null,
 
         @Column(nullable = true)
