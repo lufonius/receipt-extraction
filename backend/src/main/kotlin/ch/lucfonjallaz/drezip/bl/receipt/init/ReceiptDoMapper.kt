@@ -98,7 +98,7 @@ class ReceiptDoMapper {
     private fun tryExtractDate(dateAsString: String): Date? {
         val noWhitespace = dateAsString.replace(" ", "")
         val onlyDotsNoWhitespace = noWhitespace.replace(",", ".")
-        val regexDDMMYYYY = Regex("^([0-3]?[1-9])\\.([0-1]?[1-9])\\.(20([0-9][0-9]))")
+        val regexDDMMYYYY = Regex("^([0-3]?[0-9])\\.([0-1]?[1-9])\\.(20([0-9][0-9]))")
 
         val matchesFormat = onlyDotsNoWhitespace.matches(regexDDMMYYYY)
         if (matchesFormat) {
