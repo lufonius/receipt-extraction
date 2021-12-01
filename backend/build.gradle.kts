@@ -37,6 +37,10 @@ dependencies {
 	implementation("com.azure:azure-storage-blob:12.13.0")
 	implementation("com.azure:azure-ai-formrecognizer:3.1.5")
 	implementation("com.azure:azure-identity:1.3.7")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -44,6 +48,7 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testImplementation("io.mockk:mockk:1.10.5")
+	testImplementation("org.springframework.security:spring-security-test")
 }
 
 dependencyManagement {
