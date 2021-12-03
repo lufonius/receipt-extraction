@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -18,7 +19,8 @@ import java.net.http.HttpResponse
 class LoginController(
         val jwtService: JwtService,
         val userService: UserService,
-        val passwordEncoder: PasswordEncoder
+        val passwordEncoder: PasswordEncoder,
+        @Value("\${app.env}") val env: String
 ) {
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<Unit> {
@@ -41,6 +43,10 @@ class LoginController(
     }
 
     private fun getCookieValue(jwt: String): String {
-        return "token=$jwt;HttpOnly";
+        if (env === "prod") {
+            return "token=$jwt;HttpOnly;Secure"
+        } else {
+            return "token=$jwt;HttpOnly"
+        }
     }
 }
