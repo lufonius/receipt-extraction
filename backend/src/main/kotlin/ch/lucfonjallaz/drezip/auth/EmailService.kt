@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
+import ch.lucfonjallaz.drezip.PropertyService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import com.sendgrid.*
@@ -10,12 +11,8 @@ import java.io.IOException
 
 
 @Component
-class EmailService(
-        @Value("\${app.auth.sendgrid-api-key}") val sendgridApiKey: String,
-        @Value("\${app.auth.registration-email-template-id}") val sendgridRegistrationTemplateId: String,
-        @Value("\${app.auth.registration-email-subject}") val registrationSubject: String
-) {
-    val sendgrid = SendGrid(sendgridApiKey)
+class EmailService(val propertyService: PropertyService) {
+    val sendgrid = SendGrid(propertyService.sendgridApiKey)
 
     fun sendRegistrationConfirmationEmail(
             username: String,
@@ -25,15 +22,15 @@ class EmailService(
         val from = Email("fonjallaz97@gmail.com")
         val mail = Mail()
         mail.setFrom(from)
-        mail.setTemplateId(sendgridRegistrationTemplateId)
+        mail.setTemplateId(propertyService.sendgridRegistrationTemplateId)
         val personalization = Personalization()
         personalization.addDynamicTemplateData("username", username)
         personalization.addDynamicTemplateData("accountActivationLink", link)
         personalization.addTo(Email(receipient))
-        personalization.subject = registrationSubject
+        personalization.subject = propertyService.registrationSubject
         mail.addPersonalization(personalization)
 
-        val sg = SendGrid(sendgridApiKey)
+        val sg = SendGrid(propertyService.sendgridApiKey)
         val request = Request()
         try {
             request.method = Method.POST

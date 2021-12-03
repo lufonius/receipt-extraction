@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.PropertyService
 import org.springframework.stereotype.Component
 import com.azure.ai.formrecognizer.FormRecognizerClientBuilder
 import com.azure.ai.formrecognizer.models.RecognizeReceiptsOptions
@@ -9,14 +10,11 @@ import com.azure.core.util.Context
 import org.springframework.beans.factory.annotation.Value
 
 @Component
-class ReceiptFormExtractionService(
-        @Value("\${app.form-recognizer-url}") val url: String,
-        @Value("\${app.form-recognizer-key}") val key: String,
-) {
+class ReceiptFormExtractionService(val propertyService: PropertyService) {
     fun extractFields(imageUrl: String): RecognizedForm? {
-        val credential = AzureKeyCredential(key)
+        val credential = AzureKeyCredential(propertyService.formRecognizerKey)
         val formRecognizerClient = FormRecognizerClientBuilder()
-                .endpoint(url)
+                .endpoint(propertyService.formRecognizerUrl)
                 .credential(credential)
                 .buildClient()
 

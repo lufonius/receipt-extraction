@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
+import ch.lucfonjallaz.drezip.PropertyService
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -11,16 +12,14 @@ import java.util.function.Function
 import io.jsonwebtoken.security.Keys
 
 @Component
-class JwtService {
-    private val SECRET_KEY = "78hkjhkjh--lkjhk//&5jhghjgjglllllABVkjhkjhHGHH8955--)88"
-
+class JwtService(val propertyService: PropertyService) {
     fun extractUsername(token: String): String = extractAllClaims(token).subject
     fun extractExpiration(token: String?): Date = extractAllClaims(token).expiration
 
     private fun extractAllClaims(token: String?): Claims {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(propertyService.jwtSigningKey)
                 .build()
                 .parseClaimsJws(token).body
     }
@@ -35,7 +34,7 @@ class JwtService {
     }
 
     private fun createToken(claims: Map<String, Any?>, subject: String): String {
-        val key = Keys.hmacShaKeyFor(SECRET_KEY.toByteArray())
+        val key = Keys.hmacShaKeyFor(propertyService.jwtSigningKey.toByteArray())
 
         return Jwts.builder()
                 .setClaims(claims)

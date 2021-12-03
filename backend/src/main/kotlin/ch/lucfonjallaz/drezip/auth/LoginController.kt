@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
+import ch.lucfonjallaz.drezip.PropertyService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,7 +21,7 @@ class LoginController(
         val jwtService: JwtService,
         val userService: UserService,
         val passwordEncoder: PasswordEncoder,
-        @Value("\${app.env}") val env: String
+        val propertyService: PropertyService
 ) {
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<Unit> {
@@ -43,7 +44,7 @@ class LoginController(
     }
 
     private fun getCookieValue(jwt: String): String {
-        if (env === "prod") {
+        if (propertyService.env === "prod") {
             return "token=$jwt;HttpOnly;Secure"
         } else {
             return "token=$jwt;HttpOnly"
