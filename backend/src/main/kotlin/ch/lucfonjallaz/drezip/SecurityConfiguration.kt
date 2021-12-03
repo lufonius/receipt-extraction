@@ -28,7 +28,7 @@ class SecurityConfiguration(val userService: UserService) : WebSecurityConfigure
     override fun configure(http: HttpSecurity) {
 
         http
-        // .csrf().disable()
+        .csrf().disable()
         .httpBasic().disable()
         .formLogin().disable()
         .logout().disable()
