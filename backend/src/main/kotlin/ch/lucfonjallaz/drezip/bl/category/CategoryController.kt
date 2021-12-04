@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.category
 
+import ch.lucfonjallaz.drezip.auth.UserId
 import org.hibernate.Session
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.annotation.Secured
@@ -16,7 +17,9 @@ class CategoryController(
         val entityManager: EntityManager
 ) {
     @GetMapping("/category")
-    fun getAll() = categoryMapper.mapFromDbos(categoryRepository.findAll())
+    fun getAll(@UserId userId: Int): List<CategoryDto> {
+        return categoryMapper.mapFromDbos(categoryRepository.findAll())
+    }
 
     @DeleteMapping("/category/{id}")
     fun delete(@PathVariable id: Int) = categoryRepository.deleteById(id)

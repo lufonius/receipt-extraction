@@ -8,21 +8,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import org.springframework.security.core.userdetails.UserDetails
 
-import javax.servlet.ServletException
-
 import javax.servlet.FilterChain
 
 import javax.servlet.http.HttpServletResponse
 
 import javax.servlet.http.HttpServletRequest
 
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtFilter(
-        val userService: UserService,
+        val userService: UserDetailsService,
         val jwtService: JwtService
 ) : OncePerRequestFilter() {
 
@@ -37,7 +35,10 @@ class JwtFilter(
                 val userDetails: UserDetails = userService.loadUserByUsername(username)
                 if (jwtService.validateToken(jwt, userDetails)) {
                     val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.authorities)
+                            userDetails,
+                            null,
+                            userDetails.authorities
+                    )
                     usernamePasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken
                 }
