@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.line
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDbo
 import javax.persistence.*
 
@@ -36,6 +37,10 @@ data class LineDbo(
 
         @Column(nullable = false)
         val text: String,
+
+        @ManyToOne(targetEntity = UserDbo::class, optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        val user: UserDbo,
 
         @ManyToOne(fetch = FetchType.LAZY, optional = false)
         @JoinColumn(name = "receipt_id", nullable = false)

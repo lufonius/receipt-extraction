@@ -1,5 +1,7 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.auth.User
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.init.InitReceiptService
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDto
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemMapper
@@ -18,10 +20,10 @@ class ReceiptController(
 ) {
 
     @PostMapping("/receipt/init", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun initReceipt(@RequestPart("image") image: MultipartFile): ReceiptDto {
+    fun initReceipt(@RequestPart("image") image: MultipartFile, @User userDbo: UserDbo): ReceiptDto {
         val imageFileExtension = image.originalFilename?.split('.')?.lastOrNull() ?: throw Exception("file extension not specified")
 
-        val receiptDbo = initReceiptService.initReceipt(image.bytes, imageFileExtension)
+        val receiptDbo = initReceiptService.initReceipt(image.bytes, imageFileExtension, userDbo)
 
         return receiptMapper.dtoFromDbo(receiptDbo)
     }
@@ -55,8 +57,8 @@ class ReceiptController(
 
 
     @PutMapping("/receipt/{id}")
-    fun updateReceipt(@RequestBody dto: ReceiptDto, @PathVariable id: Int): ReceiptDto {
-        val dbo = receiptMapper.dboFromDto(dto)
+    fun updateReceipt(@RequestBody dto: ReceiptDto, @PathVariable id: Int, @User userDbo: UserDbo): ReceiptDto {
+        val dbo = receiptMapper.dboFromDto(dto, userDbo)
         val dboWithExplicitId = dbo.copy(id = id)
 
         val updatedDbo = receiptService.updateReceipt(dboWithExplicitId)
@@ -65,8 +67,8 @@ class ReceiptController(
     }
 
     @PostMapping("/receipt/item")
-    fun createReceiptItem(@RequestBody dto: ReceiptItemDto): ReceiptItemDto {
-        val dbo = receiptItemMapper.dboFromDto(dto)
+    fun createReceiptItem(@RequestBody dto: ReceiptItemDto, @User userDbo: UserDbo): ReceiptItemDto {
+        val dbo = receiptItemMapper.dboFromDto(dto, userDbo)
 
         val savedDbo = receiptService.upsertReceiptItem(dbo)
 
@@ -74,8 +76,8 @@ class ReceiptController(
     }
 
     @PutMapping("/receipt/item/{id}")
-    fun updateReceiptItem(@RequestBody dto: ReceiptItemDto, @PathVariable id: Int): ReceiptItemDto {
-        val dbo = receiptItemMapper.dboFromDto(dto)
+    fun updateReceiptItem(@RequestBody dto: ReceiptItemDto, @PathVariable id: Int, @User userDbo: UserDbo): ReceiptItemDto {
+        val dbo = receiptItemMapper.dboFromDto(dto, userDbo)
         val dboWithExplicitId = dbo.copy(id = id)
 
         val updatedDbo = receiptService.upsertReceiptItem(dboWithExplicitId)

@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.category
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import org.hibernate.annotations.*
 import javax.persistence.*
 import javax.persistence.Entity
@@ -27,6 +28,10 @@ data class CategoryDbo (
 
     @Column(nullable = false)
     val deleted: Boolean = false,
+
+    @ManyToOne(targetEntity = UserDbo::class, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val user: UserDbo,
 
     @OneToMany(targetEntity = CategoryDbo::class, mappedBy = "parentCategoryId")
     var subCategories: List<CategoryDbo>? = null

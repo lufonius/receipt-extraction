@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.*
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDboRepository
@@ -33,7 +34,7 @@ class InitReceiptService (
 
     private val logger = LoggerFactory.getLogger(InitReceiptService::class.java)
 
-    fun initReceipt(image: ByteArray, fileExtension: String): ReceiptDbo {
+    fun initReceipt(image: ByteArray, fileExtension: String, userDbo: UserDbo): ReceiptDbo {
         val uuid = uuidGenerator.generateRandomUUID()
         val fullImageUrl = fileStorageService.uploadImage(image, "$uuid.$fileExtension")
         val relativeImageUrl = URL(fullImageUrl).path
@@ -42,7 +43,7 @@ class InitReceiptService (
         try {
             form = receiptFormExtractionService.extractFields(fullImageUrl)
         } catch(exception: Exception) {
-            val receiptDbo = createAndSaveEmptyInitialReceiptDbo(relativeImageUrl)
+            val receiptDbo = createAndSaveEmptyInitialReceiptDbo(relativeImageUrl, userDbo)
             val id = receiptDbo.id
             val message = exception.message
             logger.error("Extraction of forms of receipt with id $id failed! \n $message")
@@ -55,28 +56,30 @@ class InitReceiptService (
                     ReceiptStatus.Open,
                     dateFactory.generateCurrentDate(),
                     relativeImageUrl,
-                    receiptDo
+                    receiptDo,
+                    userDbo
             )
             receiptDboRepository.save(receiptDbo)
 
-            val lineDbos = receiptDoMapper.mapLineDosToLineDbos(receiptDo.lines, receiptDbo)
+            val lineDbos = receiptDoMapper.mapLineDosToLineDbos(receiptDo.lines, receiptDbo, userDbo)
             lineDboRepository.saveAll(lineDbos)
 
-            val itemsDbos = receiptDoMapper.mapItemsDosToReceiptItemDbos(receiptDo.items.orEmpty(), receiptDbo)
+            val itemsDbos = receiptDoMapper.mapItemsDosToReceiptItemDbos(receiptDo.items.orEmpty(), receiptDbo, userDbo)
             receiptItemDboRepository.saveAll(itemsDbos)
 
             entityManager.refresh(receiptDbo)
             return receiptDbo
         } else {
-            return createAndSaveEmptyInitialReceiptDbo(relativeImageUrl)
+            return createAndSaveEmptyInitialReceiptDbo(relativeImageUrl, userDbo)
         }
     }
 
-    private fun createAndSaveEmptyInitialReceiptDbo(relativeImageUrl: String): ReceiptDbo {
+    private fun createAndSaveEmptyInitialReceiptDbo(relativeImageUrl: String, userDbo: UserDbo): ReceiptDbo {
         val receiptDbo = ReceiptDbo(
                 status = ReceiptStatus.Uploaded,
                 uploadedAt = Date(),
-                imgUrl = relativeImageUrl
+                imgUrl = relativeImageUrl,
+                user = entityManager.getReference(UserDbo::class.java, userDbo)
         )
         receiptDboRepository.save(receiptDbo)
         return receiptDbo

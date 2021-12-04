@@ -1,6 +1,8 @@
 package ch.lucfonjallaz.drezip.bl.category
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import org.springframework.stereotype.Component
+import javax.persistence.EntityManager
 
 @Component
 class CategoryMapper {
@@ -17,14 +19,15 @@ class CategoryMapper {
         )
     }
 
-    fun mapFromDto(dto: CategoryDto): CategoryDbo {
+    fun mapFromDto(dto: CategoryDto, userDbo: UserDbo): CategoryDbo {
         return CategoryDbo(
                 id = dto.id,
                 avatarUrl = dto.avatarUrl,
                 color = dto.color,
                 name = dto.name,
                 parentCategoryId = dto.parentCategoryId,
-                subCategories = dto.subCategories?.map { it -> mapFromDto(it) }
+                subCategories = dto.subCategories?.map { it -> mapFromDto(it, userDbo) },
+                user = userDbo
         )
     }
 }

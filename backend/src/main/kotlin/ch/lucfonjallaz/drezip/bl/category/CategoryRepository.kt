@@ -5,7 +5,9 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
 @RepositoryRestResource(exported = false)
-interface CategoryRepository : JpaRepository<CategoryDbo, Int>
+interface CategoryRepository : JpaRepository<CategoryDbo, Int> {
+
+}
 
 // how to make an apache lucene in memory search
 // dynamic queries jpa use cases

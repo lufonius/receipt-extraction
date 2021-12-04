@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemMapper
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineMapper
@@ -24,13 +25,14 @@ class ReceiptMapper(
             uploadedAt = dbo.uploadedAt
     )
 
-    fun dboFromDto(dto: ReceiptDto) = ReceiptDbo(
+    fun dboFromDto(dto: ReceiptDto, userDbo: UserDbo) = ReceiptDbo(
             id = dto.id,
             status = dto.status,
             imgUrl = dto.imgUrl,
             angle = dto.angle,
             transactionDate = dto.transactionDate,
             transactionTotal = dto.transactionTotal,
-            uploadedAt = dto.uploadedAt
+            uploadedAt = dto.uploadedAt,
+            user = userDbo
     )
 }

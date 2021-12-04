@@ -2,12 +2,12 @@ package ch.lucfonjallaz.drezip.auth
 
 import org.springframework.security.core.GrantedAuthority
 
-class UserDetailsAdapter(val userDbo: UserDbo) : CustomUser {
+class UserDetailsAdapter(private val userDbo: UserDbo) : CustomUser {
     override fun getAuthorities(): MutableCollection<GrantedAuthority> {
         return mutableListOf()
     }
 
-    override fun getId() = userDbo.id
+    override fun getUserDbo(): UserDbo = userDbo
 
     override fun getPassword(): String {
         return userDbo.password

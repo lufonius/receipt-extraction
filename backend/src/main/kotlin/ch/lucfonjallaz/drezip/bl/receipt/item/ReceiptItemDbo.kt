@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.item
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
@@ -21,6 +22,10 @@ data class ReceiptItemDbo(
 
         @Column(nullable = true)
         val price: Float? = null,
+
+        @ManyToOne(targetEntity = UserDbo::class, optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        val user: UserDbo,
 
         @OneToOne(fetch = FetchType.LAZY, optional = true, cascade = [CascadeType.PERSIST])
         @JoinColumn(name = "value_line_id")

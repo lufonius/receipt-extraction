@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
 import java.time.LocalDateTime
@@ -35,6 +36,10 @@ data class ReceiptDbo(
 
         @Column(nullable = false)
         val uploadedAt: Date,
+
+        @ManyToOne(targetEntity = UserDbo::class, optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        val user: UserDbo,
 
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "receipt", cascade = [CascadeType.REFRESH, CascadeType.PERSIST])
         var lines: List<LineDbo> = listOf(),

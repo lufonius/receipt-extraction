@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptDbo
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
@@ -51,7 +52,7 @@ class ReceiptDoMapper {
         );
     }
 
-    fun mapDoToDbo(status: ReceiptStatus, uploadedAt: Date, imgUrl: String, receiptDo: ReceiptDo): ReceiptDbo {
+    fun mapDoToDbo(status: ReceiptStatus, uploadedAt: Date, imgUrl: String, receiptDo: ReceiptDo, userDbo: UserDbo): ReceiptDbo {
         return ReceiptDbo(
                 status = status,
                 uploadedAt = uploadedAt,
@@ -59,27 +60,29 @@ class ReceiptDoMapper {
                 transactionTotal = receiptDo.total,
                 transactionMerchant = receiptDo.merchant,
                 transactionDate = receiptDo.date,
-                items = emptyList()
+                items = emptyList(),
+                user = userDbo
         )
     }
 
-    fun mapItemsDosToReceiptItemDbos(items: List<ItemDo>, receiptDbo: ReceiptDbo): List<ReceiptItemDbo> {
+    fun mapItemsDosToReceiptItemDbos(items: List<ItemDo>, receiptDbo: ReceiptDbo, userDbo: UserDbo): List<ReceiptItemDbo> {
         return items.map {
             ReceiptItemDbo(
                     label = it.name,
-                    labelLine = if (it.itemNameLineDo !== null) mapLineDoToDbo(it.itemNameLineDo, receiptDbo) else null,
-                    valueLine = if (it.priceLineDo !== null) mapLineDoToDbo(it.priceLineDo, receiptDbo) else null,
+                    labelLine = if (it.itemNameLineDo !== null) mapLineDoToDbo(it.itemNameLineDo, receiptDbo, userDbo) else null,
+                    valueLine = if (it.priceLineDo !== null) mapLineDoToDbo(it.priceLineDo, receiptDbo, userDbo) else null,
                     price = it.price,
-                    receipt = receiptDbo
+                    receipt = receiptDbo,
+                    user = userDbo
             )
         }
     }
 
-    fun mapLineDosToLineDbos(lineDos: List<LineDo>, receiptDbo: ReceiptDbo): List<LineDbo> {
-        return lineDos.map { mapLineDoToDbo(it, receiptDbo) }
+    fun mapLineDosToLineDbos(lineDos: List<LineDo>, receiptDbo: ReceiptDbo, userDbo: UserDbo): List<LineDbo> {
+        return lineDos.map { mapLineDoToDbo(it, receiptDbo, userDbo) }
     }
 
-    private fun mapLineDoToDbo(lineDo: LineDo, receiptDbo: ReceiptDbo): LineDbo {
+    private fun mapLineDoToDbo(lineDo: LineDo, receiptDbo: ReceiptDbo, userDbo: UserDbo): LineDbo {
         return LineDbo(
             text = lineDo.text,
             topLeftX = Math.floor(lineDo.boundingBox[0].x.toDouble()).toInt(),
@@ -90,7 +93,8 @@ class ReceiptDoMapper {
             bottomLeftY = Math.floor(lineDo.boundingBox[2].y.toDouble()).toInt(),
             bottomRightX = Math.floor(lineDo.boundingBox[3].x.toDouble()).toInt(),
             bottomRightY = Math.floor(lineDo.boundingBox[3].y.toDouble()).toInt(),
-            receipt = receiptDbo
+            receipt = receiptDbo,
+                user = userDbo
         )
     }
 
