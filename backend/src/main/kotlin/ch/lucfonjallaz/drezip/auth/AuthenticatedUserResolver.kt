@@ -9,9 +9,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class UserResolver : HandlerMethodArgumentResolver{
+class AuthenticatedUserResolver : HandlerMethodArgumentResolver{
     override fun supportsParameter(parameter: MethodParameter): Boolean {
-        return parameter.hasParameterAnnotation(User::class.java) && parameter.parameterType == UserDbo::class.java
+        return parameter.hasParameterAnnotation(AuthenticatedUser::class.java) && parameter.parameterType == UserDbo::class.java
     }
 
     override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): Any? {
