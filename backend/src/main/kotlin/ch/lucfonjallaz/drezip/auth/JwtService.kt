@@ -1,14 +1,12 @@
 package ch.lucfonjallaz.drezip.auth
 
-import ch.lucfonjallaz.drezip.PropertyService
+import ch.lucfonjallaz.drezip.core.PropertyService
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import java.util.*
-import java.util.function.Function
 import io.jsonwebtoken.security.Keys
 
 @Component

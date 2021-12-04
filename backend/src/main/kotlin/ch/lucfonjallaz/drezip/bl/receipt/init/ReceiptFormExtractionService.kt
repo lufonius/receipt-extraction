@@ -1,13 +1,12 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
-import ch.lucfonjallaz.drezip.PropertyService
+import ch.lucfonjallaz.drezip.core.PropertyService
 import org.springframework.stereotype.Component
 import com.azure.ai.formrecognizer.FormRecognizerClientBuilder
 import com.azure.ai.formrecognizer.models.RecognizeReceiptsOptions
 import com.azure.ai.formrecognizer.models.RecognizedForm
 import com.azure.core.credential.AzureKeyCredential
 import com.azure.core.util.Context
-import org.springframework.beans.factory.annotation.Value
 
 @Component
 class ReceiptFormExtractionService(val propertyService: PropertyService) {

@@ -1,4 +1,4 @@
-package ch.lucfonjallaz.drezip
+package ch.lucfonjallaz.drezip.core
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

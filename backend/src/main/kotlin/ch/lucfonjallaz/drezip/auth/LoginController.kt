@@ -1,19 +1,14 @@
 package ch.lucfonjallaz.drezip.auth
 
-import ch.lucfonjallaz.drezip.PropertyService
-import org.springframework.beans.factory.annotation.Value
+import ch.lucfonjallaz.drezip.core.PropertyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCrypt
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.AbstractPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.net.http.HttpResponse
 
 // TODO: on signature exception, logout the user -> he must obtain a new access token (blacklist access token)
 // TODO: when IP addresses changes, logout the user -> he must obtain a new access token (blacklist access token)

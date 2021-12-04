@@ -1,7 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
-import ch.lucfonjallaz.drezip.PropertyService
-import org.springframework.beans.factory.annotation.Value
+import ch.lucfonjallaz.drezip.core.PropertyService
 import org.springframework.stereotype.Component
 import com.sendgrid.*
 import com.sendgrid.helpers.mail.Mail

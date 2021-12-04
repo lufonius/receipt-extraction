@@ -1,6 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
-import ch.lucfonjallaz.drezip.PropertyService
+import ch.lucfonjallaz.drezip.core.PropertyService
 import com.azure.storage.blob.BlobServiceClientBuilder
 import org.springframework.stereotype.Component
 
