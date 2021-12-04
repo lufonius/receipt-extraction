@@ -15,7 +15,7 @@ import javax.persistence.EntityNotFoundException
 // this controller exists for the reason to not expose the stack trace in case of an error
 // as spring would do it per default
 @ControllerAdvice
-class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
+class RestExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler
     protected fun handleAnyError(ex: RuntimeException) = ResponseEntity<Any>(HttpStatus.INTERNAL_SERVER_ERROR)
 
