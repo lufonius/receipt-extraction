@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.net.http.HttpResponse
 
+// TODO: on signature exception, logout the user -> he must obtain a new access token (blacklist access token)
+// TODO: when IP addresses changes, logout the user -> he must obtain a new access token (blacklist access token)
 @RestController
 @CrossOrigin("*")
 class LoginController(
@@ -45,7 +47,7 @@ class LoginController(
 
     private fun getCookieValue(jwt: String): String {
         if (propertyService.env === "prod") {
-            return "token=$jwt;HttpOnly;Secure"
+            return "token=$jwt;SameSite=Strict;HttpOnly;Secure"
         } else {
             return "token=$jwt;HttpOnly"
         }
