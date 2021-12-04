@@ -1,12 +1,13 @@
 package ch.lucfonjallaz.drezip.bl.category
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
 @RepositoryRestResource(exported = false)
 interface CategoryRepository : JpaRepository<CategoryDbo, Int> {
-
+    fun findByUser(userDbo: UserDbo): List<CategoryDbo>
 }
 
 // how to make an apache lucene in memory search

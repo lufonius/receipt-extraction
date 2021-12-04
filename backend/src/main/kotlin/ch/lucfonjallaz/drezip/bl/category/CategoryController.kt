@@ -15,7 +15,7 @@ class CategoryController(
 ) {
     @GetMapping("/category")
     fun getAll(@User user: UserDbo): List<CategoryDto> {
-        return categoryMapper.mapFromDbos(categoryRepository.findAll())
+        return categoryMapper.mapFromDbos(categoryRepository.findByUser(user))
     }
 
     @DeleteMapping("/category/{id}")
