@@ -13,7 +13,7 @@ import io.jsonwebtoken.security.Keys
 
 @Component
 class JwtService(val propertyService: PropertyService) {
-    fun extractUsername(token: String): String = extractAllClaims(token).subject
+    fun extractUsername(token: String): String? = extractAllClaims(token).subject
     fun extractExpiration(token: String?): Date = extractAllClaims(token).expiration
 
     private fun extractAllClaims(token: String?): Claims {
@@ -34,7 +34,7 @@ class JwtService(val propertyService: PropertyService) {
     }
 
     private fun createToken(claims: Map<String, Any?>, subject: String): String {
-        val key = Keys.hmacShaKeyFor(propertyService.jwtSigningKey.toByteArray())
+        val key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(propertyService.jwtSigningKey.toByteArray()))
 
         return Jwts.builder()
                 .setClaims(claims)
