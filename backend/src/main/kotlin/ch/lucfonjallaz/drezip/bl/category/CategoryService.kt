@@ -1,8 +1,8 @@
 package ch.lucfonjallaz.drezip.bl.category
 
 import ch.lucfonjallaz.drezip.auth.UserDbo
-import ch.lucfonjallaz.drezip.core.EntityLogicallyDeletedException
 import org.springframework.stereotype.Component
+import javax.persistence.EntityNotFoundException
 
 @Component
 class CategoryService(
@@ -17,7 +17,7 @@ class CategoryService(
             val dboWithExplicitId = updateTo.copy(id = id)
             return categoryRepository.save(dboWithExplicitId)
         } else {
-            throw EntityLogicallyDeletedException()
+            throw EntityNotFoundException()
         }
     }
 
@@ -29,7 +29,7 @@ class CategoryService(
         if (!foundDbo.deleted) {
             categoryRepository.deleteById(id)
         } else {
-            throw EntityLogicallyDeletedException()
+            throw EntityNotFoundException()
         }
     }
 }
