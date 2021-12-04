@@ -8,6 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource
 @RepositoryRestResource(exported = false)
 interface CategoryRepository : JpaRepository<CategoryDbo, Int> {
     fun findByUser(userDbo: UserDbo): List<CategoryDbo>
+    fun getByIdAndUser(id: Int, userDbo: UserDbo): CategoryDbo
 }
 
 // how to make an apache lucene in memory search

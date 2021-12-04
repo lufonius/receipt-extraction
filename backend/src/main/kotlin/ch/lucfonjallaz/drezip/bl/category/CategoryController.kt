@@ -11,34 +11,28 @@ import javax.persistence.EntityManager
 @CrossOrigin("*")
 class CategoryController(
         val categoryMapper: CategoryMapper,
-        val categoryRepository: CategoryRepository
+        val categoryService: CategoryService
 ) {
     @GetMapping("/category")
     fun getAll(@User user: UserDbo): List<CategoryDto> {
-        return categoryMapper.mapFromDbos(categoryRepository.findByUser(user))
+        return categoryMapper.mapFromDbos(categoryService.findAllByUser(user))
     }
 
     @DeleteMapping("/category/{id}")
-    fun delete(@PathVariable id: Int) = categoryRepository.deleteById(id)
+    fun delete(@PathVariable id: Int, @User userDbo: UserDbo) = categoryService.delete(id, userDbo)
 
     @PutMapping("/category/{id}")
     fun update(@RequestBody categoryDto: CategoryDto, @PathVariable id: Int, @User userDbo: UserDbo): CategoryDto {
-        val foundDbo = categoryRepository.findByIdOrNull(id)
+        val dbo = categoryMapper.mapFromDto(categoryDto, userDbo)
+        val updatedDbo = categoryService.update(id, dbo, userDbo)
 
-        if (foundDbo?.deleted == false) {
-            val dbo = categoryMapper.mapFromDto(categoryDto, userDbo)
-            val dboWithExplicitId = dbo.copy(id = id)
-            val updatedDbo = categoryRepository.save(dboWithExplicitId)
-
-            return categoryMapper.mapFromDbo(updatedDbo)
-        } else {
-            throw Exception("Cannot update deleted entity")
-        }
+        return categoryMapper.mapFromDbo(updatedDbo)
     }
 
     @PostMapping("/category")
     fun insert(@RequestBody dto: CategoryDto, @User userDbo: UserDbo): CategoryDto {
-        val insertedDbo = categoryRepository.save(categoryMapper.mapFromDto(dto, userDbo))
+        val dbo = categoryMapper.mapFromDto(dto, userDbo)
+        val insertedDbo = categoryService.insert(dbo)
         return categoryMapper.mapFromDbo(insertedDbo)
     }
 }
