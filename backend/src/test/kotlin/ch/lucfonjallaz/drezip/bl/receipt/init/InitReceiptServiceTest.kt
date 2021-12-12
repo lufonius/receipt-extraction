@@ -13,6 +13,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.*
@@ -55,6 +56,8 @@ class InitReceiptServiceTest {
 
     @Test
     fun `should create a receipt with status UPLOADED and imageUrl after the image has been uploaded but extraction returns null`() {
+        val userDbo = createTestUserDbo()
+
         every { fileStorageService.uploadImage(image = any(), filename = "bongo.jpg") }
                 .returns("https://gaggi.com/bongo.jpg")
         every { receiptFormExtractionService.extractFields(imageUrl = "https://gaggi.com/bongo.jpg") }
@@ -62,20 +65,31 @@ class InitReceiptServiceTest {
         every { uuidGenerator.generateRandomUUID() }
                 .returns("bongo")
 
-        val receiptDbo = ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = "https://gaggi.com/bongo.jpg", angle = null, uploadedAt = Date())
+        val receiptDbo = ReceiptDbo(
+                status = ReceiptStatus.Uploaded,
+                imgUrl = "https://gaggi.com/bongo.jpg",
+                angle = null,
+                uploadedAt = Date(),
+                user = userDbo
+        )
         every { receiptDboRepository.save(and(
                 match { it.status == ReceiptStatus.Uploaded },
                 match { it.imgUrl == "/bongo.jpg" }
         )) }.returns(receiptDbo)
 
-        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg")
+        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg", userDbo)
 
         assertThat(receipt.imgUrl).isEqualTo("/bongo.jpg")
         assertThat(receipt.status).isEqualTo(ReceiptStatus.Uploaded)
+        assertThat(receipt.user)
+                .usingRecursiveComparison()
+                .isEqualTo(userDbo)
     }
 
     @Test
     fun `should create a receipt with status UPLOADED and imageUrl after the image has been uploaded but extraction throws`() {
+        val userDbo = createTestUserDbo()
+
         every { fileStorageService.uploadImage(image = any(), filename = "bongo.jpg") }
                 .returns("https://gaggi.com/bongo.jpg")
 
@@ -85,21 +99,32 @@ class InitReceiptServiceTest {
         every { uuidGenerator.generateRandomUUID() }
                 .returns("bongo")
 
-        val receiptDbo = ReceiptDbo(status = ReceiptStatus.Uploaded, imgUrl = "https://gaggi.com/bongo.jpg", angle = null, uploadedAt = Date())
+        val receiptDbo = ReceiptDbo(
+                status = ReceiptStatus.Uploaded,
+                imgUrl = "https://gaggi.com/bongo.jpg",
+                angle = null,
+                uploadedAt = Date(),
+                user = userDbo
+        )
         every { receiptDboRepository.save(and(
                 match { it.status == ReceiptStatus.Uploaded },
                 match { it.imgUrl == "/bongo.jpg" }
         )) }.returns(receiptDbo)
 
-        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg")
+        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg", userDbo)
 
         assertThat(receipt.imgUrl).isEqualTo("/bongo.jpg")
         assertThat(receipt.status).isEqualTo(ReceiptStatus.Uploaded)
+        assertThat(receipt.user)
+                .usingRecursiveComparison()
+                .isEqualTo(userDbo)
     }
 
     @Test
     fun `should create a receipt with status OPEN and should save the extracted text in lineDbos`() {
         // given
+        val userDbo = createTestUserDbo()
+
         every { uuidGenerator.generateRandomUUID() }.returns("bongo")
 
         val imageUrl = "https://gaggi.com/bongo.jpg"
@@ -114,15 +139,15 @@ class InitReceiptServiceTest {
         val date = Date()
         every { dateFactory.generateCurrentDate() }.returns(date)
 
-        val receiptDbo = createTestReceiptDbo(imgUrl = "/bongo.jpg", status = ReceiptStatus.Open)
-        every { receiptDoMapper.mapDoToDbo(status = ReceiptStatus.Open, uploadedAt = date, imgUrl = "/bongo.jpg", receiptDo) }
+        val receiptDbo = createTestReceiptDbo(imgUrl = "/bongo.jpg", status = ReceiptStatus.Open, user = userDbo)
+        every { receiptDoMapper.mapDoToDbo(status = ReceiptStatus.Open, uploadedAt = date, imgUrl = "/bongo.jpg", receiptDo, userDbo) }
                 .returns(receiptDbo)
 
         every { receiptDboRepository.save(receiptDbo) }.returns(receiptDbo)
 
         val lineDbo = createTestLineDbo(receiptDbo)
         val lineDbos = listOf(lineDbo)
-        every { receiptDoMapper.mapLineDosToLineDbos(receiptDo.lines, receiptDbo) }.returns(lineDbos)
+        every { receiptDoMapper.mapLineDosToLineDbos(receiptDo.lines, receiptDbo, userDbo) }.returns(lineDbos)
 
         val receiptItemDbo = createTestReceiptItemDbo(
                 labelLine = lineDbo,
@@ -130,11 +155,11 @@ class InitReceiptServiceTest {
                 receiptDbo = receiptDbo
         )
         val receiptItemDbos = listOf(receiptItemDbo)
-        every { receiptDo.items?.let { receiptDoMapper.mapItemsDosToReceiptItemDbos(it, receiptDbo) } }
+        every { receiptDo.items?.let { receiptDoMapper.mapItemsDosToReceiptItemDbos(it, receiptDbo, userDbo) } }
                 .returns(receiptItemDbos)
 
         // when
-        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg")
+        val receipt = initReceiptService.initReceipt(ByteArray(1), "jpg", userDbo)
 
         // then
         assertThat(receipt).isEqualTo(receiptDbo)

@@ -35,6 +35,9 @@ internal class ReceiptControllerTest {
 
     @Test
     fun `should return the newly created dbo mapped as a dto for a given image as input`() {
+        // given
+        val user = createTestUserDbo()
+
         val fileContents = ByteArray(0)
         val multipartFile = MockMultipartFile("test.jpg", "hello/world/test.jpg", "image/jpg", fileContents)
 
@@ -44,7 +47,8 @@ internal class ReceiptControllerTest {
                 status = ReceiptStatus.Uploaded,
                 angle = 0.0F,
                 id = 9,
-                uploadedAt = currentDate
+                uploadedAt = currentDate,
+                user = user
         )
 
         val lineDbo = createTestLineDbo(
@@ -63,7 +67,7 @@ internal class ReceiptControllerTest {
 
         val receiptDboWithLines = receiptDbo.copy(lines = listOf(lineDbo))
 
-        every { initReceiptService.initReceipt(fileContents, "jpg") }.returns(receiptDboWithLines)
+        every { initReceiptService.initReceipt(fileContents, "jpg", user) }.returns(receiptDboWithLines)
 
         val expectedReceiptDto = ReceiptDto(
                 id = 9,
@@ -84,8 +88,10 @@ internal class ReceiptControllerTest {
 
         every { receiptMapper.dtoFromDbo(receiptDboWithLines) }.returns(expectedReceiptDto)
 
-        val result = receiptController.initReceipt(multipartFile)
+        // when
+        val result = receiptController.initReceipt(multipartFile, user)
 
+        // then
         assertThat(result)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedReceiptDto)

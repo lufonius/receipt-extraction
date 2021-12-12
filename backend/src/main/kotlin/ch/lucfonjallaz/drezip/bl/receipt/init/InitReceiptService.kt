@@ -79,7 +79,7 @@ class InitReceiptService (
                 status = ReceiptStatus.Uploaded,
                 uploadedAt = Date(),
                 imgUrl = relativeImageUrl,
-                user = entityManager.getReference(UserDbo::class.java, userDbo)
+                user = userDbo
         )
         receiptDboRepository.save(receiptDbo)
         return receiptDbo

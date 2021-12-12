@@ -1,5 +1,7 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
+import ch.lucfonjallaz.drezip.auth.UserDetailsAdapter
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
@@ -17,6 +19,7 @@ fun createTestLineDbo(
         bottomLeftX: Int = 6,
         bottomLeftY: Int = 7,
         text: String = "extracted text",
+        user: UserDbo = createTestUserDbo()
 ) = LineDbo(
         id = id,
         topLeftX = topLeftX,
@@ -28,19 +31,22 @@ fun createTestLineDbo(
         bottomLeftX = bottomLeftX,
         bottomLeftY = bottomLeftY,
         text = text,
-        receipt = receiptDbo
+        receipt = receiptDbo,
+        user = user
 )
 
 fun createTestCategoryDbo(
         id: Int = 0,
         name: String = "test",
         color: Int = 0x000000,
-        avatarUrl: String = "dummyAvatarUrl"
+        avatarUrl: String = "dummyAvatarUrl",
+        user: UserDbo = createTestUserDbo()
 ) = CategoryDbo(
         id = id,
         avatarUrl = avatarUrl,
         color = color,
-        name = name
+        name = name,
+        user = user
 )
 
 fun createTestReceiptDbo(
@@ -48,13 +54,15 @@ fun createTestReceiptDbo(
         id: Int = 0,
         imgUrl: String = "hoi",
         angle: Float? = null,
-        uploadedAt: Date = Date()
+        uploadedAt: Date = Date(),
+        user: UserDbo = createTestUserDbo()
 ) = ReceiptDbo(
         id = id,
         status = status,
         imgUrl = imgUrl,
         angle = angle,
-        uploadedAt = uploadedAt
+        uploadedAt = uploadedAt,
+        user = user
 )
 
 fun createTestReceiptItemDbo(
@@ -64,7 +72,8 @@ fun createTestReceiptItemDbo(
         receiptDbo: ReceiptDbo,
         categoryDbo: CategoryDbo? = null,
         label: String = "testLabel",
-        price: Float = 0.95F
+        price: Float = 0.95F,
+        user: UserDbo = createTestUserDbo()
 ) = ReceiptItemDbo(
     id = id,
         labelLine = labelLine,
@@ -72,6 +81,23 @@ fun createTestReceiptItemDbo(
         receipt = receiptDbo,
         category = categoryDbo,
         label = label,
-        price = price
+        price = price,
+        user = user
 )
+
+fun createTestUserDbo(
+        id: Int = 0,
+        username: String = "Testuser",
+        password: String = "Testpassword"
+) = UserDbo(
+        id = id,
+        username = username,
+        password = password
+)
+
+fun createTestUserDetails(
+        id: Int = 0,
+        username: String = "Testuser",
+        password: String = "Testpassword"
+) = UserDetailsAdapter(createTestUserDbo(id, username, password))
 
