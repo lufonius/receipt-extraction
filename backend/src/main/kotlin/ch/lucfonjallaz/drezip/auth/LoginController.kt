@@ -1,9 +1,10 @@
 package ch.lucfonjallaz.drezip.auth
 
+import ch.lucfonjallaz.drezip.core.ServiceErrorCode
 import ch.lucfonjallaz.drezip.core.PropertyService
+import ch.lucfonjallaz.drezip.core.ServiceError
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,22 +22,20 @@ class LoginController(
         val propertyService: PropertyService
 ) {
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest): ResponseEntity<Unit> {
-        try {
-            val user = userService.loadUserByUsername(request.username)
-            if (passwordEncoder.matches(request.password, user.password)) {
-                val jwt = jwtService.generateToken(user)
-                val response = ResponseEntity
-                        .ok()
-                        .header("Set-Cookie", getCookieValue(jwt))
-                        .build<Unit>()
-
-                return response
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-            }
-        } catch(e: UsernameNotFoundException) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+    fun login(@RequestBody request: LoginRequest): ResponseEntity<Any> {
+        val user = userService.findByUsername(request.username)
+        if (user != null && passwordEncoder.matches(request.password, user.password)) {
+            val jwt = jwtService.generateToken(CustomUserAdapter(user))
+            return ResponseEntity
+                    .ok()
+                    .header("Set-Cookie", getCookieValue(jwt))
+                    .build()
+        } else {
+            // we could return a "user not found" error, but that would tell an attacker that this user
+            // is non-existent, while returning "invalid credentials" could mean both and does not reveal more infos
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ServiceError(ServiceErrorCode.INVALID_CREDENTIALS))
         }
     }
 

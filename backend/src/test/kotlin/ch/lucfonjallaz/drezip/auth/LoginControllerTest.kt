@@ -54,8 +54,8 @@ class LoginControllerTest {
     @Test
     fun `should reject a log in request when the username is not correct`() {
         val loginRequest = LoginRequest(username = "Testuser", password = "Testpassword")
-        every { userService.loadUserByUsername(loginRequest.username) }
-                .throws(UsernameNotFoundException(""))
+        every { userService.findByUsername(loginRequest.username) }
+                .returns(null)
 
         val response = loginController.login(loginRequest)
 
