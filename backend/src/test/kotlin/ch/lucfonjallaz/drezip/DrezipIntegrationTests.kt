@@ -1,5 +1,8 @@
 package ch.lucfonjallaz.drezip
 
+import ch.lucfonjallaz.drezip.auth.LoginRequest
+import ch.lucfonjallaz.drezip.auth.RegisterRequest
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.category.CategoryDto
 import ch.lucfonjallaz.drezip.bl.receipt.*
@@ -62,10 +65,14 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 	@Test
 	fun `should create a new receipt item`() {
+		val newUsername = registerNewUser("password")
+		val userDbo = getUserDboByUsername(newUsername)
+		val cookie = login(newUsername, "password")
+
 		val receiptDbo = createAndSaveDummyReceiptDbo()
 		val firstLineDbo = createAndSaveDummyLineDbo(receiptDbo)
 		val secondLineDbo = createAndSaveDummyLineDbo(receiptDbo)
-		val categoryDbo = createAndSaveDummyCategoryDbo()
+		val categoryDbo = createAndSaveDummyCategoryDbo(userDbo)
 		TestTransaction.end()
 
 		val receiptItemToBeSaved = ReceiptItemDto(
@@ -77,8 +84,10 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				categoryId = categoryDbo.id
 		)
 
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
 		val restTemplate = TestRestTemplate()
-		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(receiptItemToBeSaved, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/item"))
+		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(receiptItemToBeSaved, headers, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/item"))
 		val savedReceiptItemResponse = restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
 
 		val savedReceiptItem = savedReceiptItemResponse.body ?: throw Exception("did not save receipt item")
@@ -92,21 +101,59 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 
 	@Test
 	fun `happyflow - endpoint initReceipt should init a receipt and add some receipt items for a category`() {
-		val receiptDto = uploadAndInitReceipt()
+		val newUsername = registerNewUser("password")
+		val userDbo = getUserDboByUsername(newUsername)
+		val cookie = login(newUsername, "password")
+
+		val receiptDto = uploadAndInitReceipt(cookie)
 		val firstLineId = receiptDto.lines?.get(0)?.id ?: throw Exception("line at index 0 not found")
 		val secondLineId = receiptDto.lines?.get(1)?.id ?: throw Exception("line at index 1 not found")
 
-		val inProgressReceiptDto = startReceiptExtraction(receiptDto.id)
-		setTotalAndDateOfReceipt(inProgressReceiptDto)
-		val receiptItemDto = addReceiptItemWithCategory(firstLineId, secondLineId, receiptDto.id)
-		editReceiptItem(receiptItemDto)
-		deleteReceiptItem(receiptItemDto.id)
-		endReceiptExtraction(receiptDto.id)
+		val inProgressReceiptDto = startReceiptExtraction(receiptDto.id, cookie)
+		setTotalAndDateOfReceipt(inProgressReceiptDto, cookie)
+		val receiptItemDto = addReceiptItemWithCategory(firstLineId, secondLineId, receiptDto.id, cookie, userDbo)
+		editReceiptItem(receiptItemDto, cookie)
+		deleteReceiptItem(receiptItemDto.id, cookie)
+		endReceiptExtraction(receiptDto.id, cookie)
 	}
 
-	private fun uploadAndInitReceipt(): ReceiptDto {
+	private fun registerNewUser(password: String): String {
+		val headers = HttpHeaders()
+		headers.contentType = MediaType.APPLICATION_JSON
+
+		val username = UUIDForTestGenerator.generateRandomUUID()
+		val registerRequest = RegisterRequest(username, password)
+
+		val restTemplate = TestRestTemplate()
+		val jwt = restTemplate.exchange("$apiBaseUrl/api/register", HttpMethod.POST, HttpEntity(registerRequest, headers), String::class.java)
+
+		val setCookieHeader = jwt.headers.get("Set-Cookie")?.first()
+		assertThat(setCookieHeader).isNotNull
+		assertThat(setCookieHeader?.split(".")?.size).isEqualTo(3)
+
+		return username
+	}
+
+	private fun login(username: String, password: String): String {
+		val headers = HttpHeaders()
+		headers.contentType = MediaType.APPLICATION_JSON
+
+		val loginRequest = LoginRequest(username, password)
+
+		val restTemplate = TestRestTemplate()
+		val response = restTemplate.exchange("$apiBaseUrl/api/login", HttpMethod.POST, HttpEntity(loginRequest, headers), String::class.java)
+
+		val setCookieHeader = response.headers.get("Set-Cookie")?.first()
+		assertThat(setCookieHeader).isNotNull
+		assertThat(setCookieHeader?.split(".")?.size).isEqualTo(3)
+
+		return setCookieHeader!!
+	}
+
+	private fun uploadAndInitReceipt(cookie: String): ReceiptDto {
 		val headers = HttpHeaders()
 		headers.contentType = MediaType.MULTIPART_FORM_DATA
+		headers.set("Cookie", cookie)
 
 		// we need to have a fileSystemResource, as otherwise the request cannot be built correctly
 		// fileSystemResource contains more information like file name, file location etc. which is all
@@ -128,10 +175,13 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		return receiptDto
 	}
 
-	private fun startReceiptExtraction(receiptId: Int): ReceiptDto {
+	private fun startReceiptExtraction(receiptId: Int, cookie: String): ReceiptDto {
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
+
 		val restTemplate = TestRestTemplate()
 
-		val request = RequestEntity<ReceiptDto>(HttpMethod.POST, URI("$apiBaseUrl/api/receipt/start/${receiptId}"))
+		val request = RequestEntity<ReceiptDto>(headers, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/start/${receiptId}"))
 		val updatedReceiptDtoResponse = restTemplate.exchange(request, ReceiptDto::class.java)
 
 		val updatedReceiptDto = updatedReceiptDtoResponse.body ?: throw Exception("Expected a non-null response body")
@@ -142,9 +192,10 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		return updatedReceiptDto
 	}
 
-	private fun setTotalAndDateOfReceipt(
-			receiptDto: ReceiptDto
-	) {
+	private fun setTotalAndDateOfReceipt(receiptDto: ReceiptDto, cookie: String) {
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
+
 		val restTemplate = TestRestTemplate()
 		val newDate = Date()
 		val updateReceiptDto = receiptDto.copy(
@@ -152,19 +203,22 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				transactionDate = newDate
 		)
 
-		val updateRequest = RequestEntity(updateReceiptDto, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/${receiptDto.id}"))
+		val updateRequest = RequestEntity(updateReceiptDto, headers, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/${receiptDto.id}"))
 		val updateResponse = restTemplate.exchange(updateRequest, ReceiptDto::class.java).body
 
 		assertThat(updateResponse?.transactionTotal).isEqualTo(0.95F)
 		assertThat(updateResponse?.transactionDate).isEqualTo(newDate)
 	}
 
-	private fun addReceiptItemWithCategory(labelLineId: Int, amountLineId: Int, receiptId: Int): ReceiptItemDto {
+	private fun addReceiptItemWithCategory(labelLineId: Int, amountLineId: Int, receiptId: Int, cookie: String, userDbo: UserDbo): ReceiptItemDto {
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
+
 		val restTemplate = TestRestTemplate()
-		val persistedCategory = createAndSaveDummyCategoryDbo()
+		val persistedCategory = createAndSaveDummyCategoryDbo(userDbo)
 		TestTransaction.end()
 
-		val getCategoriesRequest = RequestEntity<List<CategoryDto>>(HttpMethod.GET, URI("$apiBaseUrl/api/category"))
+		val getCategoriesRequest = RequestEntity<List<CategoryDto>>(headers, HttpMethod.GET, URI("$apiBaseUrl/api/category"))
 		val getCategoriesResponse = restTemplate.exchange(getCategoriesRequest, typeRef<List<CategoryDto>>())
 
 		val categories = getCategoriesResponse.body ?: throw Exception("no categories found, but there should be at least one")
@@ -180,7 +234,7 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				categoryId = category.id
 		)
 
-		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(receiptItemToBeSaved, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/item"))
+		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(receiptItemToBeSaved, headers, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/item"))
 		val savedReceiptItemResponse = restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
 
 		val savedReceiptItem = savedReceiptItemResponse.body ?: throw Exception("did not save receipt item")
@@ -194,14 +248,17 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		return savedReceiptItem
 	}
 
-	private fun editReceiptItem(receiptItemDtoToBeEdited: ReceiptItemDto) {
+	private fun editReceiptItem(receiptItemDtoToBeEdited: ReceiptItemDto, cookie: String) {
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
+
 		val editedReceiptItemDto = receiptItemDtoToBeEdited.copy(
 				price = 70.88F,
 				label = "editedLabel"
 		)
 
 		val restTemplate = TestRestTemplate()
-		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(editedReceiptItemDto, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/item/${editedReceiptItemDto.id}"))
+		val saveReceiptItemRequest = RequestEntity<ReceiptItemDto>(editedReceiptItemDto, headers, HttpMethod.PUT, URI("$apiBaseUrl/api/receipt/item/${editedReceiptItemDto.id}"))
 		val savedReceiptItemResponse = restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
 
 		val savedReceiptItem = savedReceiptItemResponse.body ?: throw Exception("did not save receipt item")
@@ -213,19 +270,25 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 				.isEqualTo(editedReceiptItemDto)
 	}
 
-	private fun deleteReceiptItem(id: Int) {
+	private fun deleteReceiptItem(id: Int, cookie: String) {
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
+
 		val restTemplate = TestRestTemplate()
-		val saveReceiptItemRequest = RequestEntity<Unit>(HttpMethod.DELETE, URI("$apiBaseUrl/api/receipt/item/${id}"))
+		val saveReceiptItemRequest = RequestEntity<Unit>(headers, HttpMethod.DELETE, URI("$apiBaseUrl/api/receipt/item/${id}"))
 		restTemplate.exchange(saveReceiptItemRequest, typeRef<ReceiptItemDto>())
 
 		val entity = entityManager.find(ReceiptItemDbo::class.java, id)
 		assertThat(entity).isNull()
 	}
 
-	private fun endReceiptExtraction(receiptId: Int) {
+	private fun endReceiptExtraction(receiptId: Int, cookie: String) {
+		val headers = HttpHeaders()
+		headers.set("Cookie", cookie)
+
 		val restTemplate = TestRestTemplate()
 
-		val request = RequestEntity<ReceiptDto>(HttpMethod.POST, URI("$apiBaseUrl/api/receipt/end/${receiptId}"))
+		val request = RequestEntity<ReceiptDto>(headers, HttpMethod.POST, URI("$apiBaseUrl/api/receipt/end/${receiptId}"))
 		val updatedReceiptDtoResponse = restTemplate.exchange(request, ReceiptDto::class.java)
 
 		val updatedReceiptDto = updatedReceiptDtoResponse.body ?: throw Exception("Expected a non-null response body")
@@ -234,8 +297,15 @@ class DrezipIntegrationTests : BaseIntegrationTest() {
 		assertThat(updatedReceiptDto.status).isEqualTo(ReceiptStatus.Done)
 	}
 
-	private fun createAndSaveDummyCategoryDbo(): CategoryDbo {
-		val dbo = createTestCategoryDbo(name = "parent")
+	private fun getUserDboByUsername(username: String): UserDbo {
+		return entityManager
+				.createQuery("select u from UserDbo u where u.username=:username")
+				.setParameter("username", username)
+				.singleResult as UserDbo
+	}
+
+	private fun createAndSaveDummyCategoryDbo(userDbo: UserDbo): CategoryDbo {
+		val dbo = createTestCategoryDbo(name = "parent", user = userDbo)
 		entityManager.persist(dbo)
 
 		return dbo

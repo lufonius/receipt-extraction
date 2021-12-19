@@ -1,7 +1,7 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
 import ch.lucfonjallaz.drezip.auth.UserDbo
-import ch.lucfonjallaz.drezip.auth.UserDetailsAdapter
+import ch.lucfonjallaz.drezip.auth.CustomUserAdapter
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
@@ -99,5 +99,5 @@ fun createTestUserDetails(
         id: Int = 0,
         username: String = "Testuser",
         password: String = "Testpassword"
-) = UserDetailsAdapter(createTestUserDbo(id, username, password))
+) = CustomUserAdapter(createTestUserDbo(id, username, password))
 

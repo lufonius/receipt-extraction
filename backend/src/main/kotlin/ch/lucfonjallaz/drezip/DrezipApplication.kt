@@ -5,7 +5,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
 
 @SpringBootApplication
-@Import(SwaggerConfiguration::class, RequestLoggingConfiguration::class)
+@Import(SwaggerConfiguration::class, RequestLoggingConfiguration::class, SecurityConfiguration::class)
 class Application () {
 	companion object {
 		@JvmStatic
