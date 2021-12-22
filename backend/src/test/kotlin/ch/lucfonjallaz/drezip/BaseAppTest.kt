@@ -2,6 +2,7 @@ package ch.lucfonjallaz.drezip
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
+import org.testcontainers.containers.GenericContainer
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,8 +27,15 @@ abstract class BaseAppTest {
             withReuse(true)
         }
 
+        val azureite = GenericContainer<Nothing>("mcr.microsoft.com/azure-storage/azurite").apply {
+            withExposedPorts(10000)
+            withEnv("AZURITE_ACCOUNTS", "drezip:z8A+QnfibR5m1ZBOM7t8/FAG8556FpAIgiRXmKqmWz43JoIb0kbzW66/rO1HV+TZzeTFWBM9f1QsJduSeCxuSw==")
+            withReuse(true)
+        }
+
         init {
             mySqlContainer.start()
+            azureite.start()
         }
     }
 }
