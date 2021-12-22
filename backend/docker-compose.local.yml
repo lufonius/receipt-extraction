@@ -11,5 +11,11 @@ services:
     volumes:
       - mysql-local-data:/var/lib/mysql
       - .:/root/
+  fileserver:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - 10000:10000
+    environment:
+      - AZURITE_ACCOUNTS=drezip:z8A+QnfibR5m1ZBOM7t8/FAG8556FpAIgiRXmKqmWz43JoIb0kbzW66/rO1HV+TZzeTFWBM9f1QsJduSeCxuSw==
 volumes:
   mysql-local-data:
