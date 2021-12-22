@@ -1,6 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
-import ch.lucfonjallaz.drezip.bl.receipt.createTestUserDetails
+import ch.lucfonjallaz.drezip.bl.receipt.createTestUserDbo
 import ch.lucfonjallaz.drezip.core.PropertyService
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -8,10 +8,8 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @ExtendWith(MockKExtension::class)
@@ -35,12 +33,12 @@ class LoginControllerTest {
     @Test
     fun `should log in a user`() {
         val loginRequest = LoginRequest(username = "Testuser", password = "Testpassword")
-        val userDetails = createTestUserDetails(username = loginRequest.username, password = loginRequest.password)
-        every { userService.loadUserByUsername(loginRequest.username) }.returns(userDetails)
-        every { passwordEncoder.matches(loginRequest.password, userDetails.password) }.returns(true)
+        val userDbo = createTestUserDbo(username = loginRequest.username, password = loginRequest.password)
+        every { userService.findByUsername(loginRequest.username) }.returns(userDbo)
+        every { passwordEncoder.matches(loginRequest.password, userDbo.password) }.returns(true)
 
         val token = "I AM A TOKEN"
-        every { jwtService.generateToken(userDetails) }.returns(token)
+        every { jwtService.generateToken(any()) }.returns(token)
 
         every { propertyService.env }.returns("prod")
 
@@ -66,8 +64,8 @@ class LoginControllerTest {
     @Test
     fun `should reject a log in request when the password is not correct`() {
         val loginRequest = LoginRequest(username = "Testuser", password = "TestpasswordIncorrect")
-        val userDetails = createTestUserDetails(username = loginRequest.username, password = loginRequest.password)
-        every { userService.loadUserByUsername(loginRequest.username) }.returns(userDetails)
+        val userDetails = createTestUserDbo(username = loginRequest.username, password = loginRequest.password)
+        every { userService.findByUsername(loginRequest.username) }.returns(userDetails)
         every { passwordEncoder.matches(loginRequest.password, userDetails.password) }.returns(false)
 
         val response = loginController.login(loginRequest)
