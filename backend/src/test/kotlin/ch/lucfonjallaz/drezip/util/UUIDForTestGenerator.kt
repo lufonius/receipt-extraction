@@ -1,4 +1,4 @@
-package ch.lucfonjallaz.drezip
+package ch.lucfonjallaz.drezip.util
 
 import java.util.*
 
