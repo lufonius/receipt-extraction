@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.core
 
+import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 
@@ -16,10 +17,16 @@ import javax.persistence.EntityNotFoundException
 // in case custom errors should be returned, the controllers methods can be wrapped within try / catch blocks
 @ControllerAdvice
 class RestExceptionHandler : ResponseEntityExceptionHandler() {
+
     @ExceptionHandler
-    protected fun handleAnyError(ex: RuntimeException) = ResponseEntity
+    protected fun handleAnyError(ex: RuntimeException): ResponseEntity<ServiceError> {
+        val logger = LoggerFactory.getLogger(ex.stackTrace.first().className)
+        logger.error("${ex.message}\n${ex.stackTraceToString()}")
+
+        return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ServiceError(errorCode = ServiceErrorCode.GENERIC, message = "an unexpected problem occured"))
+    }
 
     @ExceptionHandler(value = [EntityNotFoundException::class, EmptyResultDataAccessException::class])
     protected fun handleNotFoundException(ex: RuntimeException) = ResponseEntity

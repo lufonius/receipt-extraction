@@ -46,7 +46,7 @@ class InitReceiptService (
             val receiptDbo = createAndSaveEmptyInitialReceiptDbo(relativeImageUrl, userDbo)
             val id = receiptDbo.id
             val message = exception.message
-            logger.error("Extraction of forms of receipt with id $id failed! \n $message")
+            logger.warn("Extraction of forms of receipt with id $id failed! \n $message")
             return receiptDbo
         }
 
