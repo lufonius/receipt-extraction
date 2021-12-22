@@ -1,5 +1,11 @@
 package ch.lucfonjallaz.drezip.bl.receipt.init
 
+import ch.lucfonjallaz.drezip.util.RecognizedFormTestData.createFieldData
+import ch.lucfonjallaz.drezip.util.RecognizedFormTestData.createFloatFieldValue
+import ch.lucfonjallaz.drezip.util.RecognizedFormTestData.createFormField
+import ch.lucfonjallaz.drezip.util.RecognizedFormTestData.createListFieldValue
+import ch.lucfonjallaz.drezip.util.RecognizedFormTestData.createMapFieldValue
+import ch.lucfonjallaz.drezip.util.RecognizedFormTestData.createStringFieldValue
 import com.azure.ai.formrecognizer.models.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -135,62 +141,6 @@ class ReceiptDoMapperTest {
                         listOf(),
                         0
                 ))
-        )
-    }
-
-    private fun createFormField(
-            name: String,
-            value: FieldValue,
-            boundingBox: List<Point> = listOf(),
-            confidence: Float = 1.0F
-    ) = FormField(
-            name,
-            createFieldData(),
-            createFieldData(boundingBox = boundingBox),
-            value,
-            confidence
-    )
-
-    private fun createFormField(
-            name: String,
-            value: FieldValue,
-            valueFieldData: FieldData,
-            confidence: Float = 1.0F
-    ) = FormField(
-            name,
-            createFieldData(),
-            valueFieldData,
-            value,
-            confidence
-    )
-
-    private fun createFieldData(text: String = "", boundingBox: List<Point> = listOf()) = FieldData(text, FieldBoundingBox(boundingBox), 0, listOf())
-
-    private fun createListFieldValue(values: List<Any> = listOf()): FieldValue {
-        return FieldValue(
-            values,
-            FieldValueType.LIST
-        )
-    }
-
-    private fun createMapFieldValue(value: Map<String, FormField> = mapOf()): FieldValue {
-        return FieldValue(
-            value,
-            FieldValueType.MAP
-        )
-    }
-
-    private fun createFloatFieldValue(value: Float = 0.0F): FieldValue {
-        return FieldValue(
-            value,
-            FieldValueType.FLOAT
-        )
-    }
-
-    private fun createStringFieldValue(value: String = ""): FieldValue {
-        return FieldValue(
-            value,
-            FieldValueType.STRING
         )
     }
 }
