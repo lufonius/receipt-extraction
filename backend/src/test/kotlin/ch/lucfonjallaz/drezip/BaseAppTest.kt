@@ -7,7 +7,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Testcontainers
-abstract class BaseIntegrationTest {
+abstract class BaseAppTest {
     @LocalServerPort val port: Int = 67988
 
     val apiBaseUrl: String
