@@ -55,7 +55,6 @@ class UserServiceTest {
         every { passwordEncoder.encode(password) }.returns("encodedPassword")
         every { propertyService.domain }.returns("http://localhost")
         every { propertyService.confirmRegistrationLink }.returns("confirm-registration-link")
-        every { propertyService.registrationLinkExpiryInMins }.returns(120)
         every { userRepository.findByUsername(username) }.returns(null)
         every { userRepository.save(any()) }
                 .returns(createTestUserDbo(username = "irrelevant since we do nothing with the return value"))
@@ -66,7 +65,7 @@ class UserServiceTest {
 
         // then
         assertThat(customUser.registrationConfirmationCode).isEqualTo("registration-code")
-        assertThat(customUser.registrationConfirmationCodeExpiresAt).isEqualTo(dateTime.plusMinutes(120))
+        assertThat(customUser.registeredAt).isEqualTo(dateTime)
         assertThat(customUser.registrationConfirmed).isEqualTo(false)
         assertThat(customUser.email).isEqualTo(username)
         assertThat(customUser.username).isEqualTo(username)
@@ -92,10 +91,11 @@ class UserServiceTest {
         val userDbo = createTestUserDbo(
             registrationConfirmed = false,
             registrationConfirmationCode = "123",
-            registrationConfirmationCodeExpiresAt = currentDateTime.plusMinutes(10)
+            registeredAt = currentDateTime.plusMinutes(10)
         )
 
         every { dateFactory.generateCurrentDateTime() } returns currentDateTime
+        every { propertyService.registrationLinkExpiryInMins }.returns(120)
         every { userRepository.save(match { userDbo -> userDbo.registrationConfirmed }) }
                 .returns(userDbo.copy(registrationConfirmed = true))
 
@@ -114,11 +114,12 @@ class UserServiceTest {
         val userDbo = createTestUserDbo(
                 registrationConfirmed = false,
                 registrationConfirmationCode = "123",
-                registrationConfirmationCodeExpiresAt = currentDateTime.minusMinutes(10)
+                registeredAt = currentDateTime.minusMinutes(121)
         )
 
         every { dateFactory.generateCurrentDateTime() } returns currentDateTime
         every { userRepository.deleteById(userDbo.id) }.returns(Unit)
+        every { propertyService.registrationLinkExpiryInMins }.returns(120)
 
         // when / then
         assertThrows<RegistrationCodeExpiredException> { userService.confirmRegistration(code, userDbo) }
@@ -132,7 +133,7 @@ class UserServiceTest {
         val userDbo = createTestUserDbo(
                 registrationConfirmed = true,
                 registrationConfirmationCode = "123",
-                registrationConfirmationCodeExpiresAt = currentDateTime.plusMinutes(10)
+                registeredAt = currentDateTime
         )
 
         // when / then
@@ -147,7 +148,7 @@ class UserServiceTest {
         val userDbo = createTestUserDbo(
                 registrationConfirmed = true,
                 registrationConfirmationCode = "1234",
-                registrationConfirmationCodeExpiresAt = currentDateTime.plusMinutes(10)
+                registeredAt = currentDateTime
         )
 
         // when

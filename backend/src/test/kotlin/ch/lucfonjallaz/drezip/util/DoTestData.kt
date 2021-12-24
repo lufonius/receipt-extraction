@@ -92,14 +92,14 @@ fun createTestUserDbo(
         password: String = "Testpassword",
         email: String = "email@test.com",
         registrationConfirmationCode: String = "123",
-        registrationConfirmationCodeExpiresAt: LocalDateTime = LocalDateTime.now(),
+        registeredAt: LocalDateTime = LocalDateTime.now(),
         registrationConfirmed: Boolean = true
 ) = UserDbo(
         id = id,
         username = username,
         password = password,
         email = email,
-        registrationConfirmationCodeExpiresAt = registrationConfirmationCodeExpiresAt,
+        registeredAt = registeredAt,
         registrationConfirmationCode = registrationConfirmationCode,
         registrationConfirmed = registrationConfirmed
 )
@@ -110,14 +110,14 @@ fun createTestCustomUser(
         password: String = "Testpassword",
         email: String = "email@test.com",
         registrationConfirmationCode: String = "123",
-        registrationConfirmationCodeExpiresAt: LocalDateTime = LocalDateTime.now(),
+        registeredAt: LocalDateTime = LocalDateTime.now(),
         registrationConfirmed: Boolean = true
 ) = CustomUserAdapter(createTestUserDbo(
         id = id,
         username = username,
         password = password,
         email = email,
-        registrationConfirmationCodeExpiresAt = registrationConfirmationCodeExpiresAt,
+        registeredAt = registeredAt,
         registrationConfirmationCode = registrationConfirmationCode,
         registrationConfirmed = registrationConfirmed
 ))

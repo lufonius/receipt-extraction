@@ -31,7 +31,7 @@ data class UserDbo(
         val registrationConfirmationCode: String,
 
         @Column(nullable = false)
-        val registrationConfirmationCodeExpiresAt: LocalDateTime,
+        val registeredAt: LocalDateTime,
 
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
         var receiptItems: List<ReceiptItemDbo> = listOf(),

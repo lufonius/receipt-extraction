@@ -16,8 +16,8 @@ class CustomUserAdapter(private val userDbo: UserDbo) : CustomUser {
     override val registrationConfirmationCode: String
         get() = userDbo.registrationConfirmationCode
 
-    override val registrationConfirmationCodeExpiresAt: LocalDateTime
-        get() = userDbo.registrationConfirmationCodeExpiresAt
+    override val registeredAt: LocalDateTime
+        get() = userDbo.registeredAt
 
     override val email: String
         get() = userDbo.email

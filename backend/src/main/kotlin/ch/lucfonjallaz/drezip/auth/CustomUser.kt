@@ -7,6 +7,6 @@ interface CustomUser : UserDetails {
     fun getUserDbo(): UserDbo
     val registrationConfirmed: Boolean
     val registrationConfirmationCode: String
-    val registrationConfirmationCodeExpiresAt: LocalDateTime
+    val registeredAt: LocalDateTime
     val email: String
 }

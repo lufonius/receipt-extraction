@@ -39,14 +39,13 @@ class UserService(
         if (findByUsername(username) == null) {
             val registrationCode = uuidGenerator.generateRandomUUID()
             val currentDateTime = dateFactory.generateCurrentDateTime()
-            val registrationCodeExpiresAt = currentDateTime.plusMinutes(propertyService.registrationLinkExpiryInMins.toLong())
 
             val newUserDbo = UserDbo(
                     username = username,
                     email = username,
                     password = passwordEncoder.encode(password),
                     registrationConfirmationCode = registrationCode,
-                    registrationConfirmationCodeExpiresAt = registrationCodeExpiresAt,
+                    registeredAt = currentDateTime,
                     registrationConfirmed = false
             )
 
@@ -68,7 +67,9 @@ class UserService(
                 throw UserAlreadyConfirmedException()
             }
 
-            if (dateFactory.generateCurrentDateTime().isBefore(userDbo.registrationConfirmationCodeExpiresAt)) {
+            val currentDateTime = dateFactory.generateCurrentDateTime()
+            val expiresAt = userDbo.registeredAt.plusMinutes(propertyService.registrationLinkExpiryInMins.toLong())
+            if (currentDateTime.isBefore(expiresAt)) {
                 val confirmedUserDbo = userDbo.copy(registrationConfirmed = true)
                 userRepository.save(confirmedUserDbo)
 
