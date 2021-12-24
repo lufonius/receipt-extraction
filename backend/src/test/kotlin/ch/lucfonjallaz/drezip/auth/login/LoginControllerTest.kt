@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.auth.login
 
+import ch.lucfonjallaz.drezip.auth.CookieFactory
 import ch.lucfonjallaz.drezip.auth.UserService
 import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.bl.receipt.createTestCustomUser
@@ -29,6 +30,9 @@ class LoginControllerTest {
     @MockK
     private lateinit var  propertyService: PropertyService
 
+    @MockK
+    private lateinit var cookieFactory: CookieFactory
+
     @InjectMockKs
     private lateinit var loginController: LoginController
 
@@ -41,6 +45,7 @@ class LoginControllerTest {
 
         val token = "I AM A TOKEN"
         every { jwtService.generateToken(any()) }.returns(token)
+        every { cookieFactory.generateCookie(token) }.returns("token=Hey")
 
         every { propertyService.env }.returns("prod")
 
@@ -48,7 +53,7 @@ class LoginControllerTest {
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.headers.getFirst("Set-Cookie"))
-                .isEqualTo("token=I AM A TOKEN;SameSite=Strict;HttpOnly;Secure")
+                .isEqualTo("token=Hey")
     }
 
     @Test
