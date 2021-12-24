@@ -13,19 +13,15 @@ import java.io.IOException
 class EmailService(val propertyService: PropertyService) {
     val sendgrid = SendGrid(propertyService.sendgridApiKey)
 
-    fun sendRegistrationConfirmationEmail(
-            username: String,
-            receipient: String,
-            link: String
-    ) {
+    fun sendRegistrationConfirmationEmail(receipientMail: String, link: String) {
         val from = Email("fonjallaz97@gmail.com")
         val mail = Mail()
         mail.setFrom(from)
         mail.setTemplateId(propertyService.sendgridRegistrationTemplateId)
         val personalization = Personalization()
-        personalization.addDynamicTemplateData("username", username)
+        personalization.addDynamicTemplateData("username", receipientMail)
         personalization.addDynamicTemplateData("accountActivationLink", link)
-        personalization.addTo(Email(receipient))
+        personalization.addTo(Email(receipientMail))
         personalization.subject = propertyService.registrationSubject
         mail.addPersonalization(personalization)
 

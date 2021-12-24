@@ -20,7 +20,7 @@ class ReceiptDboRepositoryUnitAppTest : BaseAppTest() {
 
     @Test
     fun `should find receipts with status`() {
-        val userDbo = UserDbo(username = UUIDForTestGenerator.generateRandomUUID(), password = "password")
+        val userDbo = createTestUserDbo(username = UUIDForTestGenerator.generateRandomUUID())
         val openReceiptDbo = createTestReceiptDbo(status = Open, user = userDbo)
         val uploadedReceiptDbo = createTestReceiptDbo(status = Uploaded, user = userDbo)
         val doneReceiptDbo = createTestReceiptDbo(status = Done, user = userDbo)

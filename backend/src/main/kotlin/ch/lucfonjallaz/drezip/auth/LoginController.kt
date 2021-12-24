@@ -19,16 +19,17 @@ class LoginController(
         val jwtService: JwtService,
         val userService: UserService,
         val passwordEncoder: PasswordEncoder,
-        val propertyService: PropertyService
+        val propertyService: PropertyService,
+        val cookieFactory: CookieFactory
 ) {
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<Any> {
-        val user = userService.findByUsername(request.username)
+        val user = userService.findByUsername(request.email)
         if (user != null && passwordEncoder.matches(request.password, user.password)) {
-            val jwt = jwtService.generateToken(CustomUserAdapter(user))
+            val jwt = jwtService.generateToken(user)
             return ResponseEntity
                     .ok()
-                    .header("Set-Cookie", getCookieValue(jwt))
+                    .header("Set-Cookie", cookieFactory.generateCookie(jwt))
                     .build()
         } else {
             // we could return a "user not found" error, but that would tell an attacker that this user
@@ -36,14 +37,6 @@ class LoginController(
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(ServiceError(ServiceErrorCode.INVALID_CREDENTIALS))
-        }
-    }
-
-    private fun getCookieValue(jwt: String): String {
-        if (propertyService.env === "prod") {
-            return "token=$jwt;SameSite=Strict;HttpOnly;Secure"
-        } else {
-            return "token=$jwt;HttpOnly"
         }
     }
 }

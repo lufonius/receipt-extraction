@@ -1,6 +1,6 @@
 package ch.lucfonjallaz.drezip.auth
 
-import ch.lucfonjallaz.drezip.bl.receipt.createTestUserDbo
+import ch.lucfonjallaz.drezip.bl.receipt.createTestCustomUser
 import ch.lucfonjallaz.drezip.core.PropertyService
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -32,10 +32,10 @@ class LoginControllerTest {
 
     @Test
     fun `should log in a user`() {
-        val loginRequest = LoginRequest(username = "Testuser", password = "Testpassword")
-        val userDbo = createTestUserDbo(username = loginRequest.username, password = loginRequest.password)
-        every { userService.findByUsername(loginRequest.username) }.returns(userDbo)
-        every { passwordEncoder.matches(loginRequest.password, userDbo.password) }.returns(true)
+        val loginRequest = LoginRequest(email = "Testuser", password = "Testpassword")
+        val customUser = createTestCustomUser(username = loginRequest.email, password = loginRequest.password)
+        every { userService.findByUsername(loginRequest.email) }.returns(customUser)
+        every { passwordEncoder.matches(loginRequest.password, customUser.password) }.returns(true)
 
         val token = "I AM A TOKEN"
         every { jwtService.generateToken(any()) }.returns(token)
@@ -51,8 +51,8 @@ class LoginControllerTest {
 
     @Test
     fun `should reject a log in request when the username is not correct`() {
-        val loginRequest = LoginRequest(username = "Testuser", password = "Testpassword")
-        every { userService.findByUsername(loginRequest.username) }
+        val loginRequest = LoginRequest(email = "Testuser", password = "Testpassword")
+        every { userService.findByUsername(loginRequest.email) }
                 .returns(null)
 
         val response = loginController.login(loginRequest)
@@ -63,10 +63,10 @@ class LoginControllerTest {
 
     @Test
     fun `should reject a log in request when the password is not correct`() {
-        val loginRequest = LoginRequest(username = "Testuser", password = "TestpasswordIncorrect")
-        val userDetails = createTestUserDbo(username = loginRequest.username, password = loginRequest.password)
-        every { userService.findByUsername(loginRequest.username) }.returns(userDetails)
-        every { passwordEncoder.matches(loginRequest.password, userDetails.password) }.returns(false)
+        val loginRequest = LoginRequest(email = "Testuser", password = "TestpasswordIncorrect")
+        val customUser = createTestCustomUser(username = loginRequest.email, password = loginRequest.password)
+        every { userService.findByUsername(loginRequest.email) }.returns(customUser)
+        every { passwordEncoder.matches(loginRequest.password, customUser.password) }.returns(false)
 
         val response = loginController.login(loginRequest)
 

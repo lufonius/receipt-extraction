@@ -26,9 +26,9 @@ class JwtService(val propertyService: PropertyService) {
         return extractExpiration(token).before(Date())
     }
 
-    fun generateToken(userDetails: CustomUser): String {
-        val claims: Map<String, Any?> = HashMap()
-        return createToken(claims, userDetails.username)
+    fun generateToken(user: CustomUser): String {
+        val claims: Map<String, Any?> = hashMapOf("registrationConfirmed" to user.registrationConfirmed)
+        return createToken(claims, user.username)
     }
 
     private fun createToken(claims: Map<String, Any?>, subject: String): String {

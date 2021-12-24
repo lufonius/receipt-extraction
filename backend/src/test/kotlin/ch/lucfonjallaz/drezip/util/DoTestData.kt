@@ -5,6 +5,7 @@ import ch.lucfonjallaz.drezip.auth.CustomUserAdapter
 import ch.lucfonjallaz.drezip.bl.category.CategoryDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.line.LineDbo
+import java.time.LocalDateTime
 import java.util.*
 
 fun createTestLineDbo(
@@ -88,16 +89,36 @@ fun createTestReceiptItemDbo(
 fun createTestUserDbo(
         id: Int = 0,
         username: String = "Testuser",
-        password: String = "Testpassword"
+        password: String = "Testpassword",
+        email: String = "email@test.com",
+        registrationConfirmationCode: String = "123",
+        registrationConfirmationCodeExpiresAt: LocalDateTime = LocalDateTime.now(),
+        registrationConfirmed: Boolean = true
 ) = UserDbo(
         id = id,
         username = username,
-        password = password
+        password = password,
+        email = email,
+        registrationConfirmationCodeExpiresAt = registrationConfirmationCodeExpiresAt,
+        registrationConfirmationCode = registrationConfirmationCode,
+        registrationConfirmed = registrationConfirmed
 )
 
-fun createTestUserDetails(
+fun createTestCustomUser(
         id: Int = 0,
         username: String = "Testuser",
-        password: String = "Testpassword"
-) = CustomUserAdapter(createTestUserDbo(id, username, password))
+        password: String = "Testpassword",
+        email: String = "email@test.com",
+        registrationConfirmationCode: String = "123",
+        registrationConfirmationCodeExpiresAt: LocalDateTime = LocalDateTime.now(),
+        registrationConfirmed: Boolean = true
+) = CustomUserAdapter(createTestUserDbo(
+        id = id,
+        username = username,
+        password = password,
+        email = email,
+        registrationConfirmationCodeExpiresAt = registrationConfirmationCodeExpiresAt,
+        registrationConfirmationCode = registrationConfirmationCode,
+        registrationConfirmed = registrationConfirmed
+))
 

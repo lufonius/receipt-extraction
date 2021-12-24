@@ -1,6 +1,7 @@
 package ch.lucfonjallaz.drezip.auth
 
 import org.springframework.security.core.GrantedAuthority
+import java.time.LocalDateTime
 
 class CustomUserAdapter(private val userDbo: UserDbo) : CustomUser {
     override fun getAuthorities(): MutableCollection<GrantedAuthority> {
@@ -8,6 +9,18 @@ class CustomUserAdapter(private val userDbo: UserDbo) : CustomUser {
     }
 
     override fun getUserDbo(): UserDbo = userDbo
+
+    override val registrationConfirmed: Boolean
+        get() = userDbo.registrationConfirmed
+
+    override val registrationConfirmationCode: String
+        get() = userDbo.registrationConfirmationCode
+
+    override val registrationConfirmationCodeExpiresAt: LocalDateTime
+        get() = userDbo.registrationConfirmationCodeExpiresAt
+
+    override val email: String
+        get() = userDbo.email
 
     override fun getPassword(): String {
         return userDbo.password
