@@ -1,5 +1,7 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.login
 
+import ch.lucfonjallaz.drezip.auth.UserService
+import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.bl.receipt.createTestCustomUser
 import ch.lucfonjallaz.drezip.core.PropertyService
 import io.mockk.every

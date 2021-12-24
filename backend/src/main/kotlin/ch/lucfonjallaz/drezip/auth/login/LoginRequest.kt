@@ -1,4 +1,4 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.login
 
 import javax.validation.constraints.Email
 

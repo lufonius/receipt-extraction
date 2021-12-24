@@ -1,4 +1,4 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.register
 import javax.validation.constraints.Email;
 
 data class RegisterRequest(

@@ -1,8 +1,8 @@
 package ch.lucfonjallaz.drezip.apptest
 
 import ch.lucfonjallaz.drezip.util.UUIDForTestGenerator
-import ch.lucfonjallaz.drezip.auth.LoginRequest
-import ch.lucfonjallaz.drezip.auth.RegisterRequest
+import ch.lucfonjallaz.drezip.auth.login.LoginRequest
+import ch.lucfonjallaz.drezip.auth.register.RegisterRequest
 import ch.lucfonjallaz.drezip.auth.UserDbo
 import org.assertj.core.api.Assertions
 import org.springframework.boot.test.web.client.TestRestTemplate

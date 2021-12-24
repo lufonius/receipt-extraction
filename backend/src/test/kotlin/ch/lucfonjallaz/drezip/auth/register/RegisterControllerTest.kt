@@ -1,8 +1,10 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.register
 
+import ch.lucfonjallaz.drezip.auth.CookieFactory
+import ch.lucfonjallaz.drezip.auth.UserService
+import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.bl.receipt.createTestCustomUser
 import ch.lucfonjallaz.drezip.bl.receipt.createTestUserDbo
-import ch.lucfonjallaz.drezip.core.PropertyService
 import ch.lucfonjallaz.drezip.core.ServiceError
 import ch.lucfonjallaz.drezip.core.ServiceErrorCode
 import io.mockk.every

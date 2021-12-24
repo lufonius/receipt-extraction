@@ -1,5 +1,6 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.jwt
 
+import ch.lucfonjallaz.drezip.auth.UserService
 import org.springframework.security.core.context.SecurityContextHolder
 
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -14,7 +15,6 @@ import javax.servlet.http.HttpServletResponse
 
 import javax.servlet.http.HttpServletRequest
 
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 

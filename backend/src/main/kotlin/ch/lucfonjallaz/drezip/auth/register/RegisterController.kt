@@ -1,8 +1,9 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.register
 
+import ch.lucfonjallaz.drezip.auth.*
+import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.core.ServiceError
 import ch.lucfonjallaz.drezip.core.ServiceErrorCode
-import ch.lucfonjallaz.drezip.core.PropertyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

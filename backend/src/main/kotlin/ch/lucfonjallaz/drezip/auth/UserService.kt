@@ -1,5 +1,8 @@
 package ch.lucfonjallaz.drezip.auth
 
+import ch.lucfonjallaz.drezip.auth.register.RegistrationCodeExpiredException
+import ch.lucfonjallaz.drezip.auth.register.RegistrationCodeNotMatchingException
+import ch.lucfonjallaz.drezip.auth.register.UserAlreadyConfirmedException
 import ch.lucfonjallaz.drezip.bl.receipt.DateFactory
 import ch.lucfonjallaz.drezip.bl.receipt.UUIDGenerator
 import ch.lucfonjallaz.drezip.core.PropertyService

@@ -1,5 +1,6 @@
-package ch.lucfonjallaz.drezip.auth
+package ch.lucfonjallaz.drezip.auth.jwt
 
+import ch.lucfonjallaz.drezip.auth.CustomUser
 import ch.lucfonjallaz.drezip.core.PropertyService
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
