@@ -129,7 +129,6 @@ spec:
   selector:
     app: drezip
     type: frontend
-  externalTrafficPolicy: Cluster
   ports:
     - port: 80
       protocol: TCP
