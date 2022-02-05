@@ -5,7 +5,10 @@ import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.junit.jupiter.Testcontainers
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = [TestDrezipApplication::class]
+)
 @ActiveProfiles("test")
 @Testcontainers
 abstract class BaseAppTest {

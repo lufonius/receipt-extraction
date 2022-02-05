@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import
 	SecurityConfiguration::class,
 	MockConfiguration::class
 )
-class Application {
+class TestDrezipApplication {
 	companion object {
 		@JvmStatic
 		fun main(args: Array<String>) {
