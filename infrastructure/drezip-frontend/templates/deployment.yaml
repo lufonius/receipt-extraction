@@ -131,8 +131,8 @@ spec:
     type: frontend
   externalTrafficPolicy: Cluster
   ports:
-    - port: 80
+    - port: 8080
       protocol: TCP
       targetPort: 8080
   sessionAffinity: None
-  type: LoadBalancer
+  type: ClusterIP
