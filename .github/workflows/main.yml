@@ -219,6 +219,6 @@ jobs:
         run: helm upgrade -f deploy-frontend-params.yaml --set environment=test drezip-frontend ./infrastructure/drezip-frontend -n test --install --wait
 
       - name: helm upgrade or install drezip-proxy in test namespace
-          run: helm upgrade --set environment=test,host=dev.drezip.ch drezip-proxy ./infrastructure/drezip-proxy -n test --install --wait
+        run: helm upgrade --set environment=test,host=dev.drezip.ch drezip-proxy ./infrastructure/drezip-proxy -n test --install --wait
       
         
