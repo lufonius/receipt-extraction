@@ -52,3 +52,8 @@ export interface Category {
   name: string;
   deleted: boolean;
 }
+
+export interface User {
+  username: string;
+  registrationConfirmed: boolean;
+}

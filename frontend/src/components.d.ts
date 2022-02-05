@@ -36,6 +36,8 @@ export namespace Components {
     }
     interface AppComponents {
     }
+    interface AppConfirmRegistration {
+    }
     interface AppCrop {
         "history": RouterHistory;
     }
@@ -66,6 +68,8 @@ export namespace Components {
     }
     interface AppLoader {
     }
+    interface AppLogin {
+    }
     interface AppLogo {
     }
     interface AppNavbar {
@@ -84,6 +88,11 @@ export namespace Components {
     }
     interface AppReceiptLists {
         "history": RouterHistory;
+    }
+    interface AppRegister {
+        "email": string;
+        "history": RouterHistory;
+        "password": string;
     }
     interface AppRoot {
     }
@@ -167,6 +176,12 @@ declare global {
         prototype: HTMLAppComponentsElement;
         new (): HTMLAppComponentsElement;
     };
+    interface HTMLAppConfirmRegistrationElement extends Components.AppConfirmRegistration, HTMLStencilElement {
+    }
+    var HTMLAppConfirmRegistrationElement: {
+        prototype: HTMLAppConfirmRegistrationElement;
+        new (): HTMLAppConfirmRegistrationElement;
+    };
     interface HTMLAppCropElement extends Components.AppCrop, HTMLStencilElement {
     }
     var HTMLAppCropElement: {
@@ -209,6 +224,12 @@ declare global {
         prototype: HTMLAppLoaderElement;
         new (): HTMLAppLoaderElement;
     };
+    interface HTMLAppLoginElement extends Components.AppLogin, HTMLStencilElement {
+    }
+    var HTMLAppLoginElement: {
+        prototype: HTMLAppLoginElement;
+        new (): HTMLAppLoginElement;
+    };
     interface HTMLAppLogoElement extends Components.AppLogo, HTMLStencilElement {
     }
     var HTMLAppLogoElement: {
@@ -250,6 +271,12 @@ declare global {
     var HTMLAppReceiptListsElement: {
         prototype: HTMLAppReceiptListsElement;
         new (): HTMLAppReceiptListsElement;
+    };
+    interface HTMLAppRegisterElement extends Components.AppRegister, HTMLStencilElement {
+    }
+    var HTMLAppRegisterElement: {
+        prototype: HTMLAppRegisterElement;
+        new (): HTMLAppRegisterElement;
     };
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
     }
@@ -318,6 +345,7 @@ declare global {
         "app-category": HTMLAppCategoryElement;
         "app-category-upsert": HTMLAppCategoryUpsertElement;
         "app-components": HTMLAppComponentsElement;
+        "app-confirm-registration": HTMLAppConfirmRegistrationElement;
         "app-crop": HTMLAppCropElement;
         "app-dialog": HTMLAppDialogElement;
         "app-divider": HTMLAppDividerElement;
@@ -325,6 +353,7 @@ declare global {
         "app-input": HTMLAppInputElement;
         "app-layout-vertical-split": HTMLAppLayoutVerticalSplitElement;
         "app-loader": HTMLAppLoaderElement;
+        "app-login": HTMLAppLoginElement;
         "app-logo": HTMLAppLogoElement;
         "app-navbar": HTMLAppNavbarElement;
         "app-profile": HTMLAppProfileElement;
@@ -332,6 +361,7 @@ declare global {
         "app-qr-scan": HTMLAppQrScanElement;
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-receipt-lists": HTMLAppReceiptListsElement;
+        "app-register": HTMLAppRegisterElement;
         "app-root": HTMLAppRootElement;
         "app-snackbar": HTMLAppSnackbarElement;
         "dropup-controls": HTMLDropupControlsElement;
@@ -373,6 +403,8 @@ declare namespace LocalJSX {
     }
     interface AppComponents {
     }
+    interface AppConfirmRegistration {
+    }
     interface AppCrop {
         "history"?: RouterHistory;
     }
@@ -406,6 +438,8 @@ declare namespace LocalJSX {
     }
     interface AppLoader {
     }
+    interface AppLogin {
+    }
     interface AppLogo {
     }
     interface AppNavbar {
@@ -424,6 +458,11 @@ declare namespace LocalJSX {
     }
     interface AppReceiptLists {
         "history"?: RouterHistory;
+    }
+    interface AppRegister {
+        "email"?: string;
+        "history"?: RouterHistory;
+        "password"?: string;
     }
     interface AppRoot {
     }
@@ -488,6 +527,7 @@ declare namespace LocalJSX {
         "app-category": AppCategory;
         "app-category-upsert": AppCategoryUpsert;
         "app-components": AppComponents;
+        "app-confirm-registration": AppConfirmRegistration;
         "app-crop": AppCrop;
         "app-dialog": AppDialog;
         "app-divider": AppDivider;
@@ -495,6 +535,7 @@ declare namespace LocalJSX {
         "app-input": AppInput;
         "app-layout-vertical-split": AppLayoutVerticalSplit;
         "app-loader": AppLoader;
+        "app-login": AppLogin;
         "app-logo": AppLogo;
         "app-navbar": AppNavbar;
         "app-profile": AppProfile;
@@ -502,6 +543,7 @@ declare namespace LocalJSX {
         "app-qr-scan": AppQrScan;
         "app-receipt-extraction": AppReceiptExtraction;
         "app-receipt-lists": AppReceiptLists;
+        "app-register": AppRegister;
         "app-root": AppRoot;
         "app-snackbar": AppSnackbar;
         "dropup-controls": DropupControls;
@@ -524,6 +566,7 @@ declare module "@stencil/core" {
             "app-category": LocalJSX.AppCategory & JSXBase.HTMLAttributes<HTMLAppCategoryElement>;
             "app-category-upsert": LocalJSX.AppCategoryUpsert & JSXBase.HTMLAttributes<HTMLAppCategoryUpsertElement>;
             "app-components": LocalJSX.AppComponents & JSXBase.HTMLAttributes<HTMLAppComponentsElement>;
+            "app-confirm-registration": LocalJSX.AppConfirmRegistration & JSXBase.HTMLAttributes<HTMLAppConfirmRegistrationElement>;
             "app-crop": LocalJSX.AppCrop & JSXBase.HTMLAttributes<HTMLAppCropElement>;
             "app-dialog": LocalJSX.AppDialog & JSXBase.HTMLAttributes<HTMLAppDialogElement>;
             "app-divider": LocalJSX.AppDivider & JSXBase.HTMLAttributes<HTMLAppDividerElement>;
@@ -531,6 +574,7 @@ declare module "@stencil/core" {
             "app-input": LocalJSX.AppInput & JSXBase.HTMLAttributes<HTMLAppInputElement>;
             "app-layout-vertical-split": LocalJSX.AppLayoutVerticalSplit & JSXBase.HTMLAttributes<HTMLAppLayoutVerticalSplitElement>;
             "app-loader": LocalJSX.AppLoader & JSXBase.HTMLAttributes<HTMLAppLoaderElement>;
+            "app-login": LocalJSX.AppLogin & JSXBase.HTMLAttributes<HTMLAppLoginElement>;
             "app-logo": LocalJSX.AppLogo & JSXBase.HTMLAttributes<HTMLAppLogoElement>;
             "app-navbar": LocalJSX.AppNavbar & JSXBase.HTMLAttributes<HTMLAppNavbarElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
@@ -538,6 +582,7 @@ declare module "@stencil/core" {
             "app-qr-scan": LocalJSX.AppQrScan & JSXBase.HTMLAttributes<HTMLAppQrScanElement>;
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-receipt-lists": LocalJSX.AppReceiptLists & JSXBase.HTMLAttributes<HTMLAppReceiptListsElement>;
+            "app-register": LocalJSX.AppRegister & JSXBase.HTMLAttributes<HTMLAppRegisterElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "app-snackbar": LocalJSX.AppSnackbar & JSXBase.HTMLAttributes<HTMLAppSnackbarElement>;
             "dropup-controls": LocalJSX.DropupControls & JSXBase.HTMLAttributes<HTMLDropupControlsElement>;

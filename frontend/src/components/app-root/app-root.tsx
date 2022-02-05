@@ -63,6 +63,7 @@ export class AppRoot {
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
               <stencil-route url="/" component="app-receipt-lists" exact={true} />
+              <stencil-route url="/register" component="app-register" />
               <stencil-route url="/category" component="app-category" />
               <stencil-route url="/category-upsert/:id" component="app-category-upsert" />
               <stencil-route url="/category-upsert" component="app-category-upsert" />
@@ -71,6 +72,7 @@ export class AppRoot {
               <stencil-route url="/qr-generation" component="app-qr-generation" />
               <stencil-route url="/qr-scan" component="app-qr-scan" />
               <stencil-route url="/receipt-extraction" component="app-receipt-extraction" />
+              <stencil-route url="/confirm-registration" component="app-confirm-registration" />
               <stencil-route url="/components" component="app-components" />
             </stencil-route-switch>
           </stencil-router>

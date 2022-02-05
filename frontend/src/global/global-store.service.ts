@@ -1,5 +1,5 @@
 import {Injectable} from "./di/injectable";
-import {Category, Line, Receipt, ReceiptItem} from "../components/model/client";
+import {Category, Line, Receipt, ReceiptItem, User} from "../components/model/client";
 import {LocalstorageStore} from "./localstorage-store";
 
 @Injectable
@@ -8,7 +8,8 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
     super({
       currentReceipt: null,
       categories: [],
-      linkedUId: null
+      linkedUId: null,
+      currentUser: null
     });
   }
   setCurrentReceipt = (receipt: Receipt) => this.patch(state => { state.currentReceipt = receipt });
@@ -74,6 +75,10 @@ export class GlobalStore extends LocalstorageStore<GlobalState> {
     return this.select(state => state.categories.filter(it => includeDeleted ? true : it.deleted === false));
   };
   selectCategoriesById = () => this.select(state => new Map<number, Category>(state.categories.map(it => [it.id, it])));
+
+  setCurrentUser = (user: User) => this.patch(state => state.currentUser = user);
+
+  getCurrentUser = () => this.select(state => state.currentUser);
 }
 
 
@@ -81,4 +86,5 @@ export interface GlobalState {
   currentReceipt: Receipt;
   categories: Category[];
   linkedUId: string;
+  currentUser: User;
 }

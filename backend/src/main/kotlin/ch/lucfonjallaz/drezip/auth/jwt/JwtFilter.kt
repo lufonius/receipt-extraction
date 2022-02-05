@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.auth.jwt
 
+import ch.lucfonjallaz.drezip.auth.CustomUser
 import ch.lucfonjallaz.drezip.auth.UserService
 import org.springframework.security.core.context.SecurityContextHolder
 
@@ -32,7 +33,7 @@ class JwtFilter(
             val username = jwtService.extractUsername(jwt)
 
             if (username != null && SecurityContextHolder.getContext().authentication == null) {
-                val userDetails: UserDetails? = userService.loadUserByUsername(username)
+                val userDetails: CustomUser? = userService.loadUserByUsername(username)
                 if (userDetails !== null && jwtService.validateToken(jwt, userDetails)) {
                     val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
                             userDetails,

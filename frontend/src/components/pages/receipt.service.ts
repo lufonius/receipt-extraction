@@ -1,5 +1,5 @@
 import {Injectable} from "../../global/di/injectable";
-import {CategoryDto, ReceiptDto} from "../model/dto";
+import {ReceiptDto} from "../model/dto";
 
 @Injectable
 export class ReceiptService {
