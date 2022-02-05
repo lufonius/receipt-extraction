@@ -37,16 +37,6 @@ data:
           add_header Cache-Control no-cache;
       }
 
-      # redirect api calls to the backend
-      location /api/ {
-          proxy_pass http://drezip-backend/api/;
-      }
-
-      # redirect images calls to the azure blob storage
-      location /images/ {
-          proxy_pass https://drezip.blob.core.windows.net/;
-      }
-
       error_page   500 502 503 504  /50x.html;
       location = /50x.html {
         root   /usr/share/nginx/html;
