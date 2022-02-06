@@ -53,12 +53,11 @@ class UserServiceTest {
         every { dateFactory.generateCurrentDateTime() }.returns(dateTime)
         every { uuidGenerator.generateRandomUUID() }.returns("registration-code")
         every { passwordEncoder.encode(password) }.returns("encodedPassword")
-        every { propertyService.domain }.returns("http://localhost")
         every { propertyService.confirmRegistrationLink }.returns("confirm-registration-link")
         every { userRepository.findByUsername(username) }.returns(null)
         every { userRepository.save(any()) }
                 .returns(createTestUserDbo(username = "irrelevant since we do nothing with the return value"))
-        every { emailService.sendRegistrationConfirmationEmail(username, "http://localhost/confirm-registration-link/registration-code") }.returns(Unit)
+        every { emailService.sendRegistrationConfirmationEmail(username, "confirm-registration-link/registration-code") }.returns(Unit)
 
         // when
         val customUser = userService.registerNewUser(username, password)
