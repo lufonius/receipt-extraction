@@ -4,8 +4,7 @@ import {GlobalStore} from "../../global/global-store.service";
 import {CategoryService} from "../pages/category.service";
 import {SnackbarService} from "../pages/snackbar.service";
 import flyd from "flyd";
-import {cloneDeep} from "../model/cloneDeep";
-import { v4 as uuid } from 'uuid';
+import {AuthService} from "../pages/auth.service";
 
 @Component({
   tag: 'app-root',
@@ -16,16 +15,21 @@ export class AppRoot {
 
   @Inject(GlobalStore) store: GlobalStore;
   @Inject(CategoryService) categoryService: CategoryService;
+  @Inject(AuthService) authService: AuthService;
   @Inject(SnackbarService) snackbarService: SnackbarService;
+
 
   @State() private snackbar: { message: string, type: 'success' | 'failure', show: boolean } = null;
 
   async componentWillLoad() {
-    const categories = await this.categoryService.get();
-    this.store.setCategories(categories);
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      const categories = await this.categoryService.get();
+      this.store.setCategories(categories);
+    }
 
-    flyd.on((message) => this.showSnackbar('success', message),this.snackbarService.successSnacks)
-    flyd.on((message) => this.showSnackbar('failure', message),this.snackbarService.failureSnacks)
+    flyd.on((message) => this.showSnackbar('success', message),this.snackbarService.successSnacks);
+    flyd.on((message) => this.showSnackbar('failure', message),this.snackbarService.failureSnacks);
   }
 
   private showSnackbar(type: 'success' | 'failure', message: string) {
@@ -55,6 +59,25 @@ export class AppRoot {
     });
   }
 
+  private PrivateRoute = ({ component, ...props}: { [key: string]: any}) => {
+    const Component = component;
+
+    return (
+      <stencil-route {...props} routeRender={
+        (props: { [key: string]: any}) => {
+          const currentUser = this.authService.getCurrentUser();
+          if (currentUser && currentUser.registrationConfirmed) {
+            return <Component {...props} {...props.componentProps}></Component>;
+          } else if (currentUser && !currentUser.registrationConfirmed) {
+            return <stencil-router-redirect url="/registration-confirmation-sent"></stencil-router-redirect>
+          } else {
+            return <stencil-router-redirect url="/login"></stencil-router-redirect>
+          }
+        }
+      }/>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -62,17 +85,19 @@ export class AppRoot {
         <main>
           <stencil-router>
             <stencil-route-switch scrollTopOffset={0}>
-              <stencil-route url="/" component="app-receipt-lists" exact={true} />
+              <this.PrivateRoute url="/" component="app-receipt-lists" exact={true} />
+              <this.PrivateRoute url="/category" component="app-category" />
+              <this.PrivateRoute url="/category-upsert/:id" component="app-category-upsert" />
+              <this.PrivateRoute url="/category-upsert" component="app-category-upsert" />
+              <this.PrivateRoute url="/profile/:name" component="app-profile" />
+              <this.PrivateRoute url="/edit-image" component="app-crop" />
+              <this.PrivateRoute url="/qr-generation" component="app-qr-generation" />
+              <this.PrivateRoute url="/qr-scan" component="app-qr-scan" />
+              <this.PrivateRoute url="/receipt-extraction" component="app-receipt-extraction" />
               <stencil-route url="/register" component="app-register" />
-              <stencil-route url="/category" component="app-category" />
-              <stencil-route url="/category-upsert/:id" component="app-category-upsert" />
-              <stencil-route url="/category-upsert" component="app-category-upsert" />
-              <stencil-route url="/profile/:name" component="app-profile" />
-              <stencil-route url="/edit-image" component="app-crop" />
-              <stencil-route url="/qr-generation" component="app-qr-generation" />
-              <stencil-route url="/qr-scan" component="app-qr-scan" />
-              <stencil-route url="/receipt-extraction" component="app-receipt-extraction" />
-              <stencil-route url="/confirm-registration" component="app-confirm-registration" />
+              <stencil-route url="/confirm-registration/:activationCode" component="app-confirm-registration" />
+              <stencil-route url="/login" component="app-login" />
+              <stencil-route url="/registration-confirmation-sent" component="app-registration-confirmation-sent" />
               <stencil-route url="/components" component="app-components" />
             </stencil-route-switch>
           </stencil-router>

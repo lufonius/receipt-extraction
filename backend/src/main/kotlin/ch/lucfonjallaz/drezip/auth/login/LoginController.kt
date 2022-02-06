@@ -1,11 +1,11 @@
 package ch.lucfonjallaz.drezip.auth.login
 
-import ch.lucfonjallaz.drezip.auth.CookieFactory
-import ch.lucfonjallaz.drezip.auth.jwt.JwtService
+import ch.lucfonjallaz.drezip.auth.AuthenticationCookieService
 import ch.lucfonjallaz.drezip.auth.UserService
 import ch.lucfonjallaz.drezip.core.ServiceErrorCode
 import ch.lucfonjallaz.drezip.core.PropertyService
 import ch.lucfonjallaz.drezip.core.ServiceError
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -19,20 +19,19 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @CrossOrigin("*")
 class LoginController(
-        val jwtService: JwtService,
         val userService: UserService,
         val passwordEncoder: PasswordEncoder,
         val propertyService: PropertyService,
-        val cookieFactory: CookieFactory
+        val authCookieService: AuthenticationCookieService
 ) {
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<Any> {
         val user = userService.findByUsername(request.email)
         if (user != null && passwordEncoder.matches(request.password, user.password)) {
-            val jwt = jwtService.generateToken(user)
+            val authCookies = authCookieService.generateAuthenticationCookie(user)
             return ResponseEntity
                     .ok()
-                    .header("Set-Cookie", cookieFactory.generateCookie(jwt))
+                    .header(HttpHeaders.SET_COOKIE, authCookies)
                     .build()
         } else {
             // we could return a "user not found" error, but that would tell an attacker that this user

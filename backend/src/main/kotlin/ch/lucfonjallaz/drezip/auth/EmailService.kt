@@ -11,7 +11,6 @@ import java.io.IOException
 
 @Component
 class EmailService(val propertyService: PropertyService) {
-    val sendgrid = SendGrid(propertyService.sendgridApiKey)
 
     fun sendRegistrationConfirmationEmail(receipientMail: String, link: String) {
         val from = Email("fonjallaz97@gmail.com")

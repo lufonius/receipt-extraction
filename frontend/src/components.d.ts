@@ -37,6 +37,7 @@ export namespace Components {
     interface AppComponents {
     }
     interface AppConfirmRegistration {
+        "match": MatchResults;
     }
     interface AppCrop {
         "history": RouterHistory;
@@ -93,6 +94,8 @@ export namespace Components {
         "email": string;
         "history": RouterHistory;
         "password": string;
+    }
+    interface AppRegistrationConfirmationSent {
     }
     interface AppRoot {
     }
@@ -278,6 +281,12 @@ declare global {
         prototype: HTMLAppRegisterElement;
         new (): HTMLAppRegisterElement;
     };
+    interface HTMLAppRegistrationConfirmationSentElement extends Components.AppRegistrationConfirmationSent, HTMLStencilElement {
+    }
+    var HTMLAppRegistrationConfirmationSentElement: {
+        prototype: HTMLAppRegistrationConfirmationSentElement;
+        new (): HTMLAppRegistrationConfirmationSentElement;
+    };
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
     }
     var HTMLAppRootElement: {
@@ -362,6 +371,7 @@ declare global {
         "app-receipt-extraction": HTMLAppReceiptExtractionElement;
         "app-receipt-lists": HTMLAppReceiptListsElement;
         "app-register": HTMLAppRegisterElement;
+        "app-registration-confirmation-sent": HTMLAppRegistrationConfirmationSentElement;
         "app-root": HTMLAppRootElement;
         "app-snackbar": HTMLAppSnackbarElement;
         "dropup-controls": HTMLDropupControlsElement;
@@ -404,6 +414,7 @@ declare namespace LocalJSX {
     interface AppComponents {
     }
     interface AppConfirmRegistration {
+        "match"?: MatchResults;
     }
     interface AppCrop {
         "history"?: RouterHistory;
@@ -463,6 +474,8 @@ declare namespace LocalJSX {
         "email"?: string;
         "history"?: RouterHistory;
         "password"?: string;
+    }
+    interface AppRegistrationConfirmationSent {
     }
     interface AppRoot {
     }
@@ -544,6 +557,7 @@ declare namespace LocalJSX {
         "app-receipt-extraction": AppReceiptExtraction;
         "app-receipt-lists": AppReceiptLists;
         "app-register": AppRegister;
+        "app-registration-confirmation-sent": AppRegistrationConfirmationSent;
         "app-root": AppRoot;
         "app-snackbar": AppSnackbar;
         "dropup-controls": DropupControls;
@@ -583,6 +597,7 @@ declare module "@stencil/core" {
             "app-receipt-extraction": LocalJSX.AppReceiptExtraction & JSXBase.HTMLAttributes<HTMLAppReceiptExtractionElement>;
             "app-receipt-lists": LocalJSX.AppReceiptLists & JSXBase.HTMLAttributes<HTMLAppReceiptListsElement>;
             "app-register": LocalJSX.AppRegister & JSXBase.HTMLAttributes<HTMLAppRegisterElement>;
+            "app-registration-confirmation-sent": LocalJSX.AppRegistrationConfirmationSent & JSXBase.HTMLAttributes<HTMLAppRegistrationConfirmationSentElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "app-snackbar": LocalJSX.AppSnackbar & JSXBase.HTMLAttributes<HTMLAppSnackbarElement>;
             "dropup-controls": LocalJSX.DropupControls & JSXBase.HTMLAttributes<HTMLDropupControlsElement>;

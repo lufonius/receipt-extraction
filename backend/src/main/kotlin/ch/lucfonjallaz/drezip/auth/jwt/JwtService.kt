@@ -3,6 +3,7 @@ package ch.lucfonjallaz.drezip.auth.jwt
 import ch.lucfonjallaz.drezip.auth.CustomUser
 import ch.lucfonjallaz.drezip.core.PropertyService
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
@@ -12,10 +13,7 @@ import io.jsonwebtoken.security.Keys
 
 @Component
 class JwtService(val propertyService: PropertyService) {
-    fun extractUsername(token: String): String? = extractAllClaims(token).subject
-    fun extractExpiration(token: String?): Date = extractAllClaims(token).expiration
-
-    private fun extractAllClaims(token: String?): Claims {
+    fun extractAllClaimsIfNotExpired(token: String?): Claims {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(propertyService.jwtSigningKey)
@@ -23,28 +21,19 @@ class JwtService(val propertyService: PropertyService) {
                 .parseClaimsJws(token).body
     }
 
-    private fun isTokenExpired(token: String?): Boolean {
-        return extractExpiration(token).before(Date())
-    }
-
-    fun generateToken(user: CustomUser): String {
+    fun generateToken(user: CustomUser, expiresAt: Date): String {
         val claims: Map<String, Any?> = hashMapOf("registrationConfirmed" to user.registrationConfirmed)
-        return createToken(claims, user.username)
+        return createToken(claims, user.username, expiresAt)
     }
 
-    private fun createToken(claims: Map<String, Any?>, subject: String): String {
+    private fun createToken(claims: Map<String, Any?>, subject: String, expiresAt: Date): String {
         val key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(propertyService.jwtSigningKey.toByteArray()))
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(Date(System.currentTimeMillis()))
-                .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(expiresAt)
                 .signWith(key, SignatureAlgorithm.HS256).compact()
-    }
-
-    fun validateToken(token: String, userDetails: UserDetails): Boolean {
-        val username = extractUsername(token)
-        return username == userDetails.username && !isTokenExpired(token)
     }
 }

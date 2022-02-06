@@ -1,7 +1,6 @@
 package ch.lucfonjallaz.drezip.auth.register
 
 import ch.lucfonjallaz.drezip.auth.*
-import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.core.ServiceError
 import ch.lucfonjallaz.drezip.core.ServiceErrorCode
 import org.springframework.http.HttpStatus
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin("*")
 class RegisterController(
         private val userService: UserService,
-        private val jwtService: JwtService,
+        private val authenticationCookieService: AuthenticationCookieService,
         private val cookieFactory: CookieFactory
 ) {
 
@@ -30,10 +29,10 @@ class RegisterController(
         try {
             val newUser = userService.registerNewUser(request.email, request.password)
 
-            val jwt = jwtService.generateToken(newUser)
+            val authenticationCookie = authenticationCookieService.generateAuthenticationCookie(newUser)
             return ResponseEntity
                     .ok()
-                    .header("Set-Cookie", cookieFactory.generateCookie(jwt))
+                    .header("Set-Cookie", authenticationCookie)
                     .build()
         } catch(exc: UserAlreadyExistsException) {
             return ResponseEntity
@@ -46,15 +45,16 @@ class RegisterController(
     fun confirmRegistration(@RequestBody confirmRequest: ConfirmRegistrationRequest, @AuthenticatedUser userDbo: UserDbo): ResponseEntity<Any> {
         try {
             val confirmedUser = userService.confirmRegistration(confirmRequest.code, userDbo)
-            val token = jwtService.generateToken(confirmedUser)
+            val authenticationCookie = authenticationCookieService.generateAuthenticationCookie(confirmedUser)
             return ResponseEntity
                     .ok()
-                    .header("Set-Cookie", cookieFactory.generateCookie(token))
+                    .header("Set-Cookie", authenticationCookie)
                     .build()
         } catch (exc: RegistrationCodeExpiredException) {
+            val resetCookie = authenticationCookieService.generateResetAuthenticationCookie()
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .header("Set-Cookie", cookieFactory.generateEmptyCookie())
+                    .header("Set-Cookie", resetCookie)
                     .body(ServiceError(
                             errorCode = ServiceErrorCode.REGISTRATION_CODE_EXPIRED,
                             message = "The registration link has expired. You need to register again."
@@ -69,6 +69,7 @@ class RegisterController(
         } catch (exc: UserAlreadyConfirmedException) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
+                    .header("Set-Cookie", "test=5")
                     .body(ServiceError(
                             errorCode = ServiceErrorCode.USER_ALREADY_CONFIRMED,
                             message = "You already confirmed your email address."

@@ -16,6 +16,7 @@ class PropertyService(
         @Value("\${app.auth.registration-email-subject}") val registrationSubject: String,
 
         @Value("\${app.auth.jwt-signing-key}") val jwtSigningKey: String,
+
         @Value("\${app.auth.registration-confirmation-link}") val confirmRegistrationLink: String,
         @Value("\${app.auth.registration-link-expiry-in-mins}") val registrationLinkExpiryInMins: Int,
 

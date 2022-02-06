@@ -1,8 +1,8 @@
 package ch.lucfonjallaz.drezip.auth.register
 
+import ch.lucfonjallaz.drezip.auth.AuthenticationCookieService
 import ch.lucfonjallaz.drezip.auth.CookieFactory
 import ch.lucfonjallaz.drezip.auth.UserService
-import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.bl.receipt.createTestCustomUser
 import ch.lucfonjallaz.drezip.bl.receipt.createTestUserDbo
 import ch.lucfonjallaz.drezip.core.ServiceError
@@ -23,7 +23,7 @@ class RegisterControllerTest {
     private lateinit var userService: UserService
 
     @MockK
-    private lateinit var jwtService: JwtService
+    private lateinit var authenticationCookieService: AuthenticationCookieService
 
     @MockK
     private lateinit var cookieFactory: CookieFactory
@@ -38,8 +38,7 @@ class RegisterControllerTest {
         val token = "Brunzli"
 
         every { userService.registerNewUser("username", "password") }.returns(customUser)
-        every { jwtService.generateToken(customUser) }.returns(token)
-        every { cookieFactory.generateCookie(token) }.returns("token=Banana")
+        every { authenticationCookieService.generateAuthenticationCookie(customUser) }.returns(token)
 
         // when
         val response = registerController.register(RegisterRequest(email = "username", password = "password"))
@@ -47,7 +46,7 @@ class RegisterControllerTest {
         // then
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.headers.get("Set-Cookie")).isNotEmpty
-        assertThat(response.headers.get("Set-Cookie")?.first()).isEqualTo("token=Banana")
+        assertThat(response.headers.get("Set-Cookie")?.first()).isEqualTo(token)
     }
 
     @Test
@@ -58,8 +57,7 @@ class RegisterControllerTest {
         val token = "Brunzli"
 
         every { userService.confirmRegistration("123", currentUserDbo) }.returns(confirmedUser)
-        every { jwtService.generateToken(confirmedUser) }.returns(token)
-        every { cookieFactory.generateCookie(token) }.returns("token=Banana")
+        every { authenticationCookieService.generateAuthenticationCookie(confirmedUser) }.returns(token)
 
         // when
         val response = registerController.confirmRegistration(ConfirmRegistrationRequest(code = "123"), currentUserDbo)
@@ -67,7 +65,7 @@ class RegisterControllerTest {
         // then
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.headers.get("Set-Cookie")).isNotEmpty
-        assertThat(response.headers.get("Set-Cookie")?.first()).isEqualTo("token=Banana")
+        assertThat(response.headers.get("Set-Cookie")?.first()).isEqualTo(token)
     }
 
     @Test
@@ -76,7 +74,7 @@ class RegisterControllerTest {
         val currentUserDbo = createTestUserDbo()
 
         every { userService.confirmRegistration("123", currentUserDbo) }.throws(RegistrationCodeExpiredException())
-        every { cookieFactory.generateEmptyCookie() }.returns("token=")
+        every { authenticationCookieService.generateResetAuthenticationCookie() }.returns("token=")
 
         // when
         val response = registerController.confirmRegistration(ConfirmRegistrationRequest(code = "123"), currentUserDbo)

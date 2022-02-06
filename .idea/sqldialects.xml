@@ -5,5 +5,6 @@
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/fixtures/afterMigrate.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1_3_0__replace_total_date_receipt_items_to_receipt.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1_4_0__remove_itemtype_and_rename_value.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/backend/src/main/resources/db/migration/V1_7_0__update_user_registration_fields.sql" dialect="MySQL" />
   </component>
 </project>

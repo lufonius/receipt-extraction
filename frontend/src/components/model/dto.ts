@@ -56,8 +56,3 @@ export interface CategoryDto {
   name: string;
   deleted: boolean;
 }
-
-export interface UserDto {
-  username: string;
-  registrationConfirmed: boolean;
-}

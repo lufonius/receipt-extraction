@@ -54,6 +54,6 @@ export interface Category {
 }
 
 export interface User {
-  username: string;
+  sub: string;
   registrationConfirmed: boolean;
 }

@@ -1,8 +1,8 @@
-import {Component, Host, h, State} from '@stencil/core';
+import {Component, Host, h, State, Prop} from '@stencil/core';
 import {Inject} from "../../../global/di/inject";
-import {GlobalStore} from "../../../global/global-store.service";
-import flyd from "flyd";
-import {User} from "../../model/client";
+import {MatchResults} from "@stencil/router";
+import {AuthService} from "../auth.service";
+import {SnackbarService} from "../snackbar.service";
 
 @Component({
   tag: 'app-confirm-registration',
@@ -11,23 +11,28 @@ import {User} from "../../model/client";
 })
 export class AppConfirmRegistration {
 
-  @Inject(GlobalStore) store: GlobalStore;
-  @State() currentUser: User;
+  @Inject(AuthService) authService: AuthService;
+  @Inject(SnackbarService) snackbarService: SnackbarService;
+  @Prop() match: MatchResults;
+  @State() message: string;
 
-  componentWillLoad() {
-    flyd.on((currentUser) => {
-      this.currentUser = currentUser;
-    }, this.store.getCurrentUser());
+  async componentWillLoad() {
+    const activationCode = this.match.params.activationCode;
+
+    const response = await this.authService.confirmRegistration(activationCode);
+
+    if (response && "message" in response) {
+      this.message = response.message;
+      this.snackbarService.showFailureSnack("Activation failed!")
+    } else {
+      this.message = "You successfully activated your account!";
+      this.snackbarService.showSuccessSnack("Activation successfull!");
+    }
   }
 
   render() {
     return (
-      <Host>
-        registration confirmation
-
-        <br />
-        current user: { this.currentUser.username }
-      </Host>
+      <Host>{this.message}</Host>
     );
   }
 

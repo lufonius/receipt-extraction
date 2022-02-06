@@ -32,30 +32,40 @@ export class AppRegister {
     }
 
     if (responseCode === 200) {
-      const currentUser = await this.authService.getCurrentUser();
+      const currentUser = this.authService.getCurrentUser();
       this.store.setCurrentUser(currentUser);
-      this.history.push('/confirm-registration');
+      this.history.push('/registration-confirmation-sent');
     }
   }
 
   render() {
     return (
       <Host>
-        <app-input
-          type="email"
-          value={this.email}
-          onInputValueChange={({ detail: name }) => this.email = name}
-        ></app-input>
+        <div class="page-layout">
+          <div class="header">
+            <h1>Register</h1>
+            <p>Register here to be able to use drezip</p>
+          </div>
+          <div class="body">
+            <form>
+              <app-input
+                type="email"
+                value={this.email}
+                onInputValueChange={({ detail: name }) => this.email = name}
+              ></app-input>
 
-        <br />
+              <br />
 
-        <app-input
-          type="password"
-          value={this.password}
-          onInputValueChange={({ detail: password }) => this.password = password}
-        ></app-input>
+              <app-input
+                type="password"
+                value={this.password}
+                onInputValueChange={({ detail: password }) => this.password = password}
+              ></app-input>
 
-        <app-button onPress={() => this.register()}>Register</app-button>
+              <app-button onPress={() => this.register()} primary>Register</app-button>
+            </form>
+          </div>
+        </div>
       </Host>
     );
   }

@@ -1,8 +1,7 @@
 package ch.lucfonjallaz.drezip.auth.login
 
-import ch.lucfonjallaz.drezip.auth.CookieFactory
+import ch.lucfonjallaz.drezip.auth.AuthenticationCookieService
 import ch.lucfonjallaz.drezip.auth.UserService
-import ch.lucfonjallaz.drezip.auth.jwt.JwtService
 import ch.lucfonjallaz.drezip.bl.receipt.createTestCustomUser
 import ch.lucfonjallaz.drezip.core.PropertyService
 import io.mockk.every
@@ -19,9 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class LoginControllerTest {
 
     @MockK
-    private lateinit var jwtService: JwtService
-
-    @MockK
     private lateinit var  userService: UserService
 
     @MockK
@@ -31,7 +27,7 @@ class LoginControllerTest {
     private lateinit var  propertyService: PropertyService
 
     @MockK
-    private lateinit var cookieFactory: CookieFactory
+    private lateinit var authenticationCookieService: AuthenticationCookieService
 
     @InjectMockKs
     private lateinit var loginController: LoginController
@@ -43,9 +39,8 @@ class LoginControllerTest {
         every { userService.findByUsername(loginRequest.email) }.returns(customUser)
         every { passwordEncoder.matches(loginRequest.password, customUser.password) }.returns(true)
 
-        val token = "I AM A TOKEN"
-        every { jwtService.generateToken(any()) }.returns(token)
-        every { cookieFactory.generateCookie(token) }.returns("token=Hey")
+        val token = "I AM A BEAUTIFUL TOKEN"
+        every { authenticationCookieService.generateAuthenticationCookie(customUser) }.returns(token)
 
         every { propertyService.env }.returns("prod")
 
@@ -53,7 +48,7 @@ class LoginControllerTest {
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response.headers.getFirst("Set-Cookie"))
-                .isEqualTo("token=Hey")
+                .isEqualTo(token)
     }
 
     @Test

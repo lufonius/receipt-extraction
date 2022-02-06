@@ -51,7 +51,7 @@ class UserService(
 
             userRepository.save(newUserDbo)
 
-            val registrationConfirmationLink = "${propertyService.domain}/${propertyService.confirmRegistrationLink}/${registrationCode}"
+            val registrationConfirmationLink = "${propertyService.confirmRegistrationLink}/${registrationCode}"
             emailService.sendRegistrationConfirmationEmail(username, registrationConfirmationLink)
 
             return CustomUserAdapter(newUserDbo)
