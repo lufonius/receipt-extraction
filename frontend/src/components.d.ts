@@ -70,6 +70,9 @@ export namespace Components {
     interface AppLoader {
     }
     interface AppLogin {
+        "email": string;
+        "history": RouterHistory;
+        "password": string;
     }
     interface AppLogo {
     }
@@ -78,7 +81,7 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface AppProfile {
-        "match": MatchResults;
+        "history": RouterHistory;
     }
     interface AppQrGeneration {
     }
@@ -450,6 +453,9 @@ declare namespace LocalJSX {
     interface AppLoader {
     }
     interface AppLogin {
+        "email"?: string;
+        "history"?: RouterHistory;
+        "password"?: string;
     }
     interface AppLogo {
     }
@@ -458,7 +464,7 @@ declare namespace LocalJSX {
         "history"?: RouterHistory;
     }
     interface AppProfile {
-        "match"?: MatchResults;
+        "history"?: RouterHistory;
     }
     interface AppQrGeneration {
     }

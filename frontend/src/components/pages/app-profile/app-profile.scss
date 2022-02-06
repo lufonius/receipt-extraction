@@ -1,3 +1,7 @@
-.app-profile {
-  padding: 10px;
+@import '../../common/layout';
+
+:host {
+  display: block;
+
+  @include page-layout;
 }

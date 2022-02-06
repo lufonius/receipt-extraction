@@ -40,6 +40,11 @@ export class AppNavbar {
             <span>categories</span>
           </stencil-route-link>
 
+          <stencil-route-link url="/profile" class={this.getClasses("/profile")}>
+            <app-icon size={Size.m} icon={Icons.USER}/>
+            <span>profile</span>
+          </stencil-route-link>
+
           <div class="fill" />
 
           <a onClick={() => this.photoInput.click()} class={this.getClasses("/crop")}>

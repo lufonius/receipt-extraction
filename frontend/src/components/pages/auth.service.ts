@@ -38,6 +38,21 @@ export class AuthService {
     }
   }
 
+  async login(email: string, password: string): Promise<void> {
+    await fetch(`${this.baseApiUrl}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    return;
+  }
+
   getCurrentUser(): User {
     const jwt = getCookie("token");
     if (jwt) {

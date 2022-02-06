@@ -1,3 +1,11 @@
+@import '../../common/layout';
+
 :host {
   display: block;
+
+  @include page-layout;
+
+  app-button {
+    margin-top: var(--size-m);
+  }
 }

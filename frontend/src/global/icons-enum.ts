@@ -15,5 +15,6 @@ export enum Icons {
   CROP = "crop",
   EYE = "eye",
   LAYERS = "layers",
-  HOME = "home"
+  HOME = "home",
+  USER = "user",
 }

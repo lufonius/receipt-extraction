@@ -89,11 +89,11 @@ export class AppRoot {
               <this.PrivateRoute url="/category" component="app-category" />
               <this.PrivateRoute url="/category-upsert/:id" component="app-category-upsert" />
               <this.PrivateRoute url="/category-upsert" component="app-category-upsert" />
-              <this.PrivateRoute url="/profile/:name" component="app-profile" />
               <this.PrivateRoute url="/edit-image" component="app-crop" />
               <this.PrivateRoute url="/qr-generation" component="app-qr-generation" />
               <this.PrivateRoute url="/qr-scan" component="app-qr-scan" />
               <this.PrivateRoute url="/receipt-extraction" component="app-receipt-extraction" />
+              <this.PrivateRoute url="/profile" component="app-profile" />
               <stencil-route url="/register" component="app-register" />
               <stencil-route url="/confirm-registration/:activationCode" component="app-confirm-registration" />
               <stencil-route url="/login" component="app-login" />

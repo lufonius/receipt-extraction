@@ -21,7 +21,6 @@ export class AppRegister {
 
   @Inject(SnackbarService) snackbarService: SnackbarService;
   @Inject(AuthService) authService: AuthService;
-  @Inject(GlobalStore) store: GlobalStore;
 
   async register() {
     const responseCode = await this.authService.registerUser(this.email, this.password);
@@ -33,7 +32,6 @@ export class AppRegister {
 
     if (responseCode === 200) {
       const currentUser = this.authService.getCurrentUser();
-      this.store.setCurrentUser(currentUser);
       this.history.push('/registration-confirmation-sent');
     }
   }

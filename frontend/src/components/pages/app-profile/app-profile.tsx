@@ -1,28 +1,44 @@
-import { Component, Prop, h } from '@stencil/core';
-import { MatchResults } from '@stencil/router';
+import {Component, Prop, h, Host, State} from '@stencil/core';
+import {RouterHistory} from '@stencil/router';
+import {AuthService} from "../auth.service";
+import {Inject} from "../../../global/di/inject";
+import {User} from "../../model/client";
 
 @Component({
   tag: 'app-profile',
   styleUrl: 'app-profile.scss',
-  shadow: false,
+  shadow: true,
 })
 export class AppProfile {
-  @Prop() match: MatchResults;
 
-  normalize(name: string): string {
-    if (name) {
-      return name.substr(0, 1).toUpperCase() + name.substr(1).toLowerCase();
-    }
-    return '';
+  @Prop() history: RouterHistory;
+  @Inject(AuthService) authService: AuthService;
+  @State() currentUser: User;
+
+  componentWillLoad() {
+    this.currentUser = this.authService.getCurrentUser();
+  }
+
+  logout() {
+    document.cookie = "";
+    this.history.push("/login");
   }
 
   render() {
-    if (this.match && this.match.params.name) {
-      return (
-        <div class="app-profile">
-          <p>Hello! My name is {this.normalize(this.match.params.name)}. My name was passed in through a route param!</p>
+    return (
+      <Host>
+        <div class="page-layout">
+          <div class="header">
+            <h1>Your profile</h1>
+            <p>See your profile details here</p>
+          </div>
+          <div class="body">
+            <p>Username: <b>{ this.currentUser.sub }</b></p>
+            <app-button onPress={() => this.logout()} primary>Logout</app-button>
+          </div>
         </div>
-      );
-    }
+        <app-navbar activeUrl="/profile" history={this.history} />
+      </Host>
+    );
   }
 }
