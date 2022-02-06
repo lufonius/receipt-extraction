@@ -1,5 +1,6 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.ReceiptStatus.*
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
@@ -15,8 +16,8 @@ class ReceiptService(
 ) {
     fun getReceipt(id: Int) = receiptDboRepository.getOne(id)
 
-    fun getReceiptsNotDone(): List<ReceiptDbo> {
-        return receiptDboRepository.findByStatusInOrderByUploadedAtDesc(listOf(Uploaded, Open, InProgress))
+    fun getReceiptsNotDone(userDbo: UserDbo): List<ReceiptDbo> {
+        return receiptDboRepository.findByStatusInAndUserOrderByUploadedAtDesc(listOf(Uploaded, Open, InProgress), userDbo)
     }
 
     fun updateReceipt(updateDbo: ReceiptDbo): ReceiptDbo {

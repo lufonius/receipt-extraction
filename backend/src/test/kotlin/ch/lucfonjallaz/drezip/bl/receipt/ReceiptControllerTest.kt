@@ -11,8 +11,6 @@ import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.mock.web.MockMultipartFile
 import java.util.*
 
@@ -101,10 +99,11 @@ internal class ReceiptControllerTest {
     fun `shoud return all receipts not done`() {
         val receiptDbo = createTestReceiptDbo(id = 9, status = ReceiptStatus.Uploaded)
         val receiptDbos = listOf(receiptDbo)
-        every { receiptService.getReceiptsNotDone() }
+        val userDbo = createTestUserDbo()
+        every { receiptService.getReceiptsNotDone(userDbo) }
                 .returns(receiptDbos)
 
-        val receiptListElementDtos = receiptController.getReceiptsNotDone()
+        val receiptListElementDtos = receiptController.getReceiptsNotDone(userDbo)
 
         val expectedDto = ReceiptListElementDto(
                 id = 9,

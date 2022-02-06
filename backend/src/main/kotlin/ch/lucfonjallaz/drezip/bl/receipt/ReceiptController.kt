@@ -46,8 +46,8 @@ class ReceiptController(
     fun getReceipt(@PathVariable id: Int) = receiptMapper.dtoFromDbo(receiptService.getReceipt(id))
 
     @GetMapping("/receipt/not-done")
-    fun getReceiptsNotDone(): List<ReceiptListElementDto> {
-        val receiptsNotDone = receiptService.getReceiptsNotDone()
+    fun getReceiptsNotDone(@AuthenticatedUser userDbo: UserDbo): List<ReceiptListElementDto> {
+        val receiptsNotDone = receiptService.getReceiptsNotDone(userDbo)
 
         return receiptsNotDone.map { ReceiptListElementDto(
                 id = it.id,

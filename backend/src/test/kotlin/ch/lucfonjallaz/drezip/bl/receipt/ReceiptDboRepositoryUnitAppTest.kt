@@ -30,7 +30,7 @@ class ReceiptDboRepositoryUnitAppTest : BaseAppTest() {
         entityManager.persist(doneReceiptDbo)
 
 
-        val foundReceipts = receiptDboRepository.findByStatusInOrderByUploadedAtDesc(listOf(Open, Uploaded))
+        val foundReceipts = receiptDboRepository.findByStatusInAndUserOrderByUploadedAtDesc(listOf(Open, Uploaded), userDbo)
 
         assertThat(foundReceipts.map { it.status }.distinct())
                 .containsOnly(Open, Uploaded)

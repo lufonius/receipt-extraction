@@ -1,5 +1,7 @@
 package ch.lucfonjallaz.drezip.bl.receipt
 
+import ch.lucfonjallaz.drezip.apptest.TestUser
+import ch.lucfonjallaz.drezip.auth.UserDbo
 import ch.lucfonjallaz.drezip.bl.receipt.item.ReceiptItemDboRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -64,10 +66,11 @@ class ReceiptServiceTest {
     fun `should return all receipts which are not done`() {
         val allStatiExceptDone = ReceiptStatus.values().filter { it != ReceiptStatus.Done }
         val receipDbos = listOf(createTestReceiptDbo())
-        every { receiptDboRepository.findByStatusInOrderByUploadedAtDesc(allStatiExceptDone) }
+        val userDbo = createTestUserDbo()
+        every { receiptDboRepository.findByStatusInAndUserOrderByUploadedAtDesc(allStatiExceptDone, userDbo) }
                 .returns(receipDbos)
 
-        val receiptsNotDone = receiptService.getReceiptsNotDone()
+        val receiptsNotDone = receiptService.getReceiptsNotDone(userDbo)
 
         assertThat(receiptsNotDone)
                 .containsExactlyInAnyOrder(*receipDbos.toTypedArray())
