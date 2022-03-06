@@ -9,9 +9,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="x-ua-compatible" content="IE=Edge">
 
-  <script type="module" src="/build/app.esm.js"></script>
-  <script nomodule src="/build/app.js"></script>
-  <script src="https://unpkg.com/feather-icons"></script>
+  <script type="module" src="/build/app.esm.js" defer></script>
+  <script nomodule src="/build/app.js" defer></script>
   <link href="/build/app.css" rel="stylesheet">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/icon180.png">
@@ -24,9 +23,10 @@
   <link rel="stylesheet" href="https://use.typekit.net/nkp6nff.css">
   <link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet">
 
-  <script src="/lib/reflect.js"></script>
-  <script src="/lib/qrcode.min.js"></script>
-  <script src="/lib/qr-scanner.umd.min.js"></script>
+  <script src="/lib/reflect.js" defer></script>
+  <script src="/lib/qrcode.min.js" async></script>
+  <script src="/lib/qr-scanner.umd.min.js" async></script>
+  <script src="/lib/feather.min.js" async></script>
 </head>
 <body>
   <app-root></app-root>

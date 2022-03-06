@@ -18,6 +18,10 @@ export const config: Config = {
           dest: 'lib/reflect.js'
         },
         {
+          src: '../node_modules/feather-icons/dist/feather.min.js',
+          dest: 'lib/feather.min.js'
+        },
+        {
           src: '../node_modules/qrcode/build/qrcode.min.js',
           dest: 'lib/qrcode.min.js'
         },

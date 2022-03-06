@@ -14,7 +14,7 @@ export class OpenCvService {
   private hasBeenLoaded: boolean = false;
   private loading: Promise<void>;
 
-  private async loadIfNotLoadedAlready() {
+  async loadIfNotLoadedAlready() {
     if (!this.hasBeenLoaded && !this.loading) {
       this.loading = _load();
       await this.loading;

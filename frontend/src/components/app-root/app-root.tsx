@@ -5,6 +5,7 @@ import {CategoryService} from "../pages/category.service";
 import {SnackbarService} from "../pages/snackbar.service";
 import flyd from "flyd";
 import {AuthService} from "../pages/auth.service";
+import {OpenCvService} from "../../global/opencv/opencv.service";
 
 @Component({
   tag: 'app-root',
@@ -17,16 +18,20 @@ export class AppRoot {
   @Inject(CategoryService) categoryService: CategoryService;
   @Inject(AuthService) authService: AuthService;
   @Inject(SnackbarService) snackbarService: SnackbarService;
+  @Inject(OpenCvService) openCvService: OpenCvService;
 
 
   @State() private snackbar: { message: string, type: 'success' | 'failure', show: boolean } = null;
 
-  async componentWillLoad() {
+  componentWillLoad() {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
-      const categories = await this.categoryService.get();
-      this.store.setCategories(categories);
+      this.categoryService.get().then((categories) => {
+        this.store.setCategories(categories);
+      });
     }
+
+    this.openCvService.loadIfNotLoadedAlready().then();
 
     flyd.on((message) => this.showSnackbar('success', message),this.snackbarService.successSnacks);
     flyd.on((message) => this.showSnackbar('failure', message),this.snackbarService.failureSnacks);
