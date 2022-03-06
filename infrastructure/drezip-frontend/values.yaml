@@ -1,5 +1,5 @@
 environment: test
 appVersion: 0.0.1-SNAPSHOT
-image: registry.digitalocean.com/aign/drezipfrontend:0.0.1-SNAPSHOT
+image: registry.digitalocean.com/aign/drezipfrontend:0.0.8-SNAPSHOT
 gitCommit: "initial"
 imagePullSecretName: aign

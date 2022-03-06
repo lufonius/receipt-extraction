@@ -25,6 +25,11 @@ data:
         try_files $uri $uri/ /index.html;
       }
 
+      location /sw.js {
+        # Don't use browser cache for service worker file
+        add_header cache-control "no-store, no-cache, must-revalidate";
+      }
+
       location /assets/ {
           add_header Cache-Control max-age=31536000;
       }
