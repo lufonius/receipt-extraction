@@ -141,7 +141,7 @@ spec:
           - mountPath: /drezip/config
             name: drezip-config-volume
       imagePullSecrets:
-        - name: aign
+        - name: {{ .Values.imagePullSecretName }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:

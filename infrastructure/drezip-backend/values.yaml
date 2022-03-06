@@ -3,3 +3,4 @@ appVersion: 0.0.1-SNAPSHOT
 image: registry.digitalocean.com/aign/drezipbackend:0.0.1-SNAPSHOT
 gitCommit: "initial"
 domain: dev.drezip.ch
+imagePullSecretName: aign

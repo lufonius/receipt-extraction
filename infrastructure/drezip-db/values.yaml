@@ -1,3 +1,4 @@
 environment: test
 appVersion: registry.digitalocean.com/aign/drezipdb:0.0.1-SNAPSHOT
 gitCommit: "initial"
+storageClass: do-block-storage

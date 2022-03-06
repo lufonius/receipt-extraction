@@ -107,7 +107,7 @@ spec:
             - mountPath: /etc/nginx/conf.d
               name: nginx-webserver-conf
       imagePullSecrets:
-        - name: aign
+        - name: {{ .Values.imagePullSecretName }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:

@@ -11,7 +11,7 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: do-block-storage
+  storageClassName: {{ .Values.storageClass }}
 ---
 apiVersion: v1
 kind: ServiceAccount
