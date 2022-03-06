@@ -22,16 +22,16 @@ data:
     spring.flyway.locations=classpath:db/migration
 
     # file storage
-    app.azure-blob-storage.host=https://drezip.blob.core.windows.net
-    app.azure-blob-storage-connection-string=DefaultEndpointsProtocol=https;AccountName=drezip;AccountKey=${app.azure-blob-storage-key};EndpointSuffix=core.windows.net
+    app.azure-blob-storage.host=https://aign.blob.core.windows.net
+    app.azure-blob-storage-connection-string=DefaultEndpointsProtocol=https;AccountName=aign;AccountKey=${app.azure-blob-storage-key};EndpointSuffix=core.windows.net
     app.azure-blob-storage-container-name={{ .Values.environment }}
 
-    # optical character recognition service
-    app.ocr-url=https://thelab.cognitiveservices.azure.com/vision/v3.1/read/analyze?language=de
-
     # form recognizer properties
-    app.form-recognizer-key=4c3f88914efb46aba8b47c5b73d3ca13
-    app.form-recognizer-url=https://drezip.cognitiveservices.azure.com/
+    app.form-recognizer-url=https://aign-form-recognizer.cognitiveservices.azure.com/
+
+    # general
+    app.env={{ .Values.environment }}
+    app.domain={{ .Values.domain }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -71,8 +71,16 @@ spec:
       annotations:
         git-commit: {{ .Values.gitCommit }}
     spec:
-      nodeSelector:
-        agentpool: apps
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: "doks.digitalocean.com/node-pool"
+                  operator: In
+                  values:
+                  - "apps-2vcpu-2-5ram"
       serviceAccountName: drezip-backend-sa
       securityContext:
         # any user
@@ -87,10 +95,12 @@ spec:
             'java', '-jar', 'drezip-{{ .Values.appVersion }}.jar',
             '--spring.config.location=/drezip/config/,classpath:/application.properties',
             '--app.azure-blob-storage-key=$(BLOB_STORAGE_KEY)',
-            '--app.ocr-key=$(OCR_KEY)',
             '--spring.datasource.hikari.password=$(DREZIP_DB_APP_USER_PW)',
             '--spring.datasource.password=$(DREZIP_DB_APP_USER_PW)',
-            '--spring.flyway.password=$(DREZIP_DB_FLYWAY_USER_PW)'
+            '--spring.flyway.password=$(DREZIP_DB_FLYWAY_USER_PW)',
+            '--app.form-recognizer-key=$(FORM_RECOGNIZER_KEY)',
+            '--app.auth.jwt-signing-key=$(JWT_SIGNING_KEY)',
+            '--app.auth.sendgrid-api-key=$(SENDGRID_API_KEY)'
         ]
         livenessProbe:
           httpGet:
@@ -100,6 +110,12 @@ spec:
           httpGet:
             port: 9000
             path: /actuator/health/readiness
+        startupProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 9000
+          failureThreshold: 20
+          periodSeconds: 5
         ports:
           - containerPort: 8080
         envFrom:
@@ -125,7 +141,7 @@ spec:
           - mountPath: /drezip/config
             name: drezip-config-volume
       imagePullSecrets:
-        - name: aignn-registry
+        - name: aign
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
