@@ -45,11 +45,8 @@ metadata:
   name: proxy-blobstorage
   namespace: {{ .Values.environment }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/backend-protocol: https
-    nginx.ingress.kubernetes.io/server-snippet: |
-      proxy_ssl_name existing.com;
-      proxy_ssl_server_name on;
     nginx.ingress.kubernetes.io/upstream-vhost: aign.blob.core.windows.net
     cert-manager.io/cluster-issuer: {{ .Values.certIssuer }}
 spec:
@@ -63,7 +60,7 @@ spec:
       http:
         paths:
           - pathType: ImplementationSpecific
-            path: /images
+            path: /images(/|$)(.*)
             backend:
               service:
                 name: blobstorage
