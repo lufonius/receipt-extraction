@@ -5,14 +5,13 @@ metadata:
   labels:
     app: drezip
     type: db
-  annotations:
-    volume.beta.kubernetes.io/storage-class: default
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
+  storageClassName: do-block-storage
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -85,8 +84,16 @@ spec:
       annotations:
         git-commit: {{ .Values.gitCommit }}
     spec:
-      nodeSelector:
-        agentpool: apps
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: "doks.digitalocean.com/node-pool"
+                    operator: In
+                    values:
+                      - "apps-2vcpu-2-5ram"
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
