@@ -13,6 +13,8 @@ metadata:
   name: proxy
   namespace: {{ .Values.environment }}
   annotations:
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 5M
+    nginx.ingress.kubernetes.io/proxy-body-size: "60m"
     cert-manager.io/cluster-issuer: {{ .Values.certIssuer }}
 spec:
   ingressClassName: nginx
