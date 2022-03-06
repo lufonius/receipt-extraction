@@ -23,7 +23,7 @@ export class AppCategoryUpsert {
   @Prop() history: RouterHistory;
 
   private id: number;
-  @Prop() mode: 'insert' | 'update';
+  @Prop() editMode: 'insert' | 'update';
   @Inject(GlobalStore) store: GlobalStore;
   @Inject(CategoryService) categoryService: CategoryService;
   @Inject(SnackbarService) snackbarService: SnackbarService;
@@ -33,10 +33,10 @@ export class AppCategoryUpsert {
   @State() private colors: Array<Array<string>> = [];
 
   componentDidLoad() {
-    this.mode = this.match.params.id ? 'update' : 'insert';
+    this.editMode = this.match.params.id ? 'update' : 'insert';
     this.id = parseInt(this.match.params.id);
 
-    if (this.mode === "update") {
+    if (this.editMode === "update") {
       flyd.on((categories) => {
         this.category = {...categories.get(this.id)};
       }, this.store.selectCategoriesById());
@@ -82,7 +82,7 @@ export class AppCategoryUpsert {
 
   async save() {
     try {
-      if (this.mode === 'update') {
+      if (this.editMode === 'update') {
        await this.categoryService.update(this.id, this.category);
        this.store.updateCategory(this.category);
        this.snackbarService.showSuccessSnack("Updated");
