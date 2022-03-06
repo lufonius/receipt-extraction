@@ -36,6 +36,10 @@ class SecurityConfiguration(
         .authorizeRequests()
             .antMatchers("/login").permitAll()
             .antMatchers("/register").permitAll()
+            // that is not a security issue, because in our container, we only expose port 8080
+            // so the actuator metric endpoints are not callable from the outside, since we host
+            // these endpoints on port 9000
+            .antMatchers("/actuator/**").permitAll()
             .antMatchers("**")
             .authenticated()
 
