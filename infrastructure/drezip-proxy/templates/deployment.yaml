@@ -4,42 +4,68 @@ metadata:
   name: blobstorage
   namespace: {{ .Values.environment }}
 spec:
-  ports:
-    - protocol: TCP
-      port: 443
-      targetPort: 443
   type: ExternalName
-  externalName: drezip.blob.core.windows.net
+  externalName: aign.blob.core.windows.net
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: proxy
   namespace: {{ .Values.environment }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.certIssuer }}
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.host }}
+      secretName: drezip-ch-tls
   rules:
     - host: {{ .Values.host }}
       http:
         paths:
         - pathType: Prefix
-          path: "/"
+          path: /
           backend:
             service:
               name: drezip-frontend
               port:
                 number: 80
         - pathType: Prefix
-          path: "/api"
+          path: /api
           backend:
             service:
               name: drezip-backend
               port:
                 number: 80
-        - pathType: Prefix
-          path: "/images"
-          backend:
-            service:
-              name: blobstorage
-              port:
-                number: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxy-blobstorage
+  namespace: {{ .Values.environment }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: https
+    nginx.ingress.kubernetes.io/server-snippet: |
+      proxy_ssl_name existing.com;
+      proxy_ssl_server_name on;
+    nginx.ingress.kubernetes.io/upstream-vhost: aign.blob.core.windows.net
+    cert-manager.io/cluster-issuer: {{ .Values.certIssuer }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.host }}
+      secretName: drezip-ch-tls
+  rules:
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            path: /images
+            backend:
+              service:
+                name: blobstorage
+                port:
+                  number: 443

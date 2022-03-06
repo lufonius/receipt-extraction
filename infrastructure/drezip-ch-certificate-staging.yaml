@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: drezip-ch-certs
+  namespace: test
+spec:
+  secretName: drezip-ch-tls
+  issuerRef:
+    name: lets-encrypt-issuer
+    kind: ClusterIssuer
+  commonName: '*.drezip.ch'
+  dnsNames:
+    - drezip.ch
+    - '*.drezip.ch'

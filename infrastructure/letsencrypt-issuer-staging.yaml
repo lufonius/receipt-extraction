@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: lets-encrypt-issuer
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: fonjallaz97@gmail.com
+    privateKeySecretRef:
+      name: lets-encrypt-issuer
+    solvers:
+    - selector:
+        dnsNames:
+        - drezip.ch
+        - 'dev.drezip.ch'
+        - '*.drezip.ch'
+      dns01:
+        cloudflare:
+          email: fonjallaz97@gmail.com
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
