@@ -1,0 +1,5 @@
+environment: test
+image: registry.digitalocean.com/aign/debugrequests:latest
+imagePullSecretName: aign
+certIssuer: lets-encrypt-issuer
+host: dev.drezip.ch
