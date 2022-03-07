@@ -13,5 +13,14 @@
 
       padding: var(--size-s);
     }
+
+    .dialog-footer {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: var(--size-s);
+
+      app-button { flex: 1; }
+    }
   }
 }

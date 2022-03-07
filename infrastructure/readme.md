@@ -32,3 +32,7 @@ Here is what drives the costs of your cloud provider. This might vary for each c
 - Load Balancer
 - Storage
 
+## pits and shits
+- Caching can occur in various stations on a journey of a request. In the browser,
+  the DNS provider, in the ingress controller and in the nginx of the frontend itself
+

@@ -202,7 +202,7 @@ export class AppCrop {
         <app-dialog ref={(el) => this.dialog = el} manuallyClosable={false}>
           <div class="dialog">
             <div class="dialog-header">
-              <h4>Uploading image</h4>
+              <h4>uploading image</h4>
             </div>
             <app-divider />
             <div class="dialog-body">

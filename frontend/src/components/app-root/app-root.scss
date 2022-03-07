@@ -1,1 +1,7 @@
+@import '../common/dialog';
 
+@include dialog();
+
+.center {
+  text-align: center;
+}

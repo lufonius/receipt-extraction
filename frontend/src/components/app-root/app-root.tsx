@@ -1,4 +1,4 @@
-import {Component, h, State} from '@stencil/core';
+import {Component, h, Listen, State} from '@stencil/core';
 import {Inject} from "../../global/di/inject";
 import {GlobalStore} from "../../global/global-store.service";
 import {CategoryService} from "../pages/category.service";
@@ -6,6 +6,8 @@ import {SnackbarService} from "../pages/snackbar.service";
 import flyd from "flyd";
 import {AuthService} from "../pages/auth.service";
 import {OpenCvService} from "../../global/opencv/opencv.service";
+import {Components} from "../../components";
+import AppDialog = Components.AppDialog;
 
 @Component({
   tag: 'app-root',
@@ -20,10 +22,16 @@ export class AppRoot {
   @Inject(SnackbarService) snackbarService: SnackbarService;
   @Inject(OpenCvService) openCvService: OpenCvService;
 
+  private updateAppDialog: AppDialog;
+  @State() private isUpdating: boolean = false;
+  @State() private hasBeenUpdated: boolean = false;
+  @State() private updateFailed: boolean = false;
 
   @State() private snackbar: { message: string, type: 'success' | 'failure', show: boolean } = null;
 
-  componentWillLoad() {
+  async componentWillLoad() {
+    this.reloadOnSWUpdate();
+
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
       this.categoryService.get().then((categories) => {
@@ -37,6 +45,23 @@ export class AppRoot {
     flyd.on((message) => this.showSnackbar('failure', message),this.snackbarService.failureSnacks);
   }
 
+  private reloadOnSWUpdate() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .getRegistration()
+        .then(registration => {
+          if (registration?.active) {
+            navigator.serviceWorker.addEventListener(
+              'controllerchange',
+              () => {
+                window.location.reload()
+              }
+            );
+          }
+        })
+    }
+  }
+
   private showSnackbar(type: 'success' | 'failure', message: string) {
     this.snackbar = { message, type, show: false };
 
@@ -47,6 +72,40 @@ export class AppRoot {
     setTimeout(() => {
       this.snackbar = {...this.snackbar, show: false};
     }, 2000)
+  }
+
+  @Listen("swUpdate", { target: 'window' })
+  async onServiceWorkerUpdate() {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (!registration?.waiting) {
+      return;
+    }
+
+    await this.updateAppDialog.isVisible(true);
+  }
+
+  private async forceServiceWorkerReload() {
+    const registration = await navigator.serviceWorker.getRegistration();
+    const sw = registration.waiting;
+
+    this.updateFailed = false;
+    this.hasBeenUpdated = false;
+    sw.postMessage({ type: "SKIP_WAITING" });
+    this.isUpdating = true;
+    try {
+      await this.waitForActivation(sw);
+    } catch {
+      this.isUpdating = false;
+      this.updateFailed = true;
+      this.snackbarService.showFailureSnack("Updating the app did not work");
+    }
+  }
+
+  private async waitForActivation(sw: ServiceWorker): Promise<void> {
+    return new Promise((resolve, reject) => {
+      sw.addEventListener("activated", () => resolve());
+      sw.addEventListener("redundant", () => reject());
+    });
   }
 
   addPWA() {
@@ -67,21 +126,22 @@ export class AppRoot {
   private PrivateRoute = ({ component, ...props}: { [key: string]: any}) => {
     const Component = component;
 
-    return (
-      <stencil-route {...props} routeRender={
-        (props: { [key: string]: any}) => {
-          const currentUser = this.authService.getCurrentUser();
-          if (currentUser && currentUser.registrationConfirmed) {
-            return <Component {...props} {...props.componentProps}></Component>;
-          } else if (currentUser && !currentUser.registrationConfirmed) {
-            return <stencil-router-redirect url="/registration-confirmation-sent"></stencil-router-redirect>
-          } else {
-            return <stencil-router-redirect url="/login"></stencil-router-redirect>
+      return (
+        <stencil-route {...props} routeRender={
+          (props: { [key: string]: any}) => {
+            const currentUser = this.authService.getCurrentUser();
+            if (currentUser && currentUser.registrationConfirmed) {
+              return <Component {...props} {...props.componentProps}></Component>;
+            } else if (currentUser && !currentUser.registrationConfirmed) {
+              return <stencil-router-redirect url="/registration-confirmation-sent"></stencil-router-redirect>
+            } else {
+              return <stencil-router-redirect url="/login"></stencil-router-redirect>
+            }
           }
-        }
-      }/>
-    );
-  }
+        }/>
+      );
+    }
+
 
   render() {
     return (
@@ -107,6 +167,42 @@ export class AppRoot {
             </stencil-route-switch>
           </stencil-router>
         </main>
+
+        <app-dialog ref={(el) => this.updateAppDialog = el} manuallyClosable={false}>
+          <div class="dialog">
+            <div class="dialog-header">
+              <h4>update your app</h4>
+            </div>
+            <app-divider />
+            <div class="dialog-body">
+              {!this.updateFailed && <div>
+                {!this.isUpdating && !this.hasBeenUpdated && <div>
+                  <p class="center">An update is available!</p>
+                </div>}
+                {this.isUpdating && <div class="center">
+                  <p>The app is updating</p>
+                  <app-loader />
+                </div>}
+              </div>}
+
+              {this.updateFailed && <div>
+                <p>Updating the app failed. Please check your network and try again.</p>
+              </div>}
+            </div>
+            <app-divider />
+            <div class="dialog-footer">
+              {!this.updateFailed && <div>
+                {!this.isUpdating && !this.hasBeenUpdated && <div>
+                  <app-button primary onPress={async () => await this.forceServiceWorkerReload()}>update and reload</app-button>
+                </div>}
+              </div>}
+
+              {this.updateFailed && <div>
+                <app-button primary onPress={() => this.forceServiceWorkerReload()}>Try again</app-button>
+              </div>}
+            </div>
+          </div>
+        </app-dialog>
       </div>
     );
   }

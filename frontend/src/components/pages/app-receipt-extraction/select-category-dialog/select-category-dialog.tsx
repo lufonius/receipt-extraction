@@ -61,7 +61,7 @@ export class SelectCategoryDialog {
           <div class="dialog">
             <div class="dialog-header">
               <div>
-                <h1>Set a category for the receipt item</h1>
+                <h1>set a category for the receipt item</h1>
                 <app-input
                   focused={true}
                   placeholder="Search for categories"
