@@ -18,6 +18,10 @@ export class AuthService {
       })
     });
 
+    if (response.status !== 200) {
+      throw Error();
+    }
+
     return response.status;
   }
 
@@ -30,7 +34,10 @@ export class AuthService {
       body: JSON.stringify({ code })
     });
 
-    console.log("body used: ", response.bodyUsed);
+    if (response.status !== 200) {
+      throw Error();
+    }
+
     if (response.bodyUsed) {
       return response.json();
     } else {
@@ -39,18 +46,22 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<void> {
-    await fetch(`${this.baseApiUrl}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    });
+      const response = await fetch(`${this.baseApiUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
 
-    return;
+      if (response.status !== 200) {
+        throw Error();
+      }
+
+      return;
   }
 
   getCurrentUser(): User {

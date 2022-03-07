@@ -88,7 +88,6 @@ export class AppCategoryUpsert {
        this.snackbarService.showSuccessSnack("Updated");
       } else {
         this.category = await this.categoryService.insert(this.category);
-        console.log(this.category);
         this.store.addCategory(this.category);
         this.snackbarService.showSuccessSnack("Added")
       }

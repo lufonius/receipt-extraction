@@ -20,7 +20,11 @@ export class AppRegistrationConfirmationSent {
   render() {
     return (
       <Host>
-        <div>Please activate your account by clicking the link sent to { this.currentUser.sub }.</div>
+        <div class="page-layout">
+          <div class="body">
+            <p><b>A confirmation link has been sent to <br />{ this.currentUser.sub }</b></p>
+          </div>
+        </div>
       </Host>
     );
   }
