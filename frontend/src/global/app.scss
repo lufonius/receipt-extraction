@@ -17,6 +17,8 @@ body {
   h1, h2, h3, h4 {
     font-family: var(--heading-font-family);
     font-weight: var(--font-weight-bold);
+    margin-left: 0;
+    margin-right: 0;
   }
 
   h1 { font-size: var(--font-size-xxl); }

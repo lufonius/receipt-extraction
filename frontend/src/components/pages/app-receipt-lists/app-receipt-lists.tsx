@@ -67,9 +67,19 @@ export class AppReceiptLists {
     this.history.push('/receipt-extraction');
   }
 
+  private photoInput: HTMLInputElement;
+
+  private redirectToImageEditing() {
+    if (this.photoInput.files.length > 0) {
+      this.history.push('/edit-image', { image: this.photoInput.files[0] });
+    }
+  }
+
   render() {
     return (
       <Host>
+          <input style={({ display: "none" })}  type="file" accept="image/*" capture="camera" onChange={() => this.redirectToImageEditing()} ref={(el) => this.photoInput = el} />
+
           <div class="page-layout">
             <div class="header">
               <h1>Home</h1>
@@ -79,24 +89,27 @@ export class AppReceiptLists {
               {this.receiptListHasBeenLoaded && <div>
 
                 <div class="status-container">
-                  <h1>{this.countReceipts(ReceiptStatusDto.Uploaded)}</h1>
-                  <h4>Receipts uploaded</h4>
-                  <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Uploaded)} primary>
-                    crop receipts
+                  <h4>Upload and extract infos</h4>
+                  <app-button onPress={() => this.photoInput.click()} primary>
+                    start
                     <div class="button-space" />
                     <app-icon icon={Icons.ARROW_RIGHT} />
                   </app-button>
                 </div>
 
+                <app-divider />
+
                 <div class="status-container">
                   <h1>{this.countReceipts(ReceiptStatusDto.Open)}</h1>
                   <h4>Receipts ready for extraction</h4>
                   <app-button onPress={() => this.continueEditingNextReceipt(ReceiptStatusDto.Open)} primary>
-                    Start extraction
+                    Extract infos
                     <div class="button-space" />
                     <app-icon icon={Icons.ARROW_RIGHT} />
                   </app-button>
                 </div>
+
+                <app-divider />
 
                 <div class="status-container">
                   <h1>{this.countReceipts(ReceiptStatusDto.InProgress)}</h1>

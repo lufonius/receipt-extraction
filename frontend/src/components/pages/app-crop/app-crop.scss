@@ -1,6 +1,8 @@
 @import '../../common/typography';
+@import '../../common/dialog';
 
 @include typography();
+@include dialog();
 
 .grow {
   flex-grow: 1;
@@ -50,7 +52,10 @@
   }
 }
 
-
+.dialog-body {
+  display: flex;
+  justify-content: center;
+}
 
 .dialog-footer {
   display: flex;

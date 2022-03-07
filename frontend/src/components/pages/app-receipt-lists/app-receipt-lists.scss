@@ -5,16 +5,36 @@
 
   @include page-layout();
 
-  .status-container {
-    margin-bottom: var(--size-xxl);
-    max-width: 18.6rem;
+  .body div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 
-    h1 { margin: 0; }
-    h4 { margin: 0 0 var(--size-s); }
+    .status-container {
+      margin-bottom: var(--size-l);
+      min-width: 100%;
+      padding: var(--size-m);
+      background-color: var(--background-dark);
 
-    .button-space {
-      height: 1px;
-      width: var(--size-sm);
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+
+      h1 {
+        margin: 0;
+        margin-bottom: var(--size-m);
+      }
+
+      h4 {
+        margin: 0 0 var(--size-s);
+        text-align: center;
+      }
+
+      .button-space {
+        height: 1px;
+        width: var(--size-sm);
+      }
+
     }
   }
 }
