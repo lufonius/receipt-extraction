@@ -153,9 +153,13 @@ export class AppCrop {
 
         <div
           class="canvas"
-          style={({ height: `${innerHeight - this.controlsHeight}px`, "margin-left": `${this.canvasMarginX}px`, })}
+          style={({ height: `${innerHeight - this.controlsHeight}px`, "margin-left": `${this.canvasMarginX}px`})}
           ref={(el) => this.canvas = el}
         />
+
+        {!this.hasActiveImage && <div class="loader">
+          <app-loader />
+        </div>}
 
         {this.hasActiveImage && <div style={({ height: `${this.controlsHeight}px` })} class="controls">
           <app-button onPress={() => this.photoInput.click()}>Retry</app-button>

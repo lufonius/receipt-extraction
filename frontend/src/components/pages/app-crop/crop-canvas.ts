@@ -83,20 +83,20 @@ export class CropCanvas {
 
     const points = [
       {
-        x: 0,
-        y: this.imageMarginXY.y
+        x: 10,
+        y: this.imageMarginXY.y + 10
       },
       {
-        x: (this.imageData.width * this.imageScaleRatio) + this.imageMarginXY.x,
-        y: this.imageMarginXY.y
+        x: (this.imageData.width * this.imageScaleRatio) + this.imageMarginXY.x - 10,
+        y: this.imageMarginXY.y + 10
       },
       {
-        x: (this.imageData.width  * this.imageScaleRatio) + this.imageMarginXY.x,
-        y: (this.imageData.height * this.imageScaleRatio) + this.imageMarginXY.y
+        x: (this.imageData.width  * this.imageScaleRatio) + this.imageMarginXY.x - 10,
+        y: (this.imageData.height * this.imageScaleRatio) + this.imageMarginXY.y - 10
       },
       {
-        x: 0,
-        y: (this.imageData.height * this.imageScaleRatio) + this.imageMarginXY.y
+        x: 0 + 10,
+        y: (this.imageData.height * this.imageScaleRatio) + this.imageMarginXY.y - 10
       }
     ];
 

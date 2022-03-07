@@ -54,8 +54,8 @@ class Side {
     this.line = new Line({
       p1: { x: corner1.initialX, y: corner1.initialY },
       p2: { x: corner2.initialX, y: corner2.initialY },
-      strokeColor: 0x000000,
-      strokeWidth: 2,
+      strokeColor: 0x3a3b59,
+      strokeWidth: 3,
       id: `${counter++}`
     });
   }
@@ -86,9 +86,9 @@ class Corner {
     this.ellipse = new Circle({
       x: initialX,
       y: initialY,
-      strokeColor: 0x000000,
-      strokeWidth: 2,
-      radius: 10,
+      strokeColor: 0x3a3b59,
+      strokeWidth: 3,
+      radius: 14,
       draggable: true,
       hitStrokeWidth: 25,
       id: `${counter++}`,
