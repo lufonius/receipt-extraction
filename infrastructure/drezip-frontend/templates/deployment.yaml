@@ -27,11 +27,11 @@ data:
 
       location /sw.js {
         # Don't use browser cache for service worker file
-        add_header Cache-Control no-cache;
+        add_header cache-control "no-store, no-cache, must-revalidate";
       }
 
       location /build/app.esm.js {
-        add_header Cache-Control no-cache;
+        add_header cache-control "no-store, no-cache, must-revalidate";
       }
 
       location /assets/ {
