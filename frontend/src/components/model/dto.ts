@@ -56,3 +56,7 @@ export interface CategoryDto {
   name: string;
   deleted: boolean;
 }
+
+export interface UserSettingsDto {
+  hideAddToHomeScreen: boolean;
+}

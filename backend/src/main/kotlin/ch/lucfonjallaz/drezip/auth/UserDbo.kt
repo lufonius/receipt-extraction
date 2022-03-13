@@ -25,6 +25,9 @@ data class UserDbo(
         val email: String,
 
         @Column(nullable = false)
+        val hideAddToHomeScreen: Boolean = false,
+
+        @Column(nullable = false)
         val registrationConfirmed: Boolean,
 
         @Column(nullable = true, length = 250)

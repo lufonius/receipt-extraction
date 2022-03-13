@@ -82,4 +82,8 @@ class UserService(
             throw RegistrationCodeNotMatchingException()
         }
     }
+
+    fun updateUser(userDbo: UserDbo) {
+        userRepository.save(userDbo)
+    }
 }

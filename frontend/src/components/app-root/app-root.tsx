@@ -27,7 +27,14 @@ export class AppRoot {
   @State() private hasBeenUpdated: boolean = false;
   @State() private updateFailed: boolean = false;
 
+  private installAppDialog: AppDialog;
+  private installPrompt: any;
+
   @State() private snackbar: { message: string, type: 'success' | 'failure', show: boolean } = null;
+
+  constructor() {
+    this.showAddToHomeScreenDialog();
+  }
 
   async componentWillLoad() {
     this.reloadOnSWUpdate();
@@ -108,19 +115,26 @@ export class AppRoot {
     });
   }
 
-  addPWA() {
-    if (!window.beforeInstallEvent) {
-      // The deferred prompt isn't available.
-      return;
+  showAddToHomeScreenDialog() {
+    if (this.authService.getCurrentUser()) {
+      window.addEventListener('beforeinstallprompt', async (e: Event) => {
+        e.preventDefault();
+        this.installPrompt = e;
+
+        const userSettings = await this.authService.getUserSettings();
+
+        if (!userSettings.hideAddToHomeScreen) {
+          await this.installAppDialog.isVisible(true);
+        }
+      });
     }
-    // Show the install prompt.
-    window.beforeInstallEvent.prompt();
-    // Log the result
-    window.beforeInstallEvent.userChoice.then((result) => {
-      console.log('👍', 'userChoice', result);
-      // Reset the deferred prompt variable, since
-      // prompt() can only be called once.
-    });
+  }
+
+  async installPwa() {
+    this.installPrompt.prompt();
+    await this.installPrompt.userChoice
+    await this.authService.updateUserSettings({ hideAddToHomeScreen: true });
+    await this.installAppDialog.isVisible(false);
   }
 
   private PrivateRoute = ({ component, ...props}: { [key: string]: any}) => {
@@ -167,6 +181,25 @@ export class AppRoot {
             </stencil-route-switch>
           </stencil-router>
         </main>
+
+        <app-dialog ref={(el) => this.installAppDialog = el} manuallyClosable={false}>
+          <div class="dialog">
+            <div class="dialog-body">
+              <div class="install-app-body">
+                <object data="assets/logo.svg" class="logo"></object>
+                <p>Add drezip to your home screen</p>
+              </div>
+            </div>
+            <app-divider />
+            <div class="dialog-footer">
+              <div class="install-app-footer">
+                <app-button onPress={async () => await this.installAppDialog.isVisible(false)}>Cancel</app-button>
+                <div class="fill" />
+                <app-button primary onPress={() => this.installPwa()}>Install</app-button>
+              </div>
+            </div>
+          </div>
+        </app-dialog>
 
         <app-dialog ref={(el) => this.updateAppDialog = el} manuallyClosable={false}>
           <div class="dialog">

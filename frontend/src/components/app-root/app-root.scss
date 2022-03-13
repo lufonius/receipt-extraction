@@ -5,3 +5,24 @@
 .center {
   text-align: center;
 }
+
+.logo {
+  width: var(--size-xl);
+}
+
+.fill {
+  flex: 1;
+  height: 1px;
+}
+
+.install-app-body {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.install-app-footer {
+  display: flex;
+  flex-grow: 1;
+}
