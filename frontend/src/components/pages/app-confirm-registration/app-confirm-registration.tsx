@@ -17,7 +17,7 @@ export class AppConfirmRegistration {
   @State() message: string = "You successfully activated your account!"
 
   async componentWillLoad() {
-    /*const activationCode = this.match.params.activationCode;
+    const activationCode = this.match.params.activationCode;
 
     const response = await this.authService.confirmRegistration(activationCode);
 
@@ -27,7 +27,7 @@ export class AppConfirmRegistration {
     } else {
       this.message = "You successfully activated your account!";
       this.snackbarService.showSuccessSnack("Activation successfull!");
-    }*/
+    }
   }
 
   render() {
@@ -37,7 +37,7 @@ export class AppConfirmRegistration {
           <div class="body">
             <p><b>{ this.message }</b></p>
             <br />
-            <p>Go to <stencil-route-link url="/">home</stencil-route-link></p>
+            <p>Go to <stencil-route-link url="/home">home</stencil-route-link></p>
           </div>
         </div>
       </Host>
